@@ -1,0 +1,5 @@
+#!/bin/sh
+
+CI=true make build || { echo 'build failed!'; exit 1; }
+
+exit 0
