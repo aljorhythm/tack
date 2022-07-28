@@ -1,7 +1,7 @@
 setup:
 	git config core.hooksPath .githooks
 	npm ci
-	
+
 format-check:
 	npx prettier --check .
 
@@ -12,11 +12,12 @@ format:
 build:
 	npm run build
 
+.PHONY: test
 test:
 	npm run test
 
-test-nowatch:
-	npm run test:no-watch
+test-ci:
+	npm run test:ci
 
 dev:
 	npm run dev
