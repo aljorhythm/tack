@@ -26,3 +26,12 @@ jobs:
       - uses: actions/checkout@v3
       - run: make setup
       - run: make build
+      - uses: amondnet/vercel-action@v20
+        id: deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID}} #Required
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}} #Required
+          working-directory: ./
+      - run: echo ${{ steps.deploy.outputs.details_url }}
