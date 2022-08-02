@@ -23,6 +23,7 @@ test-ci:
 test-e2e:
 	sh test-e2e.sh
 
+.PHONY: dev
 dev:
 	npm run dev
 

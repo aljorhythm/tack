@@ -1,15 +1,27 @@
 // playwright.config.ts
-import { devices } from "@playwright/test";
+import { devices, PlaywrightTestConfig } from "@playwright/test";
 
 const slowMo = parseInt(process.env.PLAYWRIGHT_SLOW_MO || "0");
 const CI = !!process.env.CI;
 
-console.log(`playwright env config: ${JSON.stringify({ CI, slowMo })}`);
+const { TEST_HOST } = process.env;
 
-const config = {
+if (!TEST_HOST) {
+    throw new Error("missing TEST_HOST");
+}
+const host = TEST_HOST.replace(/\/$/, "");
+
+console.log(`playwright env config: ${JSON.stringify({ host, CI, slowMo })}`);
+
+const config: PlaywrightTestConfig = {
     forbidOnly: CI,
     retries: CI ? 2 : 0,
+    workers: CI ? 4 : 1,
+
     use: {
+        baseURL: host,
+        ignoreHTTPSErrors: true,
+
         locale: "en-SG",
         trace: "on",
         headless: CI,
@@ -17,7 +29,6 @@ const config = {
             slowMo: slowMo,
         },
         actionTimeout: 5000,
-        workers: CI ? 4 : undefined,
     },
     projects: [
         {
