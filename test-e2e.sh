@@ -1,0 +1,38 @@
+#!/bin/sh
+
+HOST="${HOST:-https://localhost:3000}"
+
+echo testing against $HOST
+
+if [ "$HOST" = "https://localhost:3000" ]; then
+
+    echo killing process on port
+    kill $(lsof -t -i:3000) || true
+    while [[ -n $(lsof -t -i:3000) ]]; do echo waiting kill; sleep 1; done; \
+
+    npx servor public index.html --secure 3000 &
+
+fi
+
+until $(curl --output /dev/null --head --fail -k $HOST); do
+
+    sleep 5
+    echo server is unreachable
+
+done
+
+if [ -z "$CI" ]; then
+    
+    echo detected non-ci environment
+    PLAYWRIGHT_SLOW_MO="${PLAYWRIGHT_SLOW_MO:-400}"
+
+fi
+
+TEST_HOST=$HOST PLAYWRIGHT_SLOW_MO=$PLAYWRIGHT_SLOW_MO npx playwright test ./e2e-tests || { echo 'test failed' ; exit 1; }
+
+if [ "$HOST" = "https://localhost:3000" ]; then
+
+    echo killing process on port 3000
+    kill $(lsof -t -i:3000) || true
+
+fi

@@ -1,6 +1,7 @@
 setup:
 	git config core.hooksPath .githooks
 	npm ci
+	npx playwright install --with-deps chromium webkit
 
 format-check:
 	npx prettier --check .
@@ -18,6 +19,9 @@ test:
 
 test-ci:
 	npm run test:ci
+
+test-e2e:
+	sh test-e2e.sh
 
 dev:
 	npm run dev
