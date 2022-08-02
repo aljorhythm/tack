@@ -39,5 +39,5 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID}} #Required
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}} #Required
           working-directory: ./
-      - name: run e2e-test against ${{ steps.deploy.outputs.details_url }}
-        run: make E2E_HOST=${{ steps.deploy_firebase.outputs.details_url }} test-e2e
+      - name: run e2e-test against ${{ steps.deploy.outputs.preview-url }}
+        run: make HOST=${{ steps.deploy_firebase.outputs.preview-url }} test-e2e
