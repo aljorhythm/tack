@@ -33,6 +33,10 @@ if [ -z "$CI" ]; then
 
 fi
 
+echo testing api
+TEST_HOST=$HOST npx playwright@^1.24.2 test ./api-tests --project=chromium || { echo 'test failed' ; exit 1; }
+
+echo testing with browser
 TEST_HOST=$HOST PLAYWRIGHT_SLOW_MO=$PLAYWRIGHT_SLOW_MO npx playwright@^1.24.2 test ./e2e-tests || { echo 'test failed' ; exit 1; }
 
 if [ "$HOST" = "https://localhost:3000" ]; then
