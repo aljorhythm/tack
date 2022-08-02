@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 const { TEST_HOST } = process.env;
 
 if (!TEST_HOST) {
@@ -21,6 +21,8 @@ test.beforeAll(async ({ browserName }, workerInfo) => {
   console.log(`${testId}: host is ${host}`);
 });
 
-test("showcase", async ({ page }) => {
+test("index", async ({ page }) => {
   await page.goto(`${host}/`);
+  const welcomeTitle = await page.$("text=Welcome to Next.js!");
+  expect(welcomeTitle).not.toBeNull();
 });
