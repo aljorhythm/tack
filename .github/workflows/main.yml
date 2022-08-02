@@ -39,6 +39,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID}} #Required
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}} #Required
-          working-directory: ./
+          working-directory: ./.next
       - name: run e2e-test against ${{ steps.deploy.outputs.preview-url }}
         run: make HOST=${{ steps.deploy.outputs.preview-url }} test-e2e
