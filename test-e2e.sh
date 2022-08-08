@@ -6,8 +6,12 @@ echo testing against $HOST
 
 if [ "$HOST" = "https://localhost:3000" ]; then
 
+    echo killing process on port 3000
+    kill $(lsof -t -i:3000) || true
+    while [[ -n $(lsof -t -i:3000) ]]; do echo waiting kill; sleep 1; done; \
+
     echo killing process on port
-    kill $(lsof -t -i:3001) || true
+    kill $(lsof -t -i:3001) || true    
     while [[ -n $(lsof -t -i:3001) ]]; do echo waiting kill; sleep 1; done; \
     
     echo killing ssl proxy
@@ -43,6 +47,9 @@ if [ "$HOST" = "https://localhost:3000" ]; then
 
     echo killing process on port 3001
     kill $(lsof -t -i:3001) || true
+
+    echo killing process on port 3000
+    kill $(lsof -t -i:3000) || true
 
     echo killing ssl proxy
     kill $(pgrep local-ssl-proxy) || true
