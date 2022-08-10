@@ -9,7 +9,7 @@ test.describe.serial("story", async () => {
         await page.goto("/");
         await page.locator("text=Sign Up").click();
 
-        await page.waitForNavigation({ url: "/signup" });
+        await page.waitForURL("/signup");
 
         await page.locator('[placeholder="Email"]').fill(email);
         await page.locator('[placeholder="•••••••••"]').fill(password);
