@@ -28,7 +28,7 @@ const config: PlaywrightTestConfig = {
         launchOptions: {
             slowMo: slowMo,
         },
-        actionTimeout: 5000,
+        actionTimeout: 10000,
     },
     projects: [
         {
