@@ -6,7 +6,7 @@ export type CreateUserRequest = {
     password: string;
 };
 
-type User = {
+export type User = {
     email: string;
 };
 

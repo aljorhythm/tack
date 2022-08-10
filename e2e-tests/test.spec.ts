@@ -10,6 +10,4 @@ test.beforeAll(async ({ browserName }, workerInfo) => {
 
 test("index", async ({ page }) => {
     await page.goto(`/`);
-    const welcomeTitle = await page.$("text=Welcome to Next.js!");
-    expect(welcomeTitle).not.toBeNull();
 });
