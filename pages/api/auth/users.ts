@@ -15,7 +15,7 @@ type DbUser = {
 
 export type User = {
     email: string;
-    password: undefined;
+    password?: undefined;
 };
 
 let collection: Collection<DbUser> | null;
