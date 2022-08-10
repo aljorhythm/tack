@@ -1,5 +1,8 @@
 // playwright.config.ts
-import { devices, PlaywrightTestConfig } from "@playwright/test";
+import { expect, devices, PlaywrightTestConfig } from "@playwright/test";
+import { matchers } from "expect-playwright";
+
+expect.extend(matchers);
 
 const slowMo = parseInt(process.env.PLAYWRIGHT_SLOW_MO || "0");
 const CI = !!process.env.CI;

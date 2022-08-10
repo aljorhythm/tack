@@ -15,6 +15,7 @@ type DbUser = {
 
 export type User = {
     email: string;
+    password: undefined;
 };
 
 let collection: Collection<DbUser> | null;
@@ -34,6 +35,20 @@ export async function createUser(userRequest: CreateUserRequest): Promise<{ id: 
     return { id: response.insertedId };
 }
 
+function SanitizeDbUser(user: WithId<DbUser>) {
+    const returnUser: WithId<User> = <WithId<User>>(user as unknown);
+    delete returnUser.password;
+    return returnUser;
+}
+
+export async function findUserById(id: string) {
+    const user = await collection!.findOne({ _id: new ObjectId(id) });
+    if (user) {
+        return SanitizeDbUser(user);
+    }
+    return null;
+}
+
 export async function findUserByEmailAndPassword(
     email: string,
     password: string,
@@ -48,5 +63,5 @@ export async function findUserByEmailAndPassword(
         return null;
     }
 
-    return user as WithId<User>;
+    return SanitizeDbUser(user);
 }
