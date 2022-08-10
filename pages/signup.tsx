@@ -1,10 +1,23 @@
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const Signup: NextPage = () => {
     const router = useRouter();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     async function signUp() {
+        await fetch("/api/user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        });
         router.push("/login");
     }
 
@@ -23,6 +36,7 @@ const Signup: NextPage = () => {
                         id="email"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Email"
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
@@ -38,6 +52,7 @@ const Signup: NextPage = () => {
                         id="password"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="•••••••••"
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>

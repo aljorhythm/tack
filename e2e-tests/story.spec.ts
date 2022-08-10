@@ -21,9 +21,8 @@ test.describe.serial("story", async () => {
         await page.locator('[placeholder="Email"]').fill(email);
         await page.locator('[placeholder="•••••••••"]').fill(password);
         await page.locator('button:text("Login")').click();
-
-        await page.waitForNavigation({ url: "/profile" });
-        // await expect(page.locator(`text=${email}`)).toBeVisible();
+        await page.waitForURL("/profile");
+        await expect(page.locator(`text=${email}`)).toBeVisible();
     });
 
     test("should fail", async ({ page }) => {});

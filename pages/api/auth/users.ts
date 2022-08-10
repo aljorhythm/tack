@@ -14,6 +14,8 @@ type DbUser = {
 };
 
 export type User = {
+    _id?: undefined;
+    id: string;
     email: string;
     password?: undefined;
 };
@@ -29,15 +31,17 @@ collection = await db.collection<DbUser>("users");
 
 const saltRounds = await bcrypt.genSalt();
 
-export async function createUser(userRequest: CreateUserRequest): Promise<{ id: ObjectId } | null> {
+export async function createUser(userRequest: CreateUserRequest): Promise<{ id: string } | null> {
     userRequest.password = await bcrypt.hash(userRequest.password, saltRounds);
     const response = await collection!.insertOne(userRequest);
-    return { id: response.insertedId };
+    return { id: response.insertedId.toString() };
 }
 
-function SanitizeDbUser(user: WithId<DbUser>) {
-    const returnUser: WithId<User> = <WithId<User>>(user as unknown);
+function SanitizeDbUser(user: WithId<DbUser>): User {
+    const returnUser: User = <User>(user as unknown);
     delete returnUser.password;
+    returnUser.id = user._id.toString();
+    delete returnUser._id;
     return returnUser;
 }
 
@@ -52,7 +56,7 @@ export async function findUserById(id: string) {
 export async function findUserByEmailAndPassword(
     email: string,
     password: string,
-): Promise<WithId<User> | null> {
+): Promise<User | null> {
     const user = await collection!.findOne({ email });
 
     if (!user) {

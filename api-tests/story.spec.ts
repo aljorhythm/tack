@@ -39,7 +39,7 @@ test.describe.serial("sign up, login and token issuance", async () => {
         const body = await response.json();
         expect(body).toMatchObject({
             email: testData.email,
-            _id: expect.any(String),
+            id: expect.any(String),
         });
         expect(body.password).not.toBeDefined();
     });

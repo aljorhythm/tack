@@ -26,14 +26,17 @@ async function generateAccessToken(id: string): Promise<string> {
     });
 }
 
-type Response = { token: string };
+export type TokenResponse = { token: string };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Response | null>) {
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse<TokenResponse | null>,
+) {
     const { email, password } = req.body;
 
     const user = await findUserByEmailAndPassword(email, password);
     if (user) {
-        res.status(200).json({ token: await generateAccessToken(user._id.toString()) });
+        res.status(200).json({ token: await generateAccessToken(user.id) });
     } else {
         res.status(400).json(null);
     }

@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "./auth/token";
 import { CreateUserRequest, createUser, findUserById } from "./auth/users";
 
-async function getUserFromToken(token: string) {
+export async function getUserFromToken(token: string) {
     const { id } = await verifyToken(token);
     return await findUserById(id);
 }
