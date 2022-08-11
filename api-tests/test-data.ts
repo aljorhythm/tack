@@ -10,7 +10,7 @@ let cache: Data | null = null;
 export default async function getData(): Promise<Data> {
     if (!cache) {
         cache = {
-            email: faker.internet.email(),
+            email: `${Date.now()}${faker.internet.email()}`,
             password: faker.internet.password(),
         };
     }
