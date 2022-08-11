@@ -1,11 +1,22 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 
 const email = faker.internet.email();
 const password = faker.internet.password();
 
 test.describe.serial("story", async () => {
-    test("register and sign in", async ({ page }) => {
+    let page: Page;
+    test.beforeAll(async ({ browser }) => {
+        const context = await browser.newContext();
+        page = await context.newPage();
+        await page.goto("/");
+    });
+
+    test.afterAll(async ({ browser }) => {
+        browser.close();
+    });
+
+    test("register and sign in", async () => {
         await page.goto("/");
         await page.locator("text=Sign Up").click();
 
@@ -25,7 +36,7 @@ test.describe.serial("story", async () => {
         await expect(page.locator(`text=${email}`)).toBeVisible();
     });
 
-    test("should fail login with incorrect credentials", async ({ page }) => {
+    test("should fail login with incorrect credentials", async () => {
         await page.goto("/");
         await page.locator("text=Login").click();
         await page.waitForURL("/login");
@@ -36,11 +47,10 @@ test.describe.serial("story", async () => {
         await expect(page.locator(`text=Login unsuccessful`)).toBeVisible();
     });
 
-    // test("should be able to insert piece", async ({ page }) => {
-    //     await page.goto("/pieces");
-    //     const url = "https://www.google.com";
-    //     await page.locator('[placeholder="Enter URL"]').fill(url);
-    //     await page.locator('button:text("Add")').click();
-
-    // })
+    test("should be able to insert piece", async () => {
+        await page.goto("/pieces");
+        const url = "https://www.google.com";
+        await page.locator('[placeholder="http://wwww.example.com/"]').fill(url);
+        await page.locator('button:text("Add")').click();
+    });
 });
