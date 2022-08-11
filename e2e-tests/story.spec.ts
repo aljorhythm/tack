@@ -26,7 +26,8 @@ test.describe.serial("story", async () => {
     });
 
     test("should fail login with incorrect credentials", async ({ page }) => {
-        await page.goto("/login");
+        await page.goto("/");
+        await page.locator("text=Login").click();
         await page.waitForURL("/login");
         await page.locator('[placeholder="Email"]').fill(email);
         const wrongPassword = password + "wrong";
@@ -34,4 +35,12 @@ test.describe.serial("story", async () => {
         await page.locator('button:text("Login")').click();
         await expect(page.locator(`text=Login unsuccessful`)).toBeVisible();
     });
+
+    // test("should be able to insert piece", async ({ page }) => {
+    //     await page.goto("/pieces");
+    //     const url = "https://www.google.com";
+    //     await page.locator('[placeholder="Enter URL"]').fill(url);
+    //     await page.locator('button:text("Add")').click();
+
+    // })
 });
