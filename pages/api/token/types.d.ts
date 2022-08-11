@@ -1,0 +1,1 @@
+type TokenResponse = { token: string };

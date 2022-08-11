@@ -19,7 +19,7 @@ test.describe.serial("sign up, login and token issuance", async () => {
     let token: string = "";
 
     test("should auth user and return token", async ({ request }) => {
-        const response = await request.post(`/api/auth/token`, {
+        const response = await request.post(`/api/token`, {
             data: {
                 email: testData.email,
                 password: testData.password,
@@ -55,7 +55,7 @@ test.describe.serial("sign up, login and token issuance", async () => {
     });
 
     test("should be able to add piece", async ({ request }) => {
-        const response = await request.post(`/api/pieces`, {
+        const response = await request.post(`/api/piece`, {
             data: {
                 url: faker.internet.url(),
             },

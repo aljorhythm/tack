@@ -3,7 +3,6 @@ import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
 import { useState } from "react";
-import { TokenResponse } from "./api/auth/token";
 
 const Login: NextPage = () => {
     const router = useRouter();
@@ -11,7 +10,7 @@ const Login: NextPage = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     async function login() {
-        const response = await fetch("/api/auth/token", {
+        const response = await fetch("/api/token", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

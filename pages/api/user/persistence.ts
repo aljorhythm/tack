@@ -1,20 +1,16 @@
 import { Collection, ObjectId, WithId } from "mongodb";
 import { connectToDatabase } from "../external/mongodb";
 
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import log from "../../../log";
+import { DbUser } from "./types";
 
 export type CreateUserRequest = {
     email: string;
     password: string;
 };
 
-type DbUser = {
-    email: string;
-    password: string;
-};
-
-export interface User {
+interface User {
     _id?: undefined;
     id: string;
     email: string;
@@ -53,7 +49,7 @@ function SanitizeDbUser(user: WithId<DbUser>): User {
     return returnUser;
 }
 
-export async function findUserById(id: string) {
+export async function findUserById(id: string): Promise<null | User> {
     const user = await (await usersCollection()).findOne({ _id: new ObjectId(id) });
     if (user) {
         return SanitizeDbUser(user);

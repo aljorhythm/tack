@@ -2,15 +2,17 @@ import type { GetServerSidePropsContext, NextPage } from "next";
 import Router from "next/router";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
-import { Piece } from "./api/pieces/pieces";
-import { getUserFromToken } from "./api/user";
+import { Piece } from "./api/piece/types";
+import { UserClass } from "./api/user/domain";
+import { findUserById } from "./api/user/persistence";
+import { getUserFromToken, TackApiRequest } from "./request";
 
 type Props = { pieces: Array<Piece> };
 
 const Pieces: NextPage<Props> = ({ pieces }: Props) => {
     const [addPieceUrl, setAddPieceUrl] = useState("");
     async function addPiece() {
-        const response = await fetch("/api/pieces", {
+        const response = await fetch("/api/piece", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -67,13 +69,9 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const { token: tokens } = context.req.cookies;
-    const token = Array.isArray(tokens) ? tokens[0] : tokens;
-    if (!token) {
-        throw new Error("token cannot be undefined");
-    }
-    const user = await getUserFromToken(token);
-    const pieces = await user.getPieces();
+    const user = await getUserFromToken(context.req as TackApiRequest, findUserById, UserClass);
+
+    const pieces = await user?.getPieces();
     return { props: { pieces } };
 }
 

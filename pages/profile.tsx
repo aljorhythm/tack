@@ -1,26 +1,23 @@
 import type { GetServerSidePropsContext, GetStaticPropsContext, NextPage } from "next";
 import styles from "../styles/Home.module.css";
-import { User } from "./api/auth/users";
-import { getUserFromToken } from "./api/user";
+import { UserClass } from "./api/user/domain";
+import { findUserById } from "./api/user/persistence";
+import { UserType } from "./api/user/types";
+import { getUserFromToken, TackApiRequest } from "./request";
 
-type Props = { user: User };
+type Props = { user: UserType | null };
 
 const Profile: NextPage<Props> = ({ user }: Props) => {
     return (
         <div className={styles.container}>
-            <main className={styles.main}>{user.email}</main>
+            <main className={styles.main}>{user?.email}</main>
         </div>
     );
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const { token: tokens } = context.req.cookies;
-    const token = Array.isArray(tokens) ? tokens[0] : tokens;
-    if (!token) {
-        throw new Error("token cannot be undefined");
-    }
-    const user = await getUserFromToken(token);
-    return { props: { user: user.toObject() } };
+    const user = await getUserFromToken(context.req as TackApiRequest, findUserById, UserClass);
+    return { props: { user: user?.toObject() } };
 }
 
 export default Profile;

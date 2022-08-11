@@ -1,12 +1,7 @@
 import { Collection } from "mongodb";
 import log from "../../../log";
 import { connectToDatabase } from "../external/mongodb";
-
-export type Piece = {
-    url: string;
-    userId: string;
-    _id?: string;
-};
+import { Piece } from "./types";
 
 let collection: Collection<Piece> | null;
 
