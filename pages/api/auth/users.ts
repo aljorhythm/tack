@@ -21,19 +21,26 @@ export type User = {
 };
 
 let collection: Collection<DbUser> | null;
-const { db } = await connectToDatabase();
-try {
-    await db.createCollection<DbUser>("users");
-} catch (e) {
-    console.log("collection 'users' probably exists");
+
+async function usersCollection(): Promise<Collection<DbUser>> {
+    if (collection) {
+        return collection;
+    }
+    const { db } = await connectToDatabase();
+    try {
+        await db.createCollection<DbUser>("users");
+    } catch (e) {
+        console.log("collection 'users' probably exists");
+    }
+    collection = await db.collection<DbUser>("users");
+    return collection;
 }
-collection = await db.collection<DbUser>("users");
 
 const saltRounds = await bcrypt.genSalt();
 
 export async function createUser(userRequest: CreateUserRequest): Promise<{ id: string } | null> {
     userRequest.password = await bcrypt.hash(userRequest.password, saltRounds);
-    const response = await collection!.insertOne(userRequest);
+    const response = await (await usersCollection()).insertOne(userRequest);
     return { id: response.insertedId.toString() };
 }
 
@@ -46,7 +53,7 @@ function SanitizeDbUser(user: WithId<DbUser>): User {
 }
 
 export async function findUserById(id: string) {
-    const user = await collection!.findOne({ _id: new ObjectId(id) });
+    const user = await (await usersCollection()).findOne({ _id: new ObjectId(id) });
     if (user) {
         return SanitizeDbUser(user);
     }
@@ -57,7 +64,7 @@ export async function findUserByEmailAndPassword(
     email: string,
     password: string,
 ): Promise<User | null> {
-    const user = await collection!.findOne({ email });
+    const user = await (await usersCollection()).findOne({ email });
 
     if (!user) {
         return null;
