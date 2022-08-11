@@ -9,6 +9,7 @@ const Login: NextPage = () => {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     async function login() {
         const response = await fetch("/api/auth/token", {
             method: "POST",
@@ -20,6 +21,10 @@ const Login: NextPage = () => {
                 password,
             }),
         });
+        if (response.status != 200) {
+            setError("Login unsuccessfull");
+            return;
+        }
         const { token } = (await response.json()) as TokenResponse;
         setCookie("token", token);
         router.push("/profile");
@@ -67,6 +72,7 @@ const Login: NextPage = () => {
                 >
                     Login
                 </button>
+                <div>{error}</div>
             </main>
         </div>
     );

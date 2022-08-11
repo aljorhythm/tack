@@ -25,5 +25,13 @@ test.describe.serial("story", async () => {
         await expect(page.locator(`text=${email}`)).toBeVisible();
     });
 
-    test("should fail", async ({ page }) => {});
+    test("should fail login with incorrect credentials", async ({ page }) => {
+        await page.goto("/login");
+        await page.waitForURL("/login");
+        await page.locator('[placeholder="Email"]').fill(email);
+        const wrongPassword = password + "wrong";
+        await page.locator('[placeholder="•••••••••"]').fill(wrongPassword);
+        await page.locator('button:text("Login")').click();
+        await expect(page.locator(`text=Login unsuccessful`)).toBeVisible();
+    });
 });
