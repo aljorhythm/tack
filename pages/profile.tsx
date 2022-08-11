@@ -13,7 +13,6 @@ const Profile: NextPage<Props> = ({ user }: Props) => {
     );
 };
 
-// This gets called on every request
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const { token: tokens } = context.req.cookies;
     const token = Array.isArray(tokens) ? tokens[0] : tokens;

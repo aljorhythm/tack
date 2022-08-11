@@ -1,6 +1,6 @@
-// playwright.config.ts
 import { expect, devices, PlaywrightTestConfig } from "@playwright/test";
 import { matchers } from "expect-playwright";
+import log from "./log";
 
 expect.extend(matchers);
 
@@ -14,7 +14,7 @@ if (!TEST_HOST) {
 }
 const host = TEST_HOST.replace(/\/$/, "");
 
-console.log(`playwright env config: ${JSON.stringify({ host, CI, slowMo })}`);
+log(`playwright env config: ${JSON.stringify({ host, CI, slowMo })}`);
 
 const config: PlaywrightTestConfig = {
     forbidOnly: CI,

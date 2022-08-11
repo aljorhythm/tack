@@ -2,6 +2,7 @@ import { Collection, ObjectId, WithId } from "mongodb";
 import { connectToDatabase } from "../external/mongodb";
 
 import bcrypt from "bcrypt";
+import log from "../../../log";
 
 export type CreateUserRequest = {
     email: string;
@@ -30,7 +31,7 @@ async function usersCollection(): Promise<Collection<DbUser>> {
     try {
         await db.createCollection<DbUser>("users");
     } catch (e) {
-        console.log("collection 'users' probably exists");
+        log("collection 'users' probably exists");
     }
     collection = await db.collection<DbUser>("users");
     return collection;

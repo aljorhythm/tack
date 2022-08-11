@@ -1,4 +1,5 @@
 import { Collection } from "mongodb";
+import log from "../../../log";
 import { connectToDatabase } from "../external/mongodb";
 
 export type Piece = {
@@ -17,7 +18,7 @@ async function piecesCollection(): Promise<Collection<Piece>> {
     try {
         await db.createCollection<Piece>("pieces");
     } catch (e) {
-        console.log("collection 'pieces' probably exists");
+        log("collection 'pieces' probably exists");
     }
     collection = await db.collection<Piece>("pieces");
     return collection;

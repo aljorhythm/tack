@@ -1,4 +1,5 @@
 import { MongoClient, Db } from "mongodb";
+import log from "../../../log";
 
 const MONGODB_URI = process.env.MONGODB_URI || "";
 const MONGODB_DB = "tack";
@@ -17,7 +18,7 @@ export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db
     if (!MONGODB_URI) {
         throw new Error("Define the MONGODB_URI environmental variable");
     } else {
-        console.log("MONGODB_URI:", MONGODB_URI);
+        log("MONGODB_URI:", MONGODB_URI);
     }
 
     let client = new MongoClient(MONGODB_URI);
@@ -26,6 +27,8 @@ export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db
 
     cachedClient = client;
     cachedDb = db;
+
+    log("set cachedClient, cachedDb");
 
     return {
         client: cachedClient,
