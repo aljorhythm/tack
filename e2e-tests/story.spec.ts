@@ -46,7 +46,7 @@ test.describe.serial("story", async () => {
     test("should be able to insert piece and see added piece", async () => {
         await page.goto("/pieces");
         const url = faker.internet.url();
-        await page.locator(`[placeholder="http://www.example.com/"]`).fill(url);
+        await page.locator(`[placeholder="What caught your eye?"]`).fill(url);
         await page.locator('button:text("Add")').click();
         await page.waitForNavigation();
         const element = await page.locator(`.piece:text("${url}")`);
