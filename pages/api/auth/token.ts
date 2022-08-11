@@ -1,14 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { findUserByEmailAndPassword } from "../auth/users";
-import jwt, { Jwt, JwtPayload, VerifyCallback, VerifyErrors } from "jsonwebtoken";
+import jwt, { JwtPayload, VerifyCallback, VerifyErrors } from "jsonwebtoken";
 
 const AUTH_TOKEN_SECRET = process.env.AUTH_TOKEN_SECRET || "";
 
-if (!AUTH_TOKEN_SECRET) {
-    throw new Error("AUTH_TOKEN_SECRET is missing");
-}
-
 async function generateAccessToken(id: string): Promise<string> {
+    if (!AUTH_TOKEN_SECRET) {
+        throw new Error("AUTH_TOKEN_SECRET is missing");
+    }
+
     return new Promise<string>((resolve, reject) => {
         jwt.sign(
             {
