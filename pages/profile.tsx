@@ -21,7 +21,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         throw new Error("token cannot be undefined");
     }
     const user = await getUserFromToken(token);
-    return { props: { user } };
+    return { props: { user: user.toObject() } };
 }
 
 export default Profile;

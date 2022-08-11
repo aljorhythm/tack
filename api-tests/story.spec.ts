@@ -53,4 +53,18 @@ test.describe.serial("sign up, login and token issuance", async () => {
         });
         expect(response.ok()).not.toBeTruthy();
     });
+
+    test("should be able to add piece", async ({ request }) => {
+        const response = await request.post(`/api/pieces`, {
+            data: {
+                url: faker.internet.url(),
+            },
+            headers: { token: token },
+        });
+        expect(response.ok()).toBeTruthy();
+        const body = await response.json();
+        expect(body).toMatchObject({
+            id: expect.any(String),
+        });
+    });
 });

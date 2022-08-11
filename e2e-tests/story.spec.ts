@@ -1,7 +1,7 @@
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 
-const email = faker.internet.email();
+const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
 
 test.describe.serial("story", async () => {
@@ -10,10 +10,6 @@ test.describe.serial("story", async () => {
         const context = await browser.newContext();
         page = await context.newPage();
         await page.goto("/");
-    });
-
-    test.afterAll(async ({ browser }) => {
-        browser.close();
     });
 
     test("register and sign in", async () => {
@@ -47,10 +43,13 @@ test.describe.serial("story", async () => {
         await expect(page.locator(`text=Login unsuccessful`)).toBeVisible();
     });
 
-    test("should be able to insert piece", async () => {
+    test("should be able to insert piece and see added piece", async () => {
         await page.goto("/pieces");
-        const url = "https://www.google.com";
-        await page.locator('[placeholder="http://wwww.example.com/"]').fill(url);
+        const url = faker.internet.url();
+        await page.locator(`[placeholder="http://www.example.com/"]`).fill(url);
         await page.locator('button:text("Add")').click();
+        await page.waitForNavigation();
+        const element = await page.locator(`.piece:text("${url}")`);
+        await expect(element).toBeVisible();
     });
 });

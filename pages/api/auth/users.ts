@@ -13,12 +13,12 @@ type DbUser = {
     password: string;
 };
 
-export type User = {
+export interface User {
     _id?: undefined;
     id: string;
     email: string;
     password?: undefined;
-};
+}
 
 let collection: Collection<DbUser> | null;
 
