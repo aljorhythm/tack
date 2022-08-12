@@ -14,7 +14,7 @@ export class UserClass implements User {
 
     async addPiece(createFrom: CreatePieceFrom): Promise<{ id: string }> {
         const piece: Piece = {
-            url: createFrom.url,
+            url: createFrom.inputString,
             userId: this.id,
         };
 

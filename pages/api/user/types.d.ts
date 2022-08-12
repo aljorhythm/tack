@@ -18,5 +18,5 @@ type DbUser = {
 };
 
 type CreatePieceFrom = {
-    url: string;
+    inputString: string;
 };

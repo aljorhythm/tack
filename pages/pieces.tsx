@@ -5,6 +5,7 @@ import styles from "../styles/Home.module.css";
 import { Piece } from "./api/piece/types";
 import { UserClass } from "./api/user/domain";
 import { findUserById } from "./api/user/persistence";
+import { CreatePieceFrom } from "./api/user/types";
 import { getUserFromToken, TackApiRequest } from "./request";
 
 type Props = { pieces: Array<Piece> };
@@ -12,14 +13,15 @@ type Props = { pieces: Array<Piece> };
 const Pieces: NextPage<Props> = ({ pieces }: Props) => {
     const [addPieceUrl, setAddPieceUrl] = useState("");
     async function addPiece() {
+        const createPieceFrom: CreatePieceFrom = {
+            inputString: addPieceUrl,
+        };
         const response = await fetch("/api/piece", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                url: addPieceUrl,
-            }),
+            body: JSON.stringify(createPieceFrom),
         });
 
         try {
