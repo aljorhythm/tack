@@ -1,4 +1,4 @@
-import type { GetServerSidePropsContext, NextPage } from "next";
+import type { NextPage } from "next";
 import Router from "next/router";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
@@ -6,7 +6,7 @@ import { Piece } from "./api/piece/types";
 import { UserClass } from "./api/user/domain";
 import { findUserById } from "./api/user/persistence";
 import { CreatePieceFrom } from "./api/user/types";
-import { getUserFromToken, TackApiRequest } from "./request";
+import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
 
 type Props = { pieces: Array<Piece> };
 
@@ -70,11 +70,13 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
     );
 };
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const user = await getUserFromToken(context.req as TackApiRequest, findUserById, UserClass);
-
-    const pieces = await user?.getPieces();
-    return { props: { pieces } };
-}
+export const getServerSideProps = getTackServerSideProps(
+    async (context: TackServerSidePropsContext) => {
+        const pieces = await context.user?.getPieces();
+        return { props: { pieces } };
+    },
+    findUserById,
+    UserClass,
+);
 
 export default Pieces;

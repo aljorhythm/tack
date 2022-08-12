@@ -1,16 +1,25 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import {
+    GetServerSideProps,
+    GetServerSidePropsContext,
+    NextApiRequest,
+    NextApiResponse,
+} from "next";
 import { Middleware } from "next-connect";
 import { verifyToken } from "./api/token/token";
 import { User, UserType } from "./api/user/types";
+
+type UserConstructor = new (createFrom: UserType) => User;
 
 export type TackApiRequest = NextApiRequest & {
     user?: User | null;
 };
 
+type FindUserById = (id: string) => Promise<UserType | null>;
+
 export async function getUserFromToken(
     req: TackApiRequest,
-    findUserById: (id: string) => Promise<UserType | null>,
-    UserClass: new (createFrom: UserType) => User,
+    findUserById: FindUserById,
+    userConstructor: UserConstructor,
 ): Promise<User | null> {
     let tokens: string | string[] | null | undefined = req.headers.token;
     if (!tokens) {
@@ -29,19 +38,19 @@ export async function getUserFromToken(
         return null;
     }
 
-    return new UserClass(dbUser);
+    return new userConstructor(dbUser);
 }
 
 const attachUserToRequest = function (
-    findUserById: (id: string) => Promise<UserType | null>,
-    UserClass: new (createFrom: UserType) => User,
+    findUserById: FindUserById,
+    userConstructor: UserConstructor,
 ): Middleware<TackApiRequest, NextApiResponse> {
     const fn: Middleware<TackApiRequest, NextApiResponse> = async (
         req: TackApiRequest,
         _: NextApiResponse,
         next: Function,
     ) => {
-        req.user = await getUserFromToken(req, findUserById, UserClass);
+        req.user = await getUserFromToken(req, findUserById, userConstructor);
 
         next();
     };
@@ -49,3 +58,24 @@ const attachUserToRequest = function (
 };
 
 export default attachUserToRequest;
+
+export type TackServerSidePropsContext = GetServerSidePropsContext & {
+    user?: User | null;
+};
+
+export const getTackServerSideProps = function (
+    getServerSideProps: GetServerSideProps,
+    findUserById: FindUserById,
+    userConstructor: UserConstructor,
+): GetServerSideProps {
+    const wrapped: GetServerSideProps = async function (context: TackServerSidePropsContext) {
+        const user = await getUserFromToken(
+            context.req as TackApiRequest,
+            findUserById,
+            userConstructor,
+        );
+        context.user = user;
+        return getServerSideProps(context);
+    };
+    return wrapped;
+};
