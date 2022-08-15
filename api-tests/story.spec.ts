@@ -106,10 +106,10 @@ test.describe.serial("sign up, login and token issuance", async () => {
 
         expect(gotGetResponse.ok()).toBeTruthy();
         const gotPieces: Array<Piece> = await gotGetResponse.json();
-        expect(gotPieces[0]).toMatchObject({
+        expect(gotPieces[1]).toMatchObject({
             url,
             id: gotCreateResponseBody.id,
-            tags: ["hello", "there"],
+            tags: ["hello", "there!"],
         });
     });
 });
