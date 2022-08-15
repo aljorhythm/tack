@@ -56,6 +56,13 @@ test.describe.serial("sign up, login and token issuance", async () => {
         expect(response.ok()).not.toBeTruthy();
     });
 
+    async function createPiece(request: APIRequestContext, data: CreatePieceFrom) {
+        return await request.post(`/api/piece`, {
+            data,
+            headers: { token: token },
+        });
+    }
+
     async function addPieceHelper(
         request: APIRequestContext,
         inputString: string,
@@ -66,17 +73,14 @@ test.describe.serial("sign up, login and token issuance", async () => {
         const data: CreatePieceFrom = {
             inputString,
         };
-        const gotCreateResponse = await request.post(`/api/piece`, {
-            data,
-            headers: { token: token },
-        });
+        const gotCreateResponse = await createPiece(request, data);
         expect(gotCreateResponse.ok()).toBeTruthy();
 
         const gotCreateResponseBody: { id: string } = await gotCreateResponse.json();
         assertGotCreateResponseBody(gotCreateResponseBody);
 
         const gotGetResponse = await request.get(`/api/piece/pieces`, {
-            headers: { token: token, abc: "abc" },
+            headers: { token: token },
         });
         expect(gotGetResponse.ok()).toBeTruthy();
         const gotPieces: Array<Piece> = await gotGetResponse.json();
@@ -125,5 +129,21 @@ test.describe.serial("sign up, login and token issuance", async () => {
             },
             token,
         );
+    });
+
+    test("should be able to search piece with tags", async ({ request }) => {
+        const testData: Array<{ url: string; tags: string[] }> = [
+            {
+                url: "www.google.com",
+                tags: ["search"],
+            },
+            {
+                url: "www.google.com",
+                tags: ["search"],
+            },
+        ];
+
+        const url = faker.internet.url();
+        const inputString = url + " #hello #there!";
     });
 });
