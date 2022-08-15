@@ -44,7 +44,11 @@ test.describe.serial("story", async () => {
     });
 
     test("should be able to insert piece and see added piece", async () => {
-        await page.goto("/pieces");
+        await page.goto("/");
+
+        await page.locator("text=Pieces").click();
+        await page.waitForURL("/pieces");
+
         const url = faker.internet.url();
         const inputString = `${url} #hello #there`;
         await page.locator(`[placeholder="What caught your eye?"]`).fill(inputString);
