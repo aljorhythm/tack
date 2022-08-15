@@ -1,4 +1,4 @@
-import { Collection } from "mongodb";
+import { Collection, WithId } from "mongodb";
 import log from "../../../log";
 import { connectToDatabase } from "../external/mongodb";
 import { Piece } from "./types";
@@ -24,17 +24,18 @@ export async function createPiece(piece: Piece): Promise<{ id: string } | null> 
     return { id: response.insertedId.toString() };
 }
 
+function sanitisePiece(piece: WithId<Piece>) {
+    var clone: Piece = Object.assign({}, piece);
+    clone.tags = clone.tags || [];
+    clone.id = piece._id.toString();
+    delete clone._id;
+    return clone;
+}
+
 export async function getPiecesByUserId(id: string): Promise<Array<Piece>> {
-    const results = await (
-        await piecesCollection()
-    )
+    const results = await (await piecesCollection())
         .find({ userId: id })
-        .map(function (piece) {
-            var clone: Piece = Object.assign({}, piece);
-            clone.id = piece._id.toString();
-            delete clone._id;
-            return clone;
-        })
+        .map(sanitisePiece)
         .toArray();
     return results;
 }
