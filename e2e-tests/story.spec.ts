@@ -49,7 +49,7 @@ test.describe.serial("story", async () => {
         await page.locator(`[placeholder="What caught your eye?"]`).fill(url);
         await page.locator('button:text("Add")').click();
         await page.waitForNavigation();
-        const element = await page.locator(`.piece:text("${url}")`);
+        const element = await page.locator(`.piece :text("${url}")`);
         await expect(element).toBeVisible();
     });
 });

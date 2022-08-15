@@ -60,7 +60,7 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
                     {pieces.map((piece) => {
                         return (
                             <div key={piece.id} className="piece">
-                                {piece.url}
+                                <span>{piece.url}</span>
                             </div>
                         );
                     })}
