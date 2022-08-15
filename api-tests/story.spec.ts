@@ -83,4 +83,33 @@ test.describe.serial("sign up, login and token issuance", async () => {
             id: gotCreateResponseBody.id,
         });
     });
+
+    test("should be able to add piece with tags", async ({ request }) => {
+        const url = faker.internet.url();
+        const data: CreatePieceFrom = {
+            inputString: url + " #hello #there!",
+        };
+        const gotCreateResponse = await request.post(`/api/piece`, {
+            data,
+            headers: { token: token },
+        });
+        expect(gotCreateResponse.ok()).toBeTruthy();
+        const gotCreateResponseBody = await gotCreateResponse.json();
+        expect(gotCreateResponseBody).toMatchObject({
+            id: expect.any(String),
+        });
+
+        const gotGetResponse = await request.get(`/api/piece/pieces`, {
+            params: { id: gotCreateResponseBody.id },
+            headers: { token: token },
+        });
+
+        expect(gotGetResponse.ok()).toBeTruthy();
+        const gotPieces: Array<Piece> = await gotGetResponse.json();
+        expect(gotPieces[0]).toMatchObject({
+            url,
+            id: gotCreateResponseBody.id,
+            tags: ["hello", "there"],
+        });
+    });
 });

@@ -1,4 +1,5 @@
 import { createPiece, getPiecesByUserId } from "../piece/persistence";
+import { PieceClass } from "../piece/piece";
 import { Piece } from "../piece/types";
 import { CreatePieceFrom, User, UserType } from "./types";
 
@@ -13,10 +14,7 @@ export class UserClass implements User {
     }
 
     async addPiece(createFrom: CreatePieceFrom): Promise<{ id: string }> {
-        const piece: Piece = {
-            url: createFrom.inputString,
-            userId: this.id,
-        };
+        const piece: Piece = new PieceClass(createFrom, this.id);
 
         const id = await createPiece(piece);
         if (!id) {
