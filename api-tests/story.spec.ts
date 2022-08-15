@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { test, expect } from "@playwright/test";
+import { type Piece } from "../pages/api/piece/types";
+import { type CreatePieceFrom } from "../pages/api/user/types";
 
 import getTestData from "./test-data";
 
@@ -55,16 +57,30 @@ test.describe.serial("sign up, login and token issuance", async () => {
     });
 
     test("should be able to add piece", async ({ request }) => {
-        const response = await request.post(`/api/piece`, {
-            data: {
-                url: faker.internet.url(),
-            },
+        const url = faker.internet.url();
+        const data: CreatePieceFrom = {
+            inputString: url,
+        };
+        const gotCreateResponse = await request.post(`/api/piece`, {
+            data,
             headers: { token: token },
         });
-        expect(response.ok()).toBeTruthy();
-        const body = await response.json();
-        expect(body).toMatchObject({
+        expect(gotCreateResponse.ok()).toBeTruthy();
+        const gotCreateResponseBody = await gotCreateResponse.json();
+        expect(gotCreateResponseBody).toMatchObject({
             id: expect.any(String),
+        });
+
+        const gotGetResponse = await request.get(`/api/piece/pieces`, {
+            params: { id: gotCreateResponseBody.id },
+            headers: { token: token },
+        });
+
+        expect(gotGetResponse.ok()).toBeTruthy();
+        const gotPieces: Array<Piece> = await gotGetResponse.json();
+        expect(gotPieces[0]).toMatchObject({
+            url,
+            id: gotCreateResponseBody.id,
         });
     });
 });

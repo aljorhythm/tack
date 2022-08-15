@@ -30,8 +30,9 @@ export async function getPiecesByUserId(id: string): Promise<Array<Piece>> {
     )
         .find({ userId: id })
         .map(function (piece) {
-            var clone = Object.assign({}, piece);
-            clone._id = piece._id.toString();
+            var clone: Piece = Object.assign({}, piece);
+            clone.id = piece._id.toString();
+            delete clone._id;
             return clone;
         })
         .toArray();
