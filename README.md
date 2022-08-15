@@ -11,3 +11,14 @@
 -   workflow supported by `nodemon`, `makefile`
 -   continuously deployed with `github actions`
 -   hosted in `vercel`
+
+# Contribution
+
+## Development
+
+Example
+
+```
+make dev &
+TEST_HOST=http://localhost:3000 nodemon -e ts,tsx --exec CI=true npx playwright test api-tests --project=chromium
+```
