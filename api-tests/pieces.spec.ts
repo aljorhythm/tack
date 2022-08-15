@@ -149,17 +149,17 @@ test.describe("pieces", async () => {
             { searchInput: "doesnotexist", expected: [] },
         ];
 
-        //  await    Promise.all(
-        //             testCases.map(async (testCase) => {
-        //                 const { searchInput: query, expected } = testCase;
-        //                 const gotQueryResponse = await request.get(`/api/piece/pieces`, {
-        //                     params: { query },
-        //                     headers: { token: token },
-        //                 });
-        //                 const queryResult = await gotQueryResponse.json();
-        //                 expect(queryResult).toEqual(expect.arrayContaining(expected));
-        //                 expect(queryResult.length).toEqual(expected.length);
-        //             }),
-        //         );
+        await Promise.all(
+            testCases.map(async (testCase) => {
+                const { searchInput: query, expected } = testCase;
+                const gotQueryResponse = await request.get(`/api/piece/pieces`, {
+                    params: { query },
+                    headers: { token: token },
+                });
+                const queryResult = await gotQueryResponse.json();
+                expect(queryResult).toEqual(expect.arrayContaining(expected));
+                expect(queryResult.length).toEqual(expected.length);
+            }),
+        );
     });
 });
