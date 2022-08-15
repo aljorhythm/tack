@@ -46,10 +46,17 @@ test.describe.serial("story", async () => {
     test("should be able to insert piece and see added piece", async () => {
         await page.goto("/pieces");
         const url = faker.internet.url();
-        await page.locator(`[placeholder="What caught your eye?"]`).fill(url);
+        const inputString = `${url} #hello #there`;
+        await page.locator(`[placeholder="What caught your eye?"]`).fill(inputString);
         await page.locator('button:text("Add")').click();
         await page.waitForNavigation();
-        const element = await page.locator(`.piece :text("${url}")`);
-        await expect(element).toBeVisible();
+
+        const textElement = await page.locator(`.piece :text("${url}")`);
+        await expect(textElement).toBeVisible();
+
+        const tagsElements = await (
+            await page.locator(`.piece :text("${url}") ~ .tag`)
+        ).elementHandles();
+        await expect(tagsElements.length).toBe(2);
     });
 });

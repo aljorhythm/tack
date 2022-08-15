@@ -61,6 +61,13 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
                         return (
                             <div key={piece.id} className="piece">
                                 <span>{piece.url}</span>
+                                {piece.tags.map((tag, i) => {
+                                    return (
+                                        <div className="tag" key={i}>
+                                            {tag}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         );
                     })}
