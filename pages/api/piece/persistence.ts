@@ -35,6 +35,7 @@ function sanitisePiece(piece: WithId<Piece>) {
 export async function getPiecesByUserId(id: string): Promise<Array<Piece>> {
     const results = await (await piecesCollection())
         .find({ userId: id })
+        .sort({ _id: -1 })
         .map(sanitisePiece)
         .toArray();
     return results;

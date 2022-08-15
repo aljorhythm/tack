@@ -97,6 +97,7 @@ test.describe.serial("sign up, login and token issuance", async () => {
                 expect(gotPieces[0]).toMatchObject({
                     url,
                     id: createdId,
+                    tags: [],
                 });
             },
             token,
@@ -116,7 +117,7 @@ test.describe.serial("sign up, login and token issuance", async () => {
                 });
             },
             (gotPieces, createdId) => {
-                expect(gotPieces[1]).toMatchObject({
+                expect(gotPieces[0]).toMatchObject({
                     url,
                     id: createdId,
                     tags: ["hello", "there!"],

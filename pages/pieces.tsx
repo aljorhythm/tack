@@ -35,12 +35,6 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
     return (
         <div className={styles.container}>
             <main className={styles.main}>
-                <label
-                    htmlFor="add-piece-url"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                    URL:
-                </label>
                 <input
                     type="text"
                     id="add-piece-url"
@@ -59,11 +53,14 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
                 <div>
                     {pieces.map((piece) => {
                         return (
-                            <div key={piece.id} className="piece">
-                                <span>{piece.url}</span>
+                            <div
+                                key={piece.id}
+                                className="piece mb-4 p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex space-x-4"
+                            >
+                                <div className="text-xl font-medium text-black">{piece.url}</div>
                                 {piece.tags.map((tag, i) => {
                                     return (
-                                        <div className="tag" key={i}>
+                                        <div className="tag text-cyan-700" key={i}>
                                             {tag}
                                         </div>
                                     );
