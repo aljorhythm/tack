@@ -6,7 +6,7 @@ type UserType = {
 };
 
 interface User {
-    addPiece(createFrom: CreatePieceFrom);
+    addPiece(createFrom: CreatePieceFrom): Promise<{ id: string }>;
     getPieces: () => Promise<Piece[]>;
     toObject: () => UserType;
 }

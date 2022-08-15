@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { test, expect } from "@playwright/test";
+import { test, expect, Request, APIRequestContext } from "@playwright/test";
 import { type Piece } from "../pages/api/piece/types";
 import { type CreatePieceFrom } from "../pages/api/user/types";
 
@@ -56,60 +56,73 @@ test.describe.serial("sign up, login and token issuance", async () => {
         expect(response.ok()).not.toBeTruthy();
     });
 
-    test("should be able to add piece", async ({ request }) => {
-        const url = faker.internet.url();
+    async function addPieceHelper(
+        request: APIRequestContext,
+        inputString: string,
+        assertGotCreateResponseBody: (body: { id: string }) => void,
+        assertGotPiecesResponseBody: (body: Array<Piece>, id: string) => void,
+        token: string,
+    ) {
         const data: CreatePieceFrom = {
-            inputString: url,
+            inputString,
         };
         const gotCreateResponse = await request.post(`/api/piece`, {
             data,
             headers: { token: token },
         });
         expect(gotCreateResponse.ok()).toBeTruthy();
-        const gotCreateResponseBody = await gotCreateResponse.json();
-        expect(gotCreateResponseBody).toMatchObject({
-            id: expect.any(String),
-        });
+
+        const gotCreateResponseBody: { id: string } = await gotCreateResponse.json();
+        assertGotCreateResponseBody(gotCreateResponseBody);
 
         const gotGetResponse = await request.get(`/api/piece/pieces`, {
-            params: { id: gotCreateResponseBody.id },
-            headers: { token: token },
+            headers: { token: token, abc: "abc" },
         });
-
         expect(gotGetResponse.ok()).toBeTruthy();
         const gotPieces: Array<Piece> = await gotGetResponse.json();
-        expect(gotPieces[0]).toMatchObject({
+        assertGotPiecesResponseBody(gotPieces, gotCreateResponseBody.id);
+    }
+
+    test("should be able to add piece", async ({ request }) => {
+        const url = faker.internet.url();
+        await addPieceHelper(
+            request,
             url,
-            id: gotCreateResponseBody.id,
-        });
+            (gotCreateResponseBody) => {
+                expect(gotCreateResponseBody).toMatchObject({
+                    id: expect.any(String),
+                });
+            },
+            (gotPieces, createdId) => {
+                expect(gotPieces[0]).toMatchObject({
+                    url,
+                    id: createdId,
+                });
+            },
+            token,
+        );
     });
 
     test("should be able to add piece with tags", async ({ request }) => {
         const url = faker.internet.url();
-        const data: CreatePieceFrom = {
-            inputString: url + " #hello #there!",
-        };
-        const gotCreateResponse = await request.post(`/api/piece`, {
-            data,
-            headers: { token: token },
-        });
-        expect(gotCreateResponse.ok()).toBeTruthy();
-        const gotCreateResponseBody = await gotCreateResponse.json();
-        expect(gotCreateResponseBody).toMatchObject({
-            id: expect.any(String),
-        });
+        const inputString = url + " #hello #there!";
 
-        const gotGetResponse = await request.get(`/api/piece/pieces`, {
-            params: { id: gotCreateResponseBody.id },
-            headers: { token: token },
-        });
-
-        expect(gotGetResponse.ok()).toBeTruthy();
-        const gotPieces: Array<Piece> = await gotGetResponse.json();
-        expect(gotPieces[1]).toMatchObject({
-            url,
-            id: gotCreateResponseBody.id,
-            tags: ["hello", "there!"],
-        });
+        await addPieceHelper(
+            request,
+            inputString,
+            (gotCreateResponseBody) => {
+                expect(gotCreateResponseBody).toMatchObject({
+                    id: expect.any(String),
+                });
+            },
+            (gotPieces, createdId) => {
+                expect(gotPieces[1]).toMatchObject({
+                    url,
+                    id: createdId,
+                    tags: ["hello", "there!"],
+                });
+            },
+            token,
+        );
     });
 });

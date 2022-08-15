@@ -51,7 +51,6 @@ const attachUserToRequest = function (
         next: Function,
     ) => {
         req.user = await getUserFromToken(req, findUserById, userConstructor);
-
         next();
     };
     return fn;
