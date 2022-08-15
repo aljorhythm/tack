@@ -9,7 +9,6 @@ import { findUserById } from "../user/persistence";
 const handler = nc<TackApiRequest, NextApiResponse>()
     .use(attachUserToRequest(findUserById, UserClass))
     .get(async (req, res) => {
-        console.log(req.user);
         const result = await req.user!.getPieces();
         res.send(result);
     });
