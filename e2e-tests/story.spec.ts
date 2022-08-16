@@ -1,7 +1,6 @@
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import { createTestPieces } from "../test-helpers/pieces";
-import { create } from "domain";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
@@ -36,7 +35,8 @@ test.describe.serial("story", async () => {
 
     test("should fail login with incorrect credentials", async () => {
         await page.goto("/");
-        await page.locator("text=Login").click();
+
+        await (await page.waitForSelector("text=Login")).click();
         await page.waitForURL("/login");
         await page.locator('[placeholder="Email"]').fill(email);
         const wrongPassword = password + "wrong";
@@ -53,15 +53,15 @@ test.describe.serial("story", async () => {
 
         const url = faker.internet.url();
         const inputString = `${url} #hello #there`;
-        await page.locator(`[placeholder="What caught your eye?"]`).fill(inputString);
-        await page.locator('button:text("Add")').click();
+        await page.locator(`[placeholder="https://tack.app #app #index"]`).fill(inputString);
+        await page.locator('button:text("tack")').click();
         await page.waitForNavigation();
 
-        const textElement = await page.locator(`.piece :text("${url}")`);
+        const textElement = await page.locator(`.piece :has-text("${url}")`);
         await expect(textElement).toBeVisible();
 
         const tagsElements = await (
-            await page.locator(`.piece :text("${url}") ~ .tag`)
+            await page.locator(`.piece :has-text("${url}") ~ * .tag`)
         ).elementHandles();
         await expect(tagsElements.length).toBe(2);
     });
