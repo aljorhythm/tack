@@ -32,7 +32,7 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
     }
 
     return (
-        <div className="">
+        <>
             <div className="flex justify-center px-4">
                 <input
                     id="add-piece-url"
@@ -73,7 +73,7 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
                     );
                 })}
             </div>
-        </div>
+        </>
     );
 };
 

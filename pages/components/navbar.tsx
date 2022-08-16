@@ -9,12 +9,12 @@ export default function Navbar() {
             <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                 <div className="text-sm lg:flex-grow">
                     <Link href="/pieces">
-                        <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-white mr-5">
+                        <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
                             Pieces
                         </a>
                     </Link>
                     <Link href="/pieces/search">
-                        <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-white mr-5">
+                        <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
                             Search
                         </a>
                     </Link>

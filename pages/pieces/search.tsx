@@ -15,36 +15,43 @@ const Search: NextPage<Props> = ({ query, pieces }: Props) => {
 
     return (
         <>
-            <input
-                type="text"
-                id="add-piece-url"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                placeholder="https://tack.app #app #index"
-                onChange={(e) => setSearchQuery(e.target.value)}
-                required
-            />
+            <div className="flex justify-center px-4">
+                <input
+                    type="text"
+                    id="add-piece-url"
+                    className="bg-slate-50 w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                    placeholder="https://tack.app #app #index"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    required
+                />
 
-            <button
-                className="px-4 py-1 text-sm text-slate-600 font-semibold rounded-full border border-slate-200 hover:text-white hover:bg-slate-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
-                onClick={search}
-            >
-                Add
-            </button>
+                <button
+                    className="px-4 py-1 text-m w-32 font-semibold rounded border border-slate-200 text-white bg-slate-600 hover:bg-slate-500 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
+                    onClick={search}
+                >
+                    Add
+                </button>
+            </div>
             <div>
                 {pieces.map((piece) => {
                     return (
                         <div
                             key={piece.id}
-                            className="piece mb-4 p-6 mx-auto bg-white rounded-xl shadow-lg flex space-x-4"
+                            className="piece px-4 lg:px-72 py-2 border-b-2 w-full  space-x-4"
                         >
-                            <div className="text-xl font-medium text-black">{piece.url}</div>
-                            {piece.tags.map((tag, i) => {
-                                return (
-                                    <div className="tag text-cyan-700" key={i}>
-                                        {tag}
-                                    </div>
-                                );
-                            })}
+                            <div className="text-xl font-medium text-slate-800">{piece.url}</div>
+                            <div className="max-w-full">
+                                {piece.tags.sort().map((tag, i) => {
+                                    return (
+                                        <div
+                                            className="inline-block tag mr-4 text-slate-600"
+                                            key={i}
+                                        >
+                                            {tag}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     );
                 })}
