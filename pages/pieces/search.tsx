@@ -1,35 +1,17 @@
+export {};
 import type { NextPage } from "next";
-import Router from "next/router";
 import { useState } from "react";
-import { Piece } from "./api/piece/types";
-import { UserClass } from "./api/user/domain";
-import { findUserById } from "./api/user/persistence";
-import { CreatePieceFrom } from "./api/user/types";
-import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
+import { Piece } from "../api/piece/types";
+import { UserClass } from "../api/user/domain";
+import { findUserById } from "../api/user/persistence";
+import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
 
-type Props = { pieces: Array<Piece> };
+type Props = { pieces: Array<Piece>; query?: string };
 
-const Pieces: NextPage<Props> = ({ pieces }: Props) => {
-    const [addPieceUrl, setAddPieceUrl] = useState("");
-    async function addPiece() {
-        const createPieceFrom: CreatePieceFrom = {
-            inputString: addPieceUrl,
-        };
-        const response = await fetch("/api/piece", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(createPieceFrom),
-        });
+const Search: NextPage<Props> = ({ query, pieces }: Props) => {
+    const [searchQuery, setSearchQuery] = useState(query);
 
-        try {
-            const { id } = await response.json();
-            if (id) {
-                Router.reload();
-            }
-        } catch (e) {}
-    }
+    async function search() {}
 
     return (
         <>
@@ -38,13 +20,13 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
                 id="add-piece-url"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="What caught your eye?"
-                onChange={(e) => setAddPieceUrl(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 required
             />
 
             <button
                 className="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
-                onClick={addPiece}
+                onClick={search}
             >
                 Add
             </button>
@@ -73,11 +55,12 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
 
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
-        const pieces = await context.user?.getPieces();
+        const { query } = context.query;
+        const pieces = context.user ? await context.user?.getPieces() : [];
         return { props: { pieces } };
     },
     findUserById,
     UserClass,
 );
 
-export default Pieces;
+export default Search;

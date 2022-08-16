@@ -4,11 +4,11 @@ import { type CreatePieceFrom } from "../pages/api/user/types";
 export async function createPiece(
     request: APIRequestContext,
     data: CreatePieceFrom,
-    token: string,
+    token?: string,
 ) {
     return await request.post(`/api/piece`, {
         data,
-        headers: { token },
+        headers: { ...(token ? { token } : {}) },
     });
 }
 
@@ -70,7 +70,7 @@ export const testPieces: Array<TestPiece> = [
 
 export default testPieces;
 
-export async function createTestPieces(request: APIRequestContext, token: string) {
+export async function createTestPieces(request: APIRequestContext, token: string | undefined) {
     await Promise.all(
         testPieces.map((tack) => {
             return createPiece(
@@ -82,4 +82,5 @@ export async function createTestPieces(request: APIRequestContext, token: string
             );
         }),
     );
+    return testPieces;
 }

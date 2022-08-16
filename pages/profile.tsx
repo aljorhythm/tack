@@ -1,5 +1,4 @@
-import type { GetServerSidePropsContext, GetStaticPropsContext, NextPage } from "next";
-import styles from "../styles/Home.module.css";
+import type { GetServerSidePropsContext, NextPage } from "next";
 import { UserClass } from "./api/user/domain";
 import { findUserById } from "./api/user/persistence";
 import { UserType } from "./api/user/types";
@@ -8,11 +7,7 @@ import { getUserFromToken, TackApiRequest } from "./request";
 type Props = { user: UserType | null };
 
 const Profile: NextPage<Props> = ({ user }: Props) => {
-    return (
-        <div className={styles.container}>
-            <main className={styles.main}>{user?.email}</main>
-        </div>
-    );
+    return <div>{user?.email}</div>;
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

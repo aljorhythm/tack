@@ -1,5 +1,7 @@
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
+import { createTestPieces } from "../test-helpers/pieces";
+import { create } from "domain";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
@@ -64,24 +66,16 @@ test.describe.serial("story", async () => {
         await expect(tagsElements.length).toBe(2);
     });
 
-    test("should be able to insert piece and see added piece", async ({ request }) => {
+    test("should be able to search pieces", async () => {
+        const testPieces = await createTestPieces(page.request, undefined);
         await page.goto("/");
 
-        await page.locator("text=Pieces").click();
-        await page.waitForURL("/pieces");
+        await page.locator('nav :text("Search")').click();
+        await page.waitForURL("/pieces/search");
 
-        const url = faker.internet.url();
-        const inputString = `${url} #hello #there`;
-        await page.locator(`[placeholder="What caught your eye?"]`).fill(inputString);
-        await page.locator('button:text("Add")').click();
-        await page.waitForNavigation();
-
-        const textElement = await page.locator(`.piece :text("${url}")`);
-        await expect(textElement).toBeVisible();
-
-        const tagsElements = await (
-            await page.locator(`.piece :text("${url}") ~ .tag`)
-        ).elementHandles();
-        await expect(tagsElements.length).toBe(2);
+        // const tagsElements = await (
+        //     await page.locator(`.piece :text("${url}") ~ .tag`)
+        // ).elementHandles();
+        // await expect(tagsElements.length).toBe(2);
     });
 });
