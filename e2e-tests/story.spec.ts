@@ -63,4 +63,25 @@ test.describe.serial("story", async () => {
         ).elementHandles();
         await expect(tagsElements.length).toBe(2);
     });
+
+    test("should be able to insert piece and see added piece", async ({ request }) => {
+        await page.goto("/");
+
+        await page.locator("text=Pieces").click();
+        await page.waitForURL("/pieces");
+
+        const url = faker.internet.url();
+        const inputString = `${url} #hello #there`;
+        await page.locator(`[placeholder="What caught your eye?"]`).fill(inputString);
+        await page.locator('button:text("Add")').click();
+        await page.waitForNavigation();
+
+        const textElement = await page.locator(`.piece :text("${url}")`);
+        await expect(textElement).toBeVisible();
+
+        const tagsElements = await (
+            await page.locator(`.piece :text("${url}") ~ .tag`)
+        ).elementHandles();
+        await expect(tagsElements.length).toBe(2);
+    });
 });

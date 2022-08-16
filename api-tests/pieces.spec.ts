@@ -2,6 +2,19 @@ import { faker } from "@faker-js/faker";
 import { test, expect, APIRequestContext } from "@playwright/test";
 import { type Piece } from "../pages/api/piece/types";
 import { type CreatePieceFrom } from "../pages/api/user/types";
+import {
+    createPiece,
+    createTestPieces,
+    daveFarley,
+    django,
+    java,
+    jezHumble,
+    nextjs,
+    nodejs,
+    react,
+    springboot,
+    TestPiece,
+} from "../test-helpers/pieces";
 
 test.describe.serial("pieces", async () => {
     let token: string = "";
@@ -24,13 +37,6 @@ test.describe.serial("pieces", async () => {
         const body = await response;
         token = body.token;
     });
-
-    async function createPiece(request: APIRequestContext, data: CreatePieceFrom, token: string) {
-        return await request.post(`/api/piece`, {
-            data,
-            headers: { token },
-        });
-    }
 
     async function addPieceHelper(
         request: APIRequestContext,
@@ -101,72 +107,8 @@ test.describe.serial("pieces", async () => {
     });
 
     test("should be able to search piece with tags", async ({ request }) => {
-        type Tack = { url: string; tags: string[] };
-        const google = {
-            url: "www.google.com",
-            tags: ["search"],
-        };
-        const java = {
-            url: "www.java.com",
-            tags: ["programming"],
-        };
-        const springboot = {
-            url: "www.springboot.com",
-            tags: ["programming", "java", "framework"],
-        };
-        const nextjs = {
-            url: "nextjs.com",
-            tags: ["javascript", "typescript", "framework", "frontend", "backend", "serverless"],
-        };
-        const nodejs = {
-            url: "nodejs.com",
-            tags: ["javascript", "typescript"],
-        };
-        const django = {
-            url: "django.com",
-            tags: ["programming", "python", "framework"],
-        };
-        const react = {
-            url: "react.com",
-            tags: ["javascript", "typescript", "frontend"],
-        };
-        const allenHolub = {
-            url: "allenholub.com",
-            tags: ["agile", "c++"],
-        };
-        const daveFarley = {
-            url: "davefarley.com",
-            tags: ["agile", "devops", "continuous-delivery", "continuous-integration"],
-        };
-        const jezHumble = {
-            url: "jeshumble.com",
-            tags: ["devops", "continuous-delivery", "agile"],
-        };
-
-        const tacksData: Array<Tack> = [
-            google,
-            java,
-            nodejs,
-            django,
-            springboot,
-            nextjs,
-            react,
-            allenHolub,
-            daveFarley,
-            jezHumble,
-        ];
-        await Promise.all(
-            tacksData.map((tack) => {
-                return createPiece(
-                    request,
-                    {
-                        inputString: `${tack.url} ${tack.tags.join(" ")}`,
-                    },
-                    token,
-                );
-            }),
-        );
-        const testCases: Array<{ searchInput: string; expected: Array<Tack> }> = [
+        await createTestPieces(request, token);
+        const testCases: Array<{ searchInput: string; expected: Array<TestPiece> }> = [
             { searchInput: "doesnotexist", expected: [] },
             { searchInput: "programming", expected: [java, springboot, django] },
             { searchInput: "javascript typescript", expected: [nodejs, nextjs, react] },
