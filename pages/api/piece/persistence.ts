@@ -40,12 +40,10 @@ export async function getPiecesByUserId(id: string, extendFilter?: Filter<Piece>
     } else {
         filter = filterByUserId;
     }
-    console.log(JSON.stringify(filter));
     const results = await (await piecesCollection())
         .find(filter)
         .sort({ _id: -1 })
         .map(sanitisePiece)
         .toArray();
-    console.log(results.length);
     return results;
 }
