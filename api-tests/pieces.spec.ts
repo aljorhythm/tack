@@ -160,10 +160,9 @@ test.describe.serial("pieces", async () => {
 
                     headers: { token: token },
                 });
-                console.log(query, gotQueryResponse.ok());
-                // const queryResult = await gotQueryResponse.json();
-                // expect(queryResult).toEqual(expect.arrayContaining(expected));
-                // expect(queryResult.length).toEqual(expected.length);
+                const queryResult = await gotQueryResponse.json();
+                expect(queryResult).toEqual(expect.arrayContaining(expected));
+                expect(queryResult.length).toEqual(expected.length);
             }),
         );
     });

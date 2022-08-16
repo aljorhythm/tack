@@ -6,7 +6,6 @@ const handler = tackNextConnect(findUserById, UserClass).get(async (req, res) =>
     let { query } = req.query;
     query = Array.isArray(query) ? query.join(" ") : query;
     const result = await req.user!.getPieces(query);
-    console.log(req.query, query, result);
     res.send(result);
 });
 
