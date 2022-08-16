@@ -27,7 +27,7 @@ export class UserClass implements User {
     async getPieces(query?: string): Promise<Piece[]> {
         let filter: Filter<Piece> | undefined;
         if (query) {
-            filter = { tags: { $in: [query.split(" ")] } };
+            filter = { tags: { $in: query.split(" ") } };
         }
         return await getPiecesByUserId(this.id, filter);
     }

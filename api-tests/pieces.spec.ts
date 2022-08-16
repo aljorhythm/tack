@@ -118,6 +118,14 @@ test.describe.serial("pieces", async () => {
             url: "nextjs.com",
             tags: ["javascript", "typescript", "framework", "frontend", "backend", "serverless"],
         };
+        const nodejs = {
+            url: "nodejs.com",
+            tags: ["javascript", "typescript"],
+        };
+        const django = {
+            url: "django.com",
+            tags: ["programming", "python", "framework"],
+        };
         const react = {
             url: "react.com",
             tags: ["javascript", "typescript", "frontend"],
@@ -134,23 +142,28 @@ test.describe.serial("pieces", async () => {
         const tacksData: Array<Tack> = [
             google,
             java,
+            nodejs,
+            django,
             springboot,
             nextjs,
             react,
             allenHolub,
             daveFarley,
         ];
-        for (let tack of tacksData) {
-            await createPiece(
-                request,
-                {
-                    inputString: `${tack.url} ${tack.tags.join(" ")}`,
-                },
-                token,
-            );
-        }
+        await Promise.all(
+            tacksData.map((tack) => {
+                return createPiece(
+                    request,
+                    {
+                        inputString: `${tack.url} ${tack.tags.join(" ")}`,
+                    },
+                    token,
+                );
+            }),
+        );
         const testCases: Array<{ searchInput: string; expected: Array<Tack> }> = [
             { searchInput: "doesnotexist", expected: [] },
+            { searchInput: "programming", expected: [java, springboot, django] },
         ];
         await Promise.all(
             testCases.map(async (testCase) => {
@@ -160,9 +173,13 @@ test.describe.serial("pieces", async () => {
 
                     headers: { token: token },
                 });
-                const queryResult = await gotQueryResponse.json();
-                expect(queryResult).toEqual(expect.arrayContaining(expected));
-                expect(queryResult.length).toEqual(expected.length);
+                const gotPieces: Array<Piece> = await gotQueryResponse.json();
+                expect(
+                    gotPieces.map((piece) => {
+                        return { url: piece.url, tags: piece.tags };
+                    }),
+                ).toEqual(expect.arrayContaining(expected));
+                expect(gotPieces.length).toEqual(expected.length);
             }),
         );
     });
