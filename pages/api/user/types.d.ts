@@ -7,7 +7,7 @@ type UserType = {
 
 interface User {
     addPiece(createFrom: CreatePieceFrom): Promise<{ id: string }>;
-    getPieces: () => Promise<Piece[]>;
+    getPieces: (query?: string) => Promise<Piece[]>;
     toObject: () => UserType;
 }
 

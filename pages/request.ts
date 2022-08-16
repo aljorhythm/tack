@@ -7,6 +7,7 @@ import {
 import { Middleware } from "next-connect";
 import { verifyToken } from "./api/token/token";
 import { User, UserType } from "./api/user/types";
+import nc from "next-connect";
 
 type UserConstructor = new (createFrom: UserType) => User;
 
@@ -78,3 +79,15 @@ export const getTackServerSideProps = function (
     };
     return wrapped;
 };
+
+export function tackNextConnect(findUserById: FindUserById, userConstructor: UserConstructor) {
+    return nc<TackApiRequest, NextApiResponse>({
+        onError: (err, req, res, next) => {
+            console.error(err.stack);
+            res.status(500).end("Something broke!");
+        },
+        onNoMatch: (req, res) => {
+            res.status(404).end("Page is not found");
+        },
+    }).use(attachUserToRequest(findUserById, userConstructor));
+}

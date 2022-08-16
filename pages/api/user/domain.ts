@@ -1,3 +1,4 @@
+import { Filter } from "mongodb";
 import { createPiece, getPiecesByUserId } from "../piece/persistence";
 import { PieceClass } from "../piece/piece";
 import { Piece } from "../piece/types";
@@ -23,8 +24,12 @@ export class UserClass implements User {
         return id;
     }
 
-    async getPieces(): Promise<Piece[]> {
-        return await getPiecesByUserId(this.id);
+    async getPieces(query?: string): Promise<Piece[]> {
+        let filter: Filter<Piece> | undefined;
+        if (query) {
+            filter = { $in: [query.split(" ")] };
+        }
+        return await getPiecesByUserId(this.id, filter);
     }
 
     toObject(): UserType {

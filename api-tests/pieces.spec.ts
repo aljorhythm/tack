@@ -144,9 +144,7 @@ test.describe.serial("pieces", async () => {
             await createPiece(
                 request,
                 {
-                    inputString: `${tack.url} ${tack.tags.reduce((a, _, tag) => {
-                        return a + tag;
-                    }, "")}`,
+                    inputString: `${tack.url} ${tack.tags.join(" ")}`,
                 },
                 token,
             );
@@ -154,17 +152,18 @@ test.describe.serial("pieces", async () => {
         const testCases: Array<{ searchInput: string; expected: Array<Tack> }> = [
             { searchInput: "doesnotexist", expected: [] },
         ];
-        return;
         await Promise.all(
             testCases.map(async (testCase) => {
                 const { searchInput: query, expected } = testCase;
                 const gotQueryResponse = await request.get(`/api/piece/pieces`, {
                     params: { query },
+
                     headers: { token: token },
                 });
-                const queryResult = await gotQueryResponse.json();
-                expect(queryResult).toEqual(expect.arrayContaining(expected));
-                expect(queryResult.length).toEqual(expected.length);
+                console.log(query, gotQueryResponse.ok());
+                // const queryResult = await gotQueryResponse.json();
+                // expect(queryResult).toEqual(expect.arrayContaining(expected));
+                // expect(queryResult.length).toEqual(expected.length);
             }),
         );
     });

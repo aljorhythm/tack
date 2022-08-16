@@ -1,4 +1,4 @@
-import { Collection, WithId } from "mongodb";
+import { Collection, Filter, WithId } from "mongodb";
 import log from "../../../log";
 import { connectToDatabase } from "../external/mongodb";
 import { Piece } from "./types";
@@ -32,9 +32,16 @@ function sanitisePiece(piece: WithId<Piece>) {
     return clone;
 }
 
-export async function getPiecesByUserId(id: string): Promise<Array<Piece>> {
+export async function getPiecesByUserId(id: string, extendFilter?: Filter<Piece>) {
+    let filterByUserId = { userId: id };
+    let filter = {};
+    if (extendFilter) {
+        filter = { ...extendFilter, ...filterByUserId };
+    } else {
+        filter = filterByUserId;
+    }
     const results = await (await piecesCollection())
-        .find({ userId: id })
+        .find(filter)
         .sort({ _id: -1 })
         .map(sanitisePiece)
         .toArray();

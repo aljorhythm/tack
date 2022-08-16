@@ -1,16 +1,13 @@
-import type { NextApiResponse } from "next";
-import nc from "next-connect";
-
-import attachUserToRequest from "../../request";
-import { TackApiRequest } from "../../request";
+import { tackNextConnect } from "../../request";
 import { UserClass } from "../user/domain";
 import { findUserById } from "../user/persistence";
 
-const handler = nc<TackApiRequest, NextApiResponse>()
-    .use(attachUserToRequest(findUserById, UserClass))
-    .get(async (req, res) => {
-        const result = await req.user!.getPieces();
-        res.send(result);
-    });
+const handler = tackNextConnect(findUserById, UserClass).get(async (req, res) => {
+    let { query } = req.query;
+    query = Array.isArray(query) ? query.join(" ") : query;
+    const result = await req.user!.getPieces(query);
+    console.log(req.query, query, result);
+    res.send(result);
+});
 
 export default handler;
