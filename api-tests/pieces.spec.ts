@@ -138,6 +138,10 @@ test.describe.serial("pieces", async () => {
             url: "davefarley.com",
             tags: ["agile", "devops", "continuous-delivery", "continuous-integration"],
         };
+        const jezHumble = {
+            url: "jeshumble.com",
+            tags: ["devops", "continuous-delivery", "agile"],
+        };
 
         const tacksData: Array<Tack> = [
             google,
@@ -149,6 +153,7 @@ test.describe.serial("pieces", async () => {
             react,
             allenHolub,
             daveFarley,
+            jezHumble,
         ];
         await Promise.all(
             tacksData.map((tack) => {
@@ -164,13 +169,14 @@ test.describe.serial("pieces", async () => {
         const testCases: Array<{ searchInput: string; expected: Array<Tack> }> = [
             { searchInput: "doesnotexist", expected: [] },
             { searchInput: "programming", expected: [java, springboot, django] },
+            { searchInput: "javascript typescript", expected: [nodejs, nextjs, react] },
+            { searchInput: "devops agile continuous-delivery", expected: [daveFarley, jezHumble] },
         ];
         await Promise.all(
             testCases.map(async (testCase) => {
                 const { searchInput: query, expected } = testCase;
                 const gotQueryResponse = await request.get(`/api/piece/pieces`, {
                     params: { query },
-
                     headers: { token: token },
                 });
                 const gotPieces: Array<Piece> = await gotQueryResponse.json();
