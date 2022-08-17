@@ -69,7 +69,6 @@ export const getServerSideProps = getTackServerSideProps(
         let query = context.query?.query;
         query = Array.isArray(query) ? query.join(" ") : query;
         const pieces = await context.user?.getPieces(query);
-        console.log(query, pieces);
         return { props: { pieces } };
     },
     findUserById,
