@@ -11,6 +11,7 @@ type Props = { pieces: Array<Piece> };
 
 const Pieces: NextPage<Props> = ({ pieces }: Props) => {
     const [addPieceUrl, setAddPieceUrl] = useState("");
+
     async function addPiece() {
         const createPieceFrom: CreatePieceFrom = {
             inputString: addPieceUrl,
@@ -23,12 +24,10 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
             body: JSON.stringify(createPieceFrom),
         });
 
-        try {
-            const { id } = await response.json();
-            if (id) {
-                Router.reload();
-            }
-        } catch (e) {}
+        const { id } = await response.json();
+        if (id) {
+            Router.reload();
+        }
     }
 
     return (
