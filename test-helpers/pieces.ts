@@ -55,7 +55,7 @@ export const jezHumble = {
     tags: ["devops", "continuous-delivery", "agile"],
 };
 
-export const testPieces: Array<TestPiece> = [
+export const testPieces: { [key: string]: TestPiece } = {
     google,
     java,
     nodejs,
@@ -66,13 +66,16 @@ export const testPieces: Array<TestPiece> = [
     allenHolub,
     daveFarley,
     jezHumble,
-];
+};
 
 export default testPieces;
 
-export async function createTestPieces(request: APIRequestContext, token: string | undefined) {
+export async function createTestPieces(
+    request: APIRequestContext,
+    token: string | undefined,
+): Promise<{ [key: string]: TestPiece }> {
     await Promise.all(
-        testPieces.map((tack) => {
+        Object.entries(testPieces).map(([_, tack]) => {
             return createPiece(
                 request,
                 {

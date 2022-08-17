@@ -1,35 +1,12 @@
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import { createTestPieces } from "../test-helpers/pieces";
+import PageObjectModel from "./page-object-model";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
 
-class PageObjectModel {
-    page: Page;
-    constructor(page: Page) {
-        this.page = page;
-    }
-
-    async logout() {
-        const page = this.page;
-        await page.locator(`nav >> text=Logout`).click();
-    }
-
-    async login(email: string, password: string) {
-        const page = this.page;
-        await page.locator(`nav >> text=Login`).click();
-        await page.waitForURL("/login");
-        await page.locator("#email").fill(email);
-        await page.locator("#password").fill(password);
-        await page.locator('button:text("Login")').click();
-        expect(await page.waitForSelector(`nav >> text=Logout`));
-        expect(await page.locator(`nav >> text=Sign Up`).count()).toBe(0);
-        expect(await page.locator(`nav >> text=Login`).count()).toBe(0);
-    }
-}
-
-test.describe.serial("story", async () => {
+test.describe.serial("auth", async () => {
     let page: Page;
     let pom: PageObjectModel;
     test.beforeAll(async ({ browser }) => {
@@ -84,39 +61,5 @@ test.describe.serial("story", async () => {
 
     test("logging in", async () => {
         await pom.login(email, password);
-    });
-
-    test("should be able to insert piece and see added piece", async () => {
-        await page.goto("/");
-
-        await page.locator("text=Pieces").click();
-        await page.waitForURL("/pieces");
-
-        const url = faker.internet.url();
-        const inputString = `${url} #hello #there`;
-        await page.locator(`[placeholder="https://tack.app #app #index"]`).fill(inputString);
-        await page.locator('button:text("tack")').click();
-        await page.waitForNavigation();
-
-        const textElement = await page.locator(`.piece :has-text("${url}")`);
-        await expect(textElement).toBeVisible();
-
-        const tagsElements = await (
-            await page.locator(`.piece :has-text("${url}") ~ * .tag`)
-        ).elementHandles();
-        await expect(tagsElements.length).toBe(2);
-    });
-
-    test("should be able to search pieces", async () => {
-        const testPieces = await createTestPieces(page.request, undefined);
-        await page.goto("/");
-
-        await page.locator('nav :text("Search")').click();
-        await page.waitForURL("/pieces/search");
-
-        // const tagsElements = await (
-        //     await page.locator(`.piece :text("${url}") ~ .tag`)
-        // ).elementHandles();
-        // await expect(tagsElements.length).toBe(2);
     });
 });
