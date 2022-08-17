@@ -112,7 +112,9 @@ test.describe.serial("pieces", async () => {
             { searchInput: "doesnotexist", expected: [] },
             { searchInput: "programming", expected: [java, springboot, django] },
             { searchInput: "javascript typescript", expected: [nodejs, nextjs, react] },
+            { searchInput: "javascript #typescript", expected: [nodejs, nextjs, react] },
             { searchInput: "devops agile continuous-delivery", expected: [daveFarley, jezHumble] },
+            { searchInput: "devops agile #continuous-delivery", expected: [daveFarley, jezHumble] },
         ];
         await Promise.all(
             testCases.map(async (testCase) => {

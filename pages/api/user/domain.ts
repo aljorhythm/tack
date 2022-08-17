@@ -1,4 +1,5 @@
 import { Filter } from "mongodb";
+import { sanitizeTag } from "../piece/helpers";
 import { createPiece, getPiecesByUserId } from "../piece/persistence";
 import { PieceClass } from "../piece/piece";
 import { Piece } from "../piece/types";
@@ -27,7 +28,7 @@ export class UserClass implements User {
     async getPieces(query?: string): Promise<Piece[]> {
         let filter: Filter<Piece> | undefined;
         if (query) {
-            filter = { tags: { $all: query.split(" ") } };
+            filter = { tags: { $all: query.split(" ").map(sanitizeTag) } };
         }
         return await getPiecesByUserId(this.id, filter);
     }

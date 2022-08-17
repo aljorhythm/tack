@@ -1,4 +1,5 @@
 import { CreatePieceFrom } from "../user/types";
+import { sanitizeTag } from "./helpers";
 import { Piece } from "./types";
 
 export class PieceClass implements Piece {
@@ -10,11 +11,7 @@ export class PieceClass implements Piece {
 
     constructor(createFrom: CreatePieceFrom, userId: string) {
         const parsedElements = createFrom.inputString.split(" ");
-        (this.url = parsedElements[0]),
-            (this.tags = parsedElements.slice(1).map((rawTag) => {
-                const first = [...rawTag].findIndex((char) => char !== "#");
-                return rawTag.slice(first);
-            }));
+        (this.url = parsedElements[0]), (this.tags = parsedElements.slice(1).map(sanitizeTag));
         this.userId = userId;
     }
 }
