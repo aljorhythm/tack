@@ -43,7 +43,7 @@ if [ -z "$CI" ]; then
 
 fi
 
-function cleanup {
+cleanup() {
     if [ "$HOST" = "https://localhost:3000" ]; then
         echo killing process on port 3001
         kill $(lsof -t -i:3001) || true
