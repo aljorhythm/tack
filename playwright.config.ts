@@ -20,7 +20,7 @@ const config: PlaywrightTestConfig = {
     forbidOnly: CI,
     retries: CI ? 2 : 0,
     workers: CI ? 4 : 1,
-
+    testIgnore: ["pages/**", "__tests__/**"],
     use: {
         baseURL: host,
         ignoreHTTPSErrors: true,

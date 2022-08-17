@@ -22,7 +22,7 @@ test.describe.serial("pieces", async () => {
     });
 
     test("should be able to insert piece and see added piece", async () => {
-        await page.locator("text=Pieces").click();
+        await page.locator("nav >> text=Pieces").click();
         await page.waitForURL("/pieces");
 
         const url = faker.internet.url();
