@@ -18,6 +18,6 @@ echo count: "$count"
 
 if [ $count -ne 0 ]; then
     echo remove "$count" page.pause "statement(s)"
-    echo $(echo "$found" | tail --lines=+1)
+    echo $(echo "$found")
     exit 1
 fi
