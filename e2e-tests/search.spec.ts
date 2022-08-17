@@ -56,7 +56,7 @@ test.describe.serial("pieces", async () => {
 
         await page.locator(`[placeholder="#photography #singapore"]`).fill(testCase.searchInput);
         await page.locator('button:text("search")').click();
-        await page.waitForNavigation();
+        await page.waitForURL("/pieces/search?query=devops+agile+continuous-delivery");
 
         const pieces = await (await page.locator(`.piece`)).elementHandles();
         await expect(pieces.length).toBe(testCase.expected.length);
