@@ -37,11 +37,7 @@ if [ -z "$CI" ]; then
 
 fi
 
-echo testing api
-TEST_HOST=$HOST npx playwright@^1.24.2 test ./api-tests --project=chromium || { echo 'test failed' ; exit 1; }
-
-echo testing with browser
-TEST_HOST=$HOST PLAYWRIGHT_SLOW_MO=$PLAYWRIGHT_SLOW_MO npx playwright@^1.24.2 test ./e2e-tests || { echo 'test failed' ; exit 1; }
+function cleanup() {
 
 if [ "$HOST" = "https://localhost:3000" ]; then
 
@@ -54,3 +50,10 @@ if [ "$HOST" = "https://localhost:3000" ]; then
     echo killing ssl proxy
     kill $(pgrep local-ssl-proxy) || true
 fi
+}
+
+echo testing api
+TEST_HOST=$HOST npx playwright@^1.24.2 test ./api-tests --project=chromium || { cleanup || echo 'test failed' ; exit 1; }
+
+echo testing with browser
+TEST_HOST=$HOST PLAYWRIGHT_SLOW_MO=$PLAYWRIGHT_SLOW_MO npx playwright@^1.24.2 test ./e2e-tests || { cleanup || echo 'test failed' ; exit 1; }

@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { setCookie } from "cookies-next";
+import { useCookies } from "react-cookie";
 import { useState } from "react";
 
 const Login: NextPage = () => {
@@ -8,6 +8,8 @@ const Login: NextPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [_, setCookies] = useCookies(["token"]);
+
     async function login() {
         const response = await fetch("/api/token", {
             method: "POST",
@@ -24,8 +26,8 @@ const Login: NextPage = () => {
             return;
         }
         const { token } = (await response.json()) as TokenResponse;
-        setCookie("token", token);
-        router.push("/profile");
+        setCookies("token", token);
+        router.push("/pieces");
     }
 
     return (
@@ -43,6 +45,7 @@ const Login: NextPage = () => {
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                     placeholder="Email"
                     onChange={(e) => setEmail(e.target.value)}
+                    value={email}
                     required
                 />
             </div>
@@ -59,6 +62,7 @@ const Login: NextPage = () => {
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                     placeholder="•••••••••"
                     onChange={(e) => setPassword(e.target.value)}
+                    value={password}
                     required
                 />
             </div>

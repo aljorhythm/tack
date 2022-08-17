@@ -9,6 +9,7 @@ import { verifyToken } from "./api/token/token";
 import { User, UserType } from "./api/user/types";
 import nc from "next-connect";
 import { logError } from "../log";
+import { Cookies } from "next/dist/server/web/spec-extension/cookies";
 
 type UserConstructor = new (createFrom: UserType) => User;
 
@@ -24,8 +25,14 @@ export async function getUserFromToken(
     userConstructor: UserConstructor,
 ): Promise<User | null> {
     let tokens: string | string[] | null | undefined = req.headers.token;
+
     if (!tokens) {
         tokens = req.cookies.token;
+    }
+
+    if (!tokens) {
+        const cookies = new Cookies(req.headers.cookie);
+        tokens = cookies.get("token");
     }
 
     const token = Array.isArray(tokens) ? tokens[0] : tokens;
@@ -33,7 +40,14 @@ export async function getUserFromToken(
     if (!token) {
         return null;
     }
-    const { id } = await verifyToken(token);
+
+    let id;
+    try {
+        id = (await verifyToken(token)).id;
+    } catch (e) {
+        logError(e);
+        return null;
+    }
     const dbUser = await findUserById(id);
 
     if (!dbUser) {
