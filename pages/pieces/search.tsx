@@ -66,7 +66,7 @@ const Search: NextPage<Props> = ({ query, pieces }: Props) => {
 
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
-        let query = context.query?.query;
+        let query = context.query?.query || "";
         query = Array.isArray(query) ? query.join(" ") : query;
         const pieces = await context.user?.getPieces(query);
         return { props: { pieces } };
