@@ -39,8 +39,8 @@ export default function Navbar() {
                     </Link>
                 </div>
             </div>
-            <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-                <div className="text-sm lg:flex-grow">
+            <div className="w-full block flex-grow lg:flex lg:justify-end lg:w-auto">
+                <div className="text-sm">
                     {isLoggedIn ? (
                         <>
                             <a
