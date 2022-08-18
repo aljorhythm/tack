@@ -22,7 +22,7 @@ const Login: NextPage = () => {
             }),
         });
         if (response.status != 200) {
-            setError("Login unsuccessfull");
+            setError("Login unsuccessful");
             return;
         }
         const { token } = (await response.json()) as TokenResponse;
@@ -31,7 +31,7 @@ const Login: NextPage = () => {
     }
 
     return (
-        <div>
+        <div className="place-self-center w-96">
             <div>
                 <label
                     htmlFor="email"

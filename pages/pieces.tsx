@@ -35,7 +35,7 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
             <div className="flex justify-center px-4">
                 <input
                     id="add-piece-url"
-                    className="bg-slate-50 w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                    className="bg-slate-50 lg:w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                     placeholder="https://tack.app #app #index"
                     onChange={(e) => setAddPieceUrl(e.target.value)}
                     required

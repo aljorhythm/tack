@@ -23,7 +23,7 @@ const Search: NextPage<Props> = ({ query, pieces }: Props) => {
                 <input
                     type="text"
                     id="add-piece-url"
-                    className="bg-slate-50 w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                    className="bg-slate-50 lg:w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                     placeholder="#photography #singapore"
                     onChange={(e) => setSearchQuery(e.target.value)}
                     required
