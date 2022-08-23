@@ -79,7 +79,9 @@ const Pieces: NextPage<Props> = ({ pieces }: Props) => {
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
         const pieces = await context.user?.getPieces();
-        return { props: { pieces } };
+        return {
+            props: { pieces: pieces ? pieces : null, isLoggedIn: context.user ? true : false },
+        };
     },
     findUserById,
     UserClass,

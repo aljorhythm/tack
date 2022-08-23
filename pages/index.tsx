@@ -1,7 +1,14 @@
-import type { NextPage } from "next";
+import { Piece } from "./api/piece/types";
+import Pieces, { getServerSideProps as importedSSProps } from "./pieces";
 
-const Home: NextPage = () => {
-    return <></>;
+export const getServerSideProps = importedSSProps;
+
+type Props = {
+    isLoggedIn: boolean;
+    pieces: Array<Piece>;
 };
 
-export default Home;
+export default function Index(args: Props) {
+    const { isLoggedIn, pieces } = args;
+    return <>{isLoggedIn ? <Pieces pieces={pieces} /> : <>Log in to view your pieces</>}</>;
+}

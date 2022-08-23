@@ -16,6 +16,11 @@ test.describe.serial("auth", async () => {
         await page.goto("/");
     });
 
+    test("logged out message", async () => {
+        await page.goto("/");
+        await page.waitForSelector(`text=Log in to view your pieces`);
+    });
+
     test("register and sign in", async () => {
         await page.goto("/");
         await page.locator(`nav >> text=Sign Up`).click();
@@ -37,6 +42,9 @@ test.describe.serial("auth", async () => {
         await page.goto("/profile");
         await page.waitForURL("/profile");
         await expect(page.locator(`text=${email}`)).toBeVisible();
+
+        await page.goto("/");
+        await page.waitForSelector(`[placeholder="https://tack.app #app #index"]`);
     });
 
     test("logout", async () => {
