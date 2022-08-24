@@ -47,7 +47,9 @@ test.describe.serial("pieces", async () => {
         await page.locator('nav :text("Search")').click();
         await page.waitForURL("/pieces/search");
 
-        expect(await page.locator(".piece").count()).toBe(0);
+        await page.waitForFunction(() => {
+            return document.querySelectorAll(".piece").length == 0;
+        });
 
         const testCase = {
             searchInput: "devops agile continuous-delivery",
