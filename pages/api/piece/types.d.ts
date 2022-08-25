@@ -4,4 +4,5 @@ export type Piece = {
     _id?: string | undefined;
     id?: string;
     tags: Array<String>;
+    created_at: Date;
 };

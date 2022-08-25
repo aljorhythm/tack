@@ -8,10 +8,12 @@ export class PieceClass implements Piece {
     _id?: string | undefined;
     id?: string | undefined;
     tags: Array<String>;
+    created_at: Date;
 
     constructor(createFrom: CreatePieceFrom, userId: string) {
         const parsedElements = createFrom.inputString.split(" ");
         (this.url = parsedElements[0]), (this.tags = parsedElements.slice(1).map(sanitizeTag));
         this.userId = userId;
+        this.created_at = new Date();
     }
 }

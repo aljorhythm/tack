@@ -40,6 +40,7 @@ export async function getPiecesByUserId(id: string, extendFilter?: Filter<Piece>
     } else {
         filter = filterByUserId;
     }
+
     const results = await (await piecesCollection())
         .find(filter)
         .sort({ _id: -1 })

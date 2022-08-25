@@ -9,11 +9,13 @@ describe("construct Piece", () => {
         };
         const piece: PieceClass = new PieceClass(createFrom, userId);
 
-        expect(piece).toEqual({
-            url: "https://www.google.com",
-            tags: [],
-            userId,
-        });
+        expect(piece).toEqual(
+            expect.objectContaining({
+                url: "https://www.google.com",
+                tags: [],
+                userId,
+            }),
+        );
     });
 
     test("create from input with tags", () => {
@@ -22,11 +24,13 @@ describe("construct Piece", () => {
         };
         const piece: PieceClass = new PieceClass(createFrom, userId);
 
-        expect(piece).toEqual({
-            url: "https://www.google.com",
-            tags: ["hello", "bye"],
-            userId,
-        });
+        expect(piece).toEqual(
+            expect.objectContaining({
+                url: "https://www.google.com",
+                tags: ["hello", "bye"],
+                userId,
+            }),
+        );
     });
 });
 

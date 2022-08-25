@@ -6,8 +6,9 @@ import { Piece } from "../api/piece/types";
 import { UserClass } from "../api/user/domain";
 import { findUserById } from "../api/user/persistence";
 import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
+import PiecesList from "../components/pieces-list";
 
-type Props = { pieces: Array<Piece>; query?: string };
+export type Props = { pieces: Array<Piece>; query?: string };
 
 const Search: NextPage<Props> = ({ query, pieces }: Props) => {
     const [searchQuery, setSearchQuery] = useState(query);
@@ -36,30 +37,7 @@ const Search: NextPage<Props> = ({ query, pieces }: Props) => {
                     search
                 </button>
             </div>
-            <div>
-                {pieces.map((piece) => {
-                    return (
-                        <div
-                            key={piece.id}
-                            className="piece px-4 lg:px-72 py-2 border-b-2 w-full  space-x-4"
-                        >
-                            <div className="text-xl font-medium text-slate-800">{piece.url}</div>
-                            <div className="max-w-full">
-                                {piece.tags.sort().map((tag, i) => {
-                                    return (
-                                        <div
-                                            className="inline-block tag mr-4 text-slate-600"
-                                            key={i}
-                                        >
-                                            {tag}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+            <PiecesList pieces={pieces}></PiecesList>
         </>
     );
 };
@@ -69,7 +47,7 @@ export const getServerSideProps = getTackServerSideProps(
         let query = context.query?.query || "";
         query = Array.isArray(query) ? query.join(" ") : query;
         const pieces = await context.user?.getPieces(query);
-        return { props: { pieces } };
+        return { props: { pieces: pieces } };
     },
     findUserById,
     UserClass,

@@ -31,13 +31,16 @@ test.describe.serial("pieces", async () => {
         await page.locator('button:text("tack")').click();
         await page.waitForNavigation();
 
-        const textElement = await page.locator(`.piece :has-text("${url}")`);
-        await expect(textElement).toBeVisible();
+        const piece = await page.locator(`.piece:has-text("${url}")`);
+        await expect(piece).toBeVisible();
 
-        const tagsElements = await (
-            await page.locator(`.piece :has-text("${url}") ~ * .tag`)
-        ).elementHandles();
-        await expect(tagsElements.length).toBe(2);
+        const tagElements = await (await piece.locator(`.tag`)).elementHandles();
+        await expect(tagElements.length).toBe(2);
+
+        const createdAtElement = await piece.locator(`.created-at`);
+        await expect((await createdAtElement.allInnerTexts())[0]).toMatch(
+            /^[0-9][0-9]\/[0-1][0-9]\/[0-3][0-9] [0-9]?[0-9]:[0-9]?[0-9] (am|pm)$/,
+        );
     });
 
     test("should be able to search pieces", async () => {
@@ -65,7 +68,7 @@ test.describe.serial("pieces", async () => {
         const expectedUrls = testCase.expected.map((tack) => tack.url);
         const actualUrls = await Promise.all(
             pieces.map(async (piece) => {
-                return (await piece.$(":not(.tag)"))?.innerText();
+                return (await piece.$(".url"))?.innerText();
             }),
         );
         await expect(actualUrls).toEqual(expect.arrayContaining(expectedUrls));

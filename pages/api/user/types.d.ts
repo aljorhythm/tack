@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { Piece } from "../piece/types";
 
 type UserType = {
     id: string;
