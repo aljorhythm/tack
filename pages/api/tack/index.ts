@@ -10,8 +10,8 @@ import { CreatePieceFrom } from "../user/types";
 const handler = nc<TackApiRequest, NextApiResponse>()
     .use(attachUserToRequest(findUserById, UserClass))
     .post(async (req, res) => {
-        const piece = req.body;
-        const result = await req.user!.addPiece(piece as CreatePieceFrom);
+        const tack = req.body;
+        const result = await req.user!.addPiece(tack as CreatePieceFrom);
         res.send(result);
     });
 

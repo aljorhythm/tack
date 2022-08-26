@@ -6,7 +6,7 @@ export async function createPiece(
     data: CreatePieceFrom,
     token?: string,
 ) {
-    return await request.post(`/api/piece`, {
+    return await request.post(`/api/tack`, {
         data,
         headers: { ...(token ? { token } : {}) },
     });
@@ -55,7 +55,7 @@ export const jezHumble = {
     tags: ["devops", "continuous-delivery", "agile"],
 };
 
-export const testPieces: { [key: string]: TestPiece } = {
+export const testTacks: { [key: string]: TestPiece } = {
     google,
     java,
     nodejs,
@@ -68,14 +68,14 @@ export const testPieces: { [key: string]: TestPiece } = {
     jezHumble,
 };
 
-export default testPieces;
+export default testTacks;
 
-export async function createTestPieces(
+export async function createTestTacks(
     request: APIRequestContext,
     token: string | undefined,
 ): Promise<{ [key: string]: TestPiece }> {
     await Promise.all(
-        Object.entries(testPieces).map(([_, tack]) => {
+        Object.entries(testTacks).map(([_, tack]) => {
             return createPiece(
                 request,
                 {
@@ -85,5 +85,5 @@ export async function createTestPieces(
             );
         }),
     );
-    return testPieces;
+    return testTacks;
 }

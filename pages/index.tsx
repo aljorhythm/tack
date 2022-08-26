@@ -1,23 +1,23 @@
-import { Piece } from "./api/piece/types";
+import { Piece } from "./api/tack/types";
 import { UserClass } from "./api/user/domain";
 import { findUserById } from "./api/user/persistence";
-import Pieces from "./pieces";
+import Tacks from "./tacks";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
 
 export type Props = {
     isLoggedIn: boolean;
-    pieces: Array<Piece>;
+    tacks: Array<Piece>;
 };
 
 export default function Index(args: Props) {
-    const { isLoggedIn, pieces } = args;
-    return <>{isLoggedIn ? <Pieces pieces={pieces} /> : <>Log in to view your pieces</>}</>;
+    const { isLoggedIn, tacks } = args;
+    return <>{isLoggedIn ? <Tacks tacks={tacks} /> : <>Log in to view your tacks</>}</>;
 }
 
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
-        const pieces = await context.user?.getPieces();
-        const indexProps: Props = { pieces: pieces || [], isLoggedIn: !!context.user };
+        const tacks = await context.user?.getTacks();
+        const indexProps: Props = { tacks: tacks || [], isLoggedIn: !!context.user };
         return { props: indexProps };
     },
     findUserById,

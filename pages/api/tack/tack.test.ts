@@ -1,5 +1,5 @@
 import { CreatePieceFrom } from "../user/types";
-import { PieceClass } from "./piece";
+import { PieceClass } from "./tack";
 
 describe("construct Piece", () => {
     const userId = "123";
@@ -7,9 +7,9 @@ describe("construct Piece", () => {
         const createFrom: CreatePieceFrom = {
             inputString: "https://www.google.com",
         };
-        const piece: PieceClass = new PieceClass(createFrom, userId);
+        const tack: PieceClass = new PieceClass(createFrom, userId);
 
-        expect(piece).toEqual(
+        expect(tack).toEqual(
             expect.objectContaining({
                 url: "https://www.google.com",
                 tags: [],
@@ -22,9 +22,9 @@ describe("construct Piece", () => {
         const createFrom: CreatePieceFrom = {
             inputString: "https://www.google.com #hello #bye",
         };
-        const piece: PieceClass = new PieceClass(createFrom, userId);
+        const tack: PieceClass = new PieceClass(createFrom, userId);
 
-        expect(piece).toEqual(
+        expect(tack).toEqual(
             expect.objectContaining({
                 url: "https://www.google.com",
                 tags: ["hello", "bye"],

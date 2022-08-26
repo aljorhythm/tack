@@ -2,15 +2,15 @@ export {};
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Piece } from "../api/piece/types";
+import { Piece } from "../api/tack/types";
 import { UserClass } from "../api/user/domain";
 import { findUserById } from "../api/user/persistence";
 import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
-import PiecesList from "../components/pieces-list";
+import TacksList from "../components/tacks-list";
 
-export type Props = { pieces: Array<Piece>; query?: string };
+export type Props = { tacks: Array<Piece>; query?: string };
 
-const Search: NextPage<Props> = ({ query, pieces }: Props) => {
+const Search: NextPage<Props> = ({ query, tacks }: Props) => {
     const [searchQuery, setSearchQuery] = useState(query);
     const router = useRouter();
 
@@ -23,7 +23,7 @@ const Search: NextPage<Props> = ({ query, pieces }: Props) => {
             <div className="flex justify-center px-4">
                 <input
                     type="text"
-                    id="add-piece-url"
+                    id="add-tack-url"
                     className="bg-slate-50 lg:w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                     placeholder="#photography #singapore"
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -37,7 +37,7 @@ const Search: NextPage<Props> = ({ query, pieces }: Props) => {
                     search
                 </button>
             </div>
-            <PiecesList pieces={pieces}></PiecesList>
+            <TacksList tacks={tacks}></TacksList>
         </>
     );
 };
@@ -46,8 +46,8 @@ export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
         let query = context.query?.query || "";
         query = Array.isArray(query) ? query.join(" ") : query;
-        const pieces = await context.user?.getPieces(query);
-        return { props: { pieces: pieces } };
+        const tacks = await context.user?.getTacks(query);
+        return { props: { tacks: tacks } };
     },
     findUserById,
     UserClass,

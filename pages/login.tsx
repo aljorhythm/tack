@@ -27,7 +27,7 @@ const Login: NextPage = () => {
         }
         const { token } = (await response.json()) as TokenResponse;
         setCookies("token", token);
-        router.push("/pieces");
+        router.push("/tacks");
     }
 
     return (

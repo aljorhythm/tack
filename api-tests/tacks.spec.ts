@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { test, expect, APIRequestContext } from "@playwright/test";
-import { type Piece } from "../pages/api/piece/types";
+import { type Piece } from "../pages/api/tack/types";
 import { type CreatePieceFrom } from "../pages/api/user/types";
 import {
     createPiece,
-    createTestPieces,
+    createTestTacks,
     daveFarley,
     django,
     java,
@@ -14,9 +14,9 @@ import {
     react,
     springboot,
     TestPiece,
-} from "../test-helpers/pieces";
+} from "../test-helpers/tacks";
 
-test.describe.serial("pieces", async () => {
+test.describe.serial("tacks", async () => {
     let token: string = "";
     const email = faker.internet.email();
     const password = faker.internet.password();
@@ -42,7 +42,7 @@ test.describe.serial("pieces", async () => {
         request: APIRequestContext,
         inputString: string,
         assertGotCreateResponseBody: (body: { id: string }) => void,
-        assertGotPiecesResponseBody: (body: Array<Piece>, id: string) => void,
+        assertGotTacksResponseBody: (body: Array<Piece>, id: string) => void,
         token: string,
     ) {
         const data: CreatePieceFrom = {
@@ -54,15 +54,15 @@ test.describe.serial("pieces", async () => {
         const gotCreateResponseBody: { id: string } = await gotCreateResponse.json();
         assertGotCreateResponseBody(gotCreateResponseBody);
 
-        const gotGetResponse = await request.get(`/api/piece/pieces`, {
+        const gotGetResponse = await request.get(`/api/tack/tacks`, {
             headers: { token },
         });
         expect(gotGetResponse.ok()).toBeTruthy();
-        const gotPieces: Array<Piece> = await gotGetResponse.json();
-        assertGotPiecesResponseBody(gotPieces, gotCreateResponseBody.id);
+        const gotTacks: Array<Piece> = await gotGetResponse.json();
+        assertGotTacksResponseBody(gotTacks, gotCreateResponseBody.id);
     }
 
-    test("should be able to add piece", async ({ request }) => {
+    test("should be able to add tack", async ({ request }) => {
         const url = faker.internet.url();
         await addPieceHelper(
             request,
@@ -72,8 +72,8 @@ test.describe.serial("pieces", async () => {
                     id: expect.any(String),
                 });
             },
-            (gotPieces, createdId) => {
-                expect(gotPieces[0]).toMatchObject({
+            (gotTacks, createdId) => {
+                expect(gotTacks[0]).toMatchObject({
                     url,
                     id: createdId,
                     tags: [],
@@ -83,7 +83,7 @@ test.describe.serial("pieces", async () => {
         );
     });
 
-    test("should be able to add piece with tags", async ({ request }) => {
+    test("should be able to add tack with tags", async ({ request }) => {
         const url = faker.internet.url();
         const inputString = url + " #hello #there!";
 
@@ -95,8 +95,8 @@ test.describe.serial("pieces", async () => {
                     id: expect.any(String),
                 });
             },
-            (gotPieces, createdId) => {
-                expect(gotPieces[0]).toMatchObject({
+            (gotTacks, createdId) => {
+                expect(gotTacks[0]).toMatchObject({
                     url,
                     id: createdId,
                     tags: ["hello", "there!"],
@@ -106,8 +106,8 @@ test.describe.serial("pieces", async () => {
         );
     });
 
-    test("should be able to search piece with tags", async ({ request }) => {
-        await createTestPieces(request, token);
+    test("should be able to search tack with tags", async ({ request }) => {
+        await createTestTacks(request, token);
         const testCases: Array<{ searchInput: string; expected: Array<TestPiece> }> = [
             { searchInput: "doesnotexist", expected: [] },
             { searchInput: "programming", expected: [java, springboot, django] },
@@ -119,17 +119,17 @@ test.describe.serial("pieces", async () => {
         await Promise.all(
             testCases.map(async (testCase) => {
                 const { searchInput: query, expected } = testCase;
-                const gotQueryResponse = await request.get(`/api/piece/pieces`, {
+                const gotQueryResponse = await request.get(`/api/tack/tacks`, {
                     params: { query },
                     headers: { token: token },
                 });
-                const gotPieces: Array<Piece> = await gotQueryResponse.json();
+                const gotTacks: Array<Piece> = await gotQueryResponse.json();
                 expect(
-                    gotPieces.map((piece) => {
-                        return { url: piece.url, tags: piece.tags };
+                    gotTacks.map((tack) => {
+                        return { url: tack.url, tags: tack.tags };
                     }),
                 ).toEqual(expect.arrayContaining(expected));
-                expect(gotPieces.length).toEqual(expected.length);
+                expect(gotTacks.length).toEqual(expected.length);
             }),
         );
     });

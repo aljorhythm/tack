@@ -1,6 +1,6 @@
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
-import { createTestPieces } from "../test-helpers/pieces";
+import { createTestTacks } from "../test-helpers/tacks";
 import PageObjectModel from "./page-object-model";
 
 const email = `${Date.now()}${faker.internet.email()}`;
@@ -18,7 +18,7 @@ test.describe.serial("auth", async () => {
 
     test("logged out message", async () => {
         await page.goto("/");
-        await page.waitForSelector(`text=Log in to view your pieces`);
+        await page.waitForSelector(`text=Log in to view your tacks`);
     });
 
     test("register and sign in", async () => {
@@ -37,7 +37,7 @@ test.describe.serial("auth", async () => {
         await page.locator('[placeholder="•••••••••"]').fill(password);
         await page.locator('button:text("Login")').click();
 
-        await page.waitForNavigation({ url: "/pieces" });
+        await page.waitForNavigation({ url: "/tacks" });
 
         await page.goto("/profile");
         await page.waitForURL("/profile");

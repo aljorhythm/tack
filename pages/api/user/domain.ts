@@ -1,8 +1,8 @@
 import { Filter } from "mongodb";
-import { sanitizeTag } from "../piece/helpers";
-import { createPiece, getPiecesByUserId } from "../piece/persistence";
-import { PieceClass } from "../piece/piece";
-import { Piece } from "../piece/types";
+import { sanitizeTag } from "../tack/helpers";
+import { createPiece, getTacksByUserId } from "../tack/persistence";
+import { PieceClass } from "../tack/tack";
+import { Piece } from "../tack/types";
 import { CreatePieceFrom, User, UserType } from "./types";
 
 type ConstructUserFrom = UserType;
@@ -16,16 +16,16 @@ export class UserClass implements User {
     }
 
     async addPiece(createFrom: CreatePieceFrom): Promise<{ id: string }> {
-        const piece: Piece = new PieceClass(createFrom, this.id);
+        const tack: Piece = new PieceClass(createFrom, this.id);
 
-        const id = await createPiece(piece);
+        const id = await createPiece(tack);
         if (!id) {
-            throw new Error(`failed to create piece from ${createFrom}`);
+            throw new Error(`failed to create tack from ${createFrom}`);
         }
         return id;
     }
 
-    async getPieces(query?: string): Promise<Piece[]> {
+    async getTacks(query?: string): Promise<Piece[]> {
         let filter: Filter<Piece> | undefined;
         if (query === "") {
             return [];
@@ -33,7 +33,7 @@ export class UserClass implements User {
         if (query) {
             filter = { tags: { $all: query.split(" ").map(sanitizeTag) } };
         }
-        return await getPiecesByUserId(this.id, filter);
+        return await getTacksByUserId(this.id, filter);
     }
 
     toObject(): UserType {

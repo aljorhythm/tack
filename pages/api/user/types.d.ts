@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { Piece } from "../piece/types";
+import { Piece } from "../tack/types";
 
 type UserType = {
     id: string;
@@ -8,7 +8,7 @@ type UserType = {
 
 interface User {
     addPiece(createFrom: CreatePieceFrom): Promise<{ id: string }>;
-    getPieces: (query?: string) => Promise<Piece[]>;
+    getTacks: (query?: string) => Promise<Piece[]>;
     toObject: () => UserType;
 }
 
