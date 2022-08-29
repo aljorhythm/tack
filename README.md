@@ -1,5 +1,11 @@
 [![CI](https://github.com/aljorhythm/tack/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/aljorhythm/tack/actions/workflows/main.yml)
 
+# Product
+
+[Mural Canvas](https://app.mural.co/invitation/mural/twma7655/1661487340741?sender=uafe6f99b472d75abca6b1727&key=dcc5b1d2-015b-42bb-b1bc-66d0d7f52696)
+
+# Technology
+
 -   written in `typescript`
 -   Password hashing with `bycryptjs`
 -   Persistence with `mongodb`
@@ -14,9 +20,16 @@
 
 # Contribution
 
+## Environment variables
+
+```
+MONGODB_URI=mongodb://localhost:27017
+AUTH_TOKEN_SECRET=somesecret
+```
+
 ## Development
 
-Example
+Example: Run development mode and tests
 
 ```
 make dev &
