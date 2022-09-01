@@ -21,7 +21,7 @@ const Signup: NextPage = () => {
     }
 
     return (
-        <>
+        <div className="place-self-center w-96">
             <div>
                 <label
                     htmlFor="email"
@@ -61,7 +61,7 @@ const Signup: NextPage = () => {
             >
                 Sign Up
             </button>
-        </>
+        </div>
     );
 };
 
