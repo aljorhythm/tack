@@ -5,4 +5,5 @@ export type Piece = {
     id?: string;
     tags: Array<String>;
     created_at: Date;
+    title: string;
 };
