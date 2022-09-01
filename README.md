@@ -1,5 +1,7 @@
 [![CI](https://github.com/aljorhythm/tack/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/aljorhythm/tack/actions/workflows/main.yml)
 
+[![deploy to prod](https://github.com/aljorhythm/tack/actions/workflows/prod-deploy.yml/badge.svg?branch=main)](https://github.com/aljorhythm/tack/actions/workflows/prod-deploy.yml)
+
 # Product
 
 [Mural Canvas](https://app.mural.co/invitation/mural/twma7655/1661487340741?sender=uafe6f99b472d75abca6b1727&key=dcc5b1d2-015b-42bb-b1bc-66d0d7f52696)
