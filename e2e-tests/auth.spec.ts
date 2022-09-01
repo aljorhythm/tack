@@ -1,6 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
-import { createTestTacks } from "../test-helpers/tacks";
 import PageObjectModel from "./page-object-model";
 
 const email = `${Date.now()}${faker.internet.email()}`;
@@ -16,9 +15,12 @@ test.describe.serial("auth", async () => {
         await page.goto("/");
     });
 
-    test("logged out message", async () => {
+    test("should show not logged in message", async () => {
         await page.goto("/");
         await page.waitForSelector(`text=Log in to view your tacks`);
+
+        await expect(await page.locator("nav >> text=Tacks").count()).toEqual(0);
+        await expect(await page.locator("nav >> text=Search").count()).toEqual(0);
     });
 
     test("register and sign in", async () => {

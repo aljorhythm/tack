@@ -27,16 +27,22 @@ export default function Navbar() {
             </div>
             <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                 <div className="text-sm lg:flex-grow">
-                    <Link href="/tacks">
-                        <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
-                            Tacks
-                        </a>
-                    </Link>
-                    <Link href="/tacks/search">
-                        <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
-                            Search
-                        </a>
-                    </Link>
+                    {isLoggedIn ? (
+                        <>
+                            <Link href="/tacks">
+                                <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
+                                    Tacks
+                                </a>
+                            </Link>
+                            <Link href="/tacks/search">
+                                <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
+                                    Search
+                                </a>
+                            </Link>
+                        </>
+                    ) : (
+                        <></>
+                    )}
                 </div>
             </div>
             <div className="w-full block flex-grow lg:flex lg:justify-end lg:w-auto">

@@ -11,7 +11,15 @@ export type Props = {
 
 export default function Index(args: Props) {
     const { isLoggedIn, tacks } = args;
-    return <>{isLoggedIn ? <Tacks tacks={tacks} /> : <>Log in to view your tacks</>}</>;
+    return (
+        <>
+            {isLoggedIn ? (
+                <Tacks tacks={tacks} />
+            ) : (
+                <div className="place-self-center">Log in to view your tacks</div>
+            )}
+        </>
+    );
 }
 
 export const getServerSideProps = getTackServerSideProps(
