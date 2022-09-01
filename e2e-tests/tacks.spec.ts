@@ -2,6 +2,7 @@ import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import { createTestTacks } from "../test-helpers/tacks";
 import PageObjectModel from "./page-object-model";
+import sites from "../pages/api/url/sites-data";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
@@ -25,7 +26,9 @@ test.describe.serial("tacks", async () => {
         await page.locator("nav >> text=Tacks").click();
         await page.waitForURL("/tacks");
 
-        const url = faker.internet.url();
+        const site = sites[0];
+        const { url } = site;
+
         const inputString = `${url} #hello #there`;
         await page.locator(`[placeholder="https://tack.app #app #index"]`).fill(inputString);
         await page.locator('button:text("tack")').click();

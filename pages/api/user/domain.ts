@@ -16,7 +16,7 @@ export class UserClass implements User {
     }
 
     async addPiece(createFrom: CreatePieceFrom): Promise<{ id: string }> {
-        const tack: Piece = new PieceClass(createFrom, this.id);
+        const tack: Piece = await PieceClass.create(createFrom, this.id);
 
         const id = await createPiece(tack);
         if (!id) {

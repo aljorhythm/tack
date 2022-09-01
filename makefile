@@ -23,6 +23,9 @@ test-ci:
 test-with-external:
 	npm run test:external
 
+test-with-external-ci:
+	npm run test:external:ci
+
 test-e2e:
 	sh test-e2e.sh
 
