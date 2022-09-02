@@ -49,6 +49,21 @@ test.describe.serial("tacks", async () => {
         );
     });
 
+    test("should be able to edit tack", async () => {
+        const site = sites[0];
+        const { url, title } = site;
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+
+        let tagsContainer = await tack.locator(".tags");
+        expect(await tagsContainer.count()).toBe(1);
+
+        const editButton = await tack.locator('button:text-is("edit")');
+        await editButton.click();
+
+        tagsContainer = await tack.locator(".tags");
+        expect(await tagsContainer.count()).toBe(0);
+    });
+
     test("should be able to search tacks", async () => {
         const { daveFarley, jezHumble } = await createTestTacks(page.request, undefined);
         await page.goto("/");
