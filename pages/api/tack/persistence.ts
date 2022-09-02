@@ -47,6 +47,11 @@ export function convertDomainTackToDbTack(tack: Tack): DbTack {
     };
 }
 
+export async function getTack(filter: Filter<DbTack>): Promise<Tack | null> {
+    const result = await (await tacksCollection()).findOne(filter);
+    return result ? convertDbTackToDomainTack(result) : null;
+}
+
 export async function updateTack(
     filter: Filter<DbTack>,
     update: UpdateFilter<DbTack>,

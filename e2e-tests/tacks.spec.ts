@@ -79,11 +79,15 @@ test.describe.serial("tacks", async () => {
 
         saveButton = await tack.locator('button:text-is("save")');
         expect(await saveButton.count()).toBe(0);
+    });
 
-        const response = await page.request.get(`/api/tack/tacks`);
-        const tacks: Tack[] = await response.json();
-        const targetTack = tacks.find((t) => t.url === url);
-        expect(targetTack?.tags).toStrictEqual(["another", "two"]);
+    test("should be able to see updated tack after editing", async () => {
+        const site = sites[0];
+        const { url } = site;
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+        const tagElements = await (await tack.locator(`.tag`)).elementHandles();
+        const expectedTags = await Promise.all(tagElements.map(async (e) => await e.textContent()));
+        expect(expectedTags).toStrictEqual(["another", "two"]);
     });
 
     test("should be able to search tacks", async () => {

@@ -5,6 +5,7 @@ import {
     createTack,
     getTacksByUserId,
     updateTack,
+    getTack,
 } from "../tack/persistence";
 import { TackClass } from "../tack/tack";
 import { DbTack, Tack } from "../tack/types";
@@ -19,6 +20,10 @@ export class UserClass implements User {
     constructor(createFrom: ConstructUserFrom) {
         this.id = createFrom.id;
         this.email = createFrom.email;
+    }
+
+    async getTack(tackId: string): Promise<Tack | null> {
+        return await getTack({ userId: new ObjectId(this.id), _id: new ObjectId(tackId) });
     }
 
     async editTags(tackId: string, tagsString: string) {

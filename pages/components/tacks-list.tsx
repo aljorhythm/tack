@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Tack } from "../api/tack/types";
 
 function formatDate(date: Date): string {
+    date = new Date(date);
     const timeString = date.toLocaleString("en-US", {
         hour: "numeric",
         minute: "numeric",
@@ -11,7 +12,8 @@ function formatDate(date: Date): string {
     return `${dateString} ${timeString.toLocaleLowerCase()}`;
 }
 
-function TackItem({ tack }: { tack: Tack }) {
+function TackItem({ tack: tackArg }: { tack: Tack }) {
+    const [tack, setTack] = useState(tackArg);
     const [isEditing, setEditing] = useState(false);
     const [editTagsInputValue, setEditTagsInputValue] = useState(
         tack.tags.map((t) => `#${t}`).join(" "),
@@ -29,10 +31,17 @@ function TackItem({ tack }: { tack: Tack }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    id: tack.id,
                     tagsString: editTagsInputValue,
                 }),
             });
+
+            const response = await fetch(`/api/user/tack/${tack.id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const updatedTack = await response.json();
+            setTack(updatedTack);
         })();
         setEditing(false);
     }

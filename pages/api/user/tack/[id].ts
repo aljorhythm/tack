@@ -6,6 +6,11 @@ import nc from "next-connect";
 
 const handler = nc<TackApiRequest, NextApiResponse>()
     .use(attachUserToRequest(findUserById, UserClass))
+    .get(async (req, res) => {
+        const { id: tackId } = req.query;
+        const result = await req.user!.getTack(tackId as string);
+        res.send(result);
+    })
     .patch(async (req, res) => {
         const { id: tackId } = req.query;
         const { tagsString } = req.body;
