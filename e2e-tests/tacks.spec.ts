@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker";
 import { createTestTacks } from "../test-helpers/tacks";
 import PageObjectModel from "./page-object-model";
 import sites from "../pages/api/url/sites-data";
+import { type Tack } from "../pages/api/tack/types";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
@@ -51,17 +52,38 @@ test.describe.serial("tacks", async () => {
 
     test("should be able to edit tack", async () => {
         const site = sites[0];
-        const { url, title } = site;
+        const { url } = site;
         const tack = await page.locator(`.tack:has-text("${url}")`);
 
         let tagsContainer = await tack.locator(".tags");
         expect(await tagsContainer.count()).toBe(1);
 
-        const editButton = await tack.locator('button:text-is("edit")');
+        let editButton = await tack.locator('button:text-is("edit")');
         await editButton.click();
 
         tagsContainer = await tack.locator(".tags");
         expect(await tagsContainer.count()).toBe(0);
+
+        const editInput = await tack.locator(".edit-input");
+        expect(await editInput.inputValue()).toBe("#hello #there");
+        await editInput.fill("#another #two");
+
+        editButton = await tack.locator('button:text-is("edit")');
+        expect(await editButton.count()).toBe(0);
+
+        let saveButton = await tack.locator('button:text-is("save")');
+        await saveButton.click();
+
+        editButton = await tack.locator('button:text-is("edit")');
+        expect(await editButton.count()).toBe(1);
+
+        saveButton = await tack.locator('button:text-is("save")');
+        expect(await saveButton.count()).toBe(0);
+
+        const response = await page.request.get(`/api/tack/tacks`);
+        const tacks: Tack[] = await response.json();
+        const targetTack = tacks.find((t) => t.url === url);
+        expect(targetTack?.tags).toStrictEqual(["another", "two"]);
     });
 
     test("should be able to search tacks", async () => {

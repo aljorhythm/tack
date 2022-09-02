@@ -7,6 +7,7 @@ type UserType = {
 };
 
 interface User {
+    editTags(tackId: string, tagsString: string): Promise<boolean>;
     addTack(createFrom: CreateTackFrom): Promise<{ id: string }>;
     getTacks: (query?: string) => Promise<Tack[]>;
     toObject: () => UserType;

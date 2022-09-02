@@ -1,8 +1,13 @@
-import { Filter } from "mongodb";
+import { Filter, ObjectId } from "mongodb";
 import { sanitizeTag } from "../tack/helpers";
-import { createTack, getTacksByUserId } from "../tack/persistence";
+import {
+    convertDomainTackToDbTack,
+    createTack,
+    getTacksByUserId,
+    updateTack,
+} from "../tack/persistence";
 import { TackClass } from "../tack/tack";
-import { Tack } from "../tack/types";
+import { DbTack, Tack } from "../tack/types";
 import { CreateTackFrom, User, UserType } from "./types";
 
 type ConstructUserFrom = UserType;
@@ -15,10 +20,18 @@ export class UserClass implements User {
         this.email = createFrom.email;
     }
 
+    async editTags(tackId: string, tagsString: string) {
+        const result = await updateTack(
+            { userId: new ObjectId(this.id), _id: new ObjectId(tackId) },
+            { $set: { tags: tagsString.split(" ").map(sanitizeTag) } },
+        );
+        return result > 0;
+    }
+
     async addTack(createFrom: CreateTackFrom): Promise<{ id: string }> {
         const tack: Tack = await TackClass.create(createFrom, this.id);
 
-        const id = await createTack(tack);
+        const id = await createTack(convertDomainTackToDbTack(tack));
         if (!id) {
             throw new Error(`failed to create tack from ${createFrom}`);
         }
@@ -26,7 +39,7 @@ export class UserClass implements User {
     }
 
     async getTacks(query?: string): Promise<Tack[]> {
-        let filter: Filter<Tack> | undefined;
+        let filter: Filter<DbTack> | undefined;
         if (query === "") {
             return [];
         }

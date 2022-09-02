@@ -13,6 +13,30 @@ function formatDate(date: Date): string {
 
 function TackItem({ tack }: { tack: Tack }) {
     const [isEditing, setEditing] = useState(false);
+    const [editTagsInputValue, setEditTagsInputValue] = useState(
+        tack.tags.map((t) => `#${t}`).join(" "),
+    );
+
+    function startEdit() {
+        setEditing(true);
+    }
+
+    function save() {
+        (async function () {
+            await fetch(`/api/user/tack/${tack.id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: tack.id,
+                    tagsString: editTagsInputValue,
+                }),
+            });
+        })();
+        setEditing(false);
+    }
+
     return (
         <>
             <div className="flex items-top">
@@ -26,7 +50,12 @@ function TackItem({ tack }: { tack: Tack }) {
             </div>
             <div className="flex items-top">
                 {isEditing ? (
-                    <></>
+                    <input
+                        value={editTagsInputValue}
+                        className="edit-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                        onChange={(e) => setEditTagsInputValue(e.target.value)}
+                        required
+                    />
                 ) : (
                     <div className="tags w-10/12">
                         {tack.tags.sort().map((tag, i) => {
@@ -39,12 +68,21 @@ function TackItem({ tack }: { tack: Tack }) {
                     </div>
                 )}
                 <div className="flex justify-end">
-                    <button
-                        onClick={() => setEditing(true)}
-                        className="btn btn-slate p-2 radius rounded text-white bg-slate-400"
-                    >
-                        edit
-                    </button>
+                    {isEditing ? (
+                        <button
+                            className="btn btn-slate p-2 radius rounded text-white bg-slate-700"
+                            onClick={save}
+                        >
+                            save
+                        </button>
+                    ) : (
+                        <button
+                            onClick={startEdit}
+                            className="btn btn-slate p-2 radius rounded text-white bg-slate-400"
+                        >
+                            edit
+                        </button>
+                    )}
                 </div>
             </div>
         </>

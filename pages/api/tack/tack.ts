@@ -6,8 +6,7 @@ import { Tack } from "./types";
 export class TackClass implements Tack {
     url: string;
     userId: string;
-    _id?: string | undefined;
-    id?: string | undefined;
+    id: string | undefined;
     tags: Array<String>;
     created_at: Date;
     title: string | null;
@@ -16,9 +15,7 @@ export class TackClass implements Tack {
         const parsedElements = createFrom.inputString.split(" ");
         const url = parsedElements[0];
         const tags = parsedElements.slice(1).map(sanitizeTag);
-
         const title = await getTitle(url);
-
         return new TackClass(url, userId, title, tags);
     }
 

@@ -1,11 +1,12 @@
-import { Collection, Filter, WithId } from "mongodb";
+import { Collection, Filter, ObjectId, UpdateFilter, WithId } from "mongodb";
 import log from "../../../log";
 import { connectToDatabase } from "../external/mongodb";
 import { Tack } from "./types";
+import { DbTack } from "./types";
 
-let collection: Collection<Tack> | null;
+let collection: Collection<DbTack> | null;
 
-async function tacksCollection(): Promise<Collection<Tack>> {
+async function tacksCollection(): Promise<Collection<DbTack>> {
     if (collection) {
         return collection;
     }
@@ -15,25 +16,47 @@ async function tacksCollection(): Promise<Collection<Tack>> {
     } catch (e) {
         log("collection 'tacks' probably exists");
     }
-    collection = await db.collection<Tack>("tacks");
+    collection = await db.collection<DbTack>("tacks");
     return collection;
 }
 
-export async function createTack(tack: Tack): Promise<{ id: string } | null> {
+export async function createTack(tack: DbTack): Promise<{ id: string } | null> {
     const response = await (await tacksCollection()).insertOne(tack);
     return { id: response.insertedId.toString() };
 }
 
-function sanitiseTack(tack: WithId<Tack>) {
-    var clone: Tack = Object.assign({}, tack);
-    clone.tags = clone.tags || [];
-    clone.id = tack._id.toString();
-    delete clone._id;
-    return clone;
+function convertDbTackToDomainTack(dbTack: WithId<DbTack>): Tack {
+    return {
+        id: dbTack._id ? dbTack._id.toString() : undefined,
+        created_at: dbTack.created_at,
+        url: dbTack.url,
+        userId: dbTack.userId.toString(),
+        tags: dbTack.tags,
+        title: dbTack.title,
+    };
 }
 
-export async function getTacksByUserId(id: string, extendFilter?: Filter<Tack>) {
-    let filterByUserId = { userId: id };
+export function convertDomainTackToDbTack(tack: Tack): DbTack {
+    return {
+        _id: tack.id ? new ObjectId(tack.id) : undefined,
+        created_at: tack.created_at,
+        url: tack.url,
+        userId: new ObjectId(tack.userId),
+        tags: tack.tags,
+        title: tack.title,
+    };
+}
+
+export async function updateTack(
+    filter: Filter<DbTack>,
+    update: UpdateFilter<DbTack>,
+): Promise<number> {
+    const result = await (await tacksCollection()).updateOne(filter, update);
+    return result.modifiedCount;
+}
+
+export async function getTacksByUserId(id: string, extendFilter?: Filter<DbTack>) {
+    let filterByUserId: Filter<DbTack> = { userId: new ObjectId(id) };
     let filter = {};
     if (extendFilter) {
         filter = { ...extendFilter, ...filterByUserId };
@@ -44,7 +67,7 @@ export async function getTacksByUserId(id: string, extendFilter?: Filter<Tack>) 
     const results = await (await tacksCollection())
         .find(filter)
         .sort({ _id: -1 })
-        .map(sanitiseTack)
+        .map(convertDbTackToDomainTack)
         .toArray();
     return results;
 }
