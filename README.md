@@ -6,6 +6,8 @@
 
 [Mural Canvas](https://app.mural.co/invitation/mural/twma7655/1661487340741?sender=uafe6f99b472d75abca6b1727&key=dcc5b1d2-015b-42bb-b1bc-66d0d7f52696)
 
+[Trello](https://trello.com/invite/b/e7vsZBhG/125c5035cec022001b3bfc841abee266/tack)
+
 # Technology
 
 -   written in `typescript`
