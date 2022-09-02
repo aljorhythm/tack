@@ -27,7 +27,7 @@ test.describe.serial("tacks", async () => {
         await page.waitForURL("/tacks");
 
         const site = sites[0];
-        const { url } = site;
+        const { url, title } = site;
 
         const inputString = `${url} #hello #there`;
         await page.locator(`[placeholder="https://tack.app #app #index"]`).fill(inputString);
@@ -39,6 +39,9 @@ test.describe.serial("tacks", async () => {
 
         const tagElements = await (await tack.locator(`.tag`)).elementHandles();
         await expect(tagElements.length).toBe(2);
+
+        const titleElement = await tack.locator(`.title`);
+        expect(await titleElement.textContent()).toBe(title);
 
         const createdAtElement = await tack.locator(`.created-at`);
         await expect((await createdAtElement.allInnerTexts())[0]).toMatch(

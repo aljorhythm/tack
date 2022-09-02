@@ -17,8 +17,9 @@ export default function TacksList({ tacks = [] }: { tacks: Array<Piece> }) {
                 return (
                     <div key={tack.id} className="tack px-4 lg:px-72 py-2 border-b-2 w-full ">
                         <div className="flex items-center">
-                            <div className="url w-1/4 text-xl font-medium text-slate-800">
-                                {tack.url}
+                            <div className="w-1/4 text-xl font-medium text-slate-800">
+                                <div className="title">{tack.title}</div>
+                                <div className="url">{tack.url}</div>
                             </div>
                             <div className="created-at text-sm text-slate-800">
                                 {formatDate(tack.created_at)}
