@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { createTestTacks } from "../test-helpers/tacks";
 import PageObjectModel from "./page-object-model";
 import sites from "../pages/api/url/sites-data";
-import { type Tack } from "../pages/api/tack/types";
+import retry from "async-retry";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
@@ -84,10 +84,19 @@ test.describe.serial("tacks", async () => {
     test("should be able to see updated tack after editing", async () => {
         const site = sites[0];
         const { url } = site;
-        const tack = await page.locator(`.tack:has-text("${url}")`);
-        const tagElements = await (await tack.locator(`.tag`)).elementHandles();
-        const expectedTags = await Promise.all(tagElements.map(async (e) => await e.textContent()));
-        expect(expectedTags).toStrictEqual(["another", "two"]);
+        await retry(
+            async (bail) => {
+                const tack = await page.locator(`.tack:has-text("${url}")`);
+                const tagElements = await (await tack.locator(`.tag`)).elementHandles();
+                const expectedTags = await Promise.all(
+                    tagElements.map(async (e) => await e.textContent()),
+                );
+                expect(expectedTags).toStrictEqual(["another", "two"]);
+            },
+            {
+                retries: 3,
+            },
+        );
     });
 
     test("should be able to search tacks", async () => {
