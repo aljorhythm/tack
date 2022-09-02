@@ -5,7 +5,6 @@ HOST="${HOST:-https://localhost:3000}"
 echo testing against $HOST
 
 if [ "$HOST" = "https://localhost:3000" ]; then
-
     echo killing process on port 3000
     kill $(lsof -t -i:3000) || true
     while [[ -n $(lsof -t -i:3000) ]]; do
@@ -23,7 +22,7 @@ if [ "$HOST" = "https://localhost:3000" ]; then
     echo killing ssl proxy
     kill $(pgrep local-ssl-proxy) || true
 
-    PORT=3001 npm run dev &
+    PORT=3001 npm run start -- --hostname=localhost &
 
     echo proxying ssl
     npx local-ssl-proxy --source 3000 --target 3001 &
