@@ -24,6 +24,16 @@ describe("getTitle()", () => {
         const actualTitle = await getTitle("https://www.no-exist.com.no-exist");
         expect(actualTitle).toBeNull();
     });
+
+    it("should return null if url is does not exist", async () => {
+        const actualTitle = await getTitle("https://www.no-exist.com.no-exist");
+        expect(actualTitle).toBeNull();
+    });
+
+    it("should return title from scheme appended url", async () => {
+        const actualTitle = await getTitle("www.google.com");
+        expect(actualTitle).toBe("Google");
+    });
 });
 
 export {};
