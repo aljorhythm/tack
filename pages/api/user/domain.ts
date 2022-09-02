@@ -11,6 +11,7 @@ import { DbTack, Tack } from "../tack/types";
 import { CreateTackFrom, User, UserType } from "./types";
 
 type ConstructUserFrom = UserType;
+
 export class UserClass implements User {
     id: string;
     email: string;
