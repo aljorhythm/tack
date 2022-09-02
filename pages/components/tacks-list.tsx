@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Piece } from "../api/tack/types";
+import { Tack } from "../api/tack/types";
 
 function formatDate(date: Date): string {
     const timeString = date.toLocaleString("en-US", {
@@ -11,7 +11,7 @@ function formatDate(date: Date): string {
     return `${dateString} ${timeString.toLocaleLowerCase()}`;
 }
 
-function Tack({ tack }: { tack: Piece }) {
+function TackItem({ tack }: { tack: Tack }) {
     const [isEditing, setEditing] = useState(false);
     return (
         <>
@@ -51,13 +51,13 @@ function Tack({ tack }: { tack: Piece }) {
     );
 }
 
-export default function TacksList({ tacks = [] }: { tacks: Array<Piece> }) {
+export default function TacksList({ tacks = [] }: { tacks: Array<Tack> }) {
     return (
         <div>
             {tacks.map((tack) => {
                 return (
                     <div key={tack.id} className="tack px-4 lg:px-72 py-2 border-b-2 w-full ">
-                        <Tack tack={tack}></Tack>
+                        <TackItem tack={tack}></TackItem>
                     </div>
                 );
             })}

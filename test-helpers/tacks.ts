@@ -1,18 +1,14 @@
 import { APIRequestContext } from "@playwright/test";
-import { type CreatePieceFrom } from "../pages/api/user/types";
+import { type CreateTackFrom } from "../pages/api/user/types";
 
-export async function createPiece(
-    request: APIRequestContext,
-    data: CreatePieceFrom,
-    token?: string,
-) {
+export async function createTack(request: APIRequestContext, data: CreateTackFrom, token?: string) {
     return await request.post(`/api/tack`, {
         data,
         headers: { ...(token ? { token } : {}) },
     });
 }
 
-export type TestPiece = { url: string; tags: string[] };
+export type TestTack = { url: string; tags: string[] };
 
 export const google = {
     url: "www.google.com",
@@ -55,7 +51,7 @@ export const jezHumble = {
     tags: ["devops", "continuous-delivery", "agile"],
 };
 
-export const testTacks: { [key: string]: TestPiece } = {
+export const testTacks: { [key: string]: TestTack } = {
     google,
     java,
     nodejs,
@@ -73,10 +69,10 @@ export default testTacks;
 export async function createTestTacks(
     request: APIRequestContext,
     token: string | undefined,
-): Promise<{ [key: string]: TestPiece }> {
+): Promise<{ [key: string]: TestTack }> {
     await Promise.all(
         Object.entries(testTacks).map(([_, tack]) => {
-            return createPiece(
+            return createTack(
                 request,
                 {
                     inputString: `${tack.url} ${tack.tags.join(" ")}`,

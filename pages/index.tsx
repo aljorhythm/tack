@@ -1,4 +1,4 @@
-import { Piece } from "./api/tack/types";
+import { Tack } from "./api/tack/types";
 import { UserClass } from "./api/user/domain";
 import { findUserById } from "./api/user/persistence";
 import Tacks from "./tacks";
@@ -6,7 +6,7 @@ import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
 
 export type Props = {
     isLoggedIn: boolean;
-    tacks: Array<Piece>;
+    tacks: Array<Tack>;
 };
 
 export default function Index(args: Props) {

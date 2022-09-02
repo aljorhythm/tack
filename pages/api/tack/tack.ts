@@ -1,9 +1,9 @@
 import { getTitle } from "../url/url";
-import { CreatePieceFrom } from "../user/types";
+import { CreateTackFrom } from "../user/types";
 import { sanitizeTag } from "./helpers";
-import { Piece } from "./types";
+import { Tack } from "./types";
 
-export class PieceClass implements Piece {
+export class TackClass implements Tack {
     url: string;
     userId: string;
     _id?: string | undefined;
@@ -12,14 +12,14 @@ export class PieceClass implements Piece {
     created_at: Date;
     title: string | null;
 
-    static async create(createFrom: CreatePieceFrom, userId: string): Promise<PieceClass> {
+    static async create(createFrom: CreateTackFrom, userId: string): Promise<TackClass> {
         const parsedElements = createFrom.inputString.split(" ");
         const url = parsedElements[0];
         const tags = parsedElements.slice(1).map(sanitizeTag);
 
         const title = await getTitle(url);
 
-        return new PieceClass(url, userId, title, tags);
+        return new TackClass(url, userId, title, tags);
     }
 
     constructor(url: string, userId: string, title: string | null, tags: Array<string>) {

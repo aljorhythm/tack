@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { test, expect, APIRequestContext } from "@playwright/test";
-import { type Piece } from "../pages/api/tack/types";
-import { type CreatePieceFrom } from "../pages/api/user/types";
+import { type Tack } from "../pages/api/tack/types";
+import { type CreateTackFrom } from "../pages/api/user/types";
 import {
-    createPiece,
+    createTack,
     createTestTacks,
     daveFarley,
     django,
@@ -13,7 +13,7 @@ import {
     nodejs,
     react,
     springboot,
-    TestPiece,
+    TestTack,
 } from "../test-helpers/tacks";
 
 test.describe.serial("tacks", async () => {
@@ -38,17 +38,17 @@ test.describe.serial("tacks", async () => {
         token = body.token;
     });
 
-    async function addPieceHelper(
+    async function addTackHelper(
         request: APIRequestContext,
         inputString: string,
         assertGotCreateResponseBody: (body: { id: string }) => void,
-        assertGotTacksResponseBody: (body: Array<Piece>, id: string) => void,
+        assertGotTacksResponseBody: (body: Array<Tack>, id: string) => void,
         token: string,
     ) {
-        const data: CreatePieceFrom = {
+        const data: CreateTackFrom = {
             inputString,
         };
-        const gotCreateResponse = await createPiece(request, data, token);
+        const gotCreateResponse = await createTack(request, data, token);
         expect(gotCreateResponse.ok()).toBeTruthy();
 
         const gotCreateResponseBody: { id: string } = await gotCreateResponse.json();
@@ -58,13 +58,13 @@ test.describe.serial("tacks", async () => {
             headers: { token },
         });
         expect(gotGetResponse.ok()).toBeTruthy();
-        const gotTacks: Array<Piece> = await gotGetResponse.json();
+        const gotTacks: Array<Tack> = await gotGetResponse.json();
         assertGotTacksResponseBody(gotTacks, gotCreateResponseBody.id);
     }
 
     test("should be able to add tack", async ({ request }) => {
         const url = faker.internet.url();
-        await addPieceHelper(
+        await addTackHelper(
             request,
             url,
             (gotCreateResponseBody) => {
@@ -87,7 +87,7 @@ test.describe.serial("tacks", async () => {
         const url = faker.internet.url();
         const inputString = url + " #hello #there!";
 
-        await addPieceHelper(
+        await addTackHelper(
             request,
             inputString,
             (gotCreateResponseBody) => {
@@ -108,7 +108,7 @@ test.describe.serial("tacks", async () => {
 
     test("should be able to search tack with tags", async ({ request }) => {
         await createTestTacks(request, token);
-        const testCases: Array<{ searchInput: string; expected: Array<TestPiece> }> = [
+        const testCases: Array<{ searchInput: string; expected: Array<TestTack> }> = [
             { searchInput: "doesnotexist", expected: [] },
             { searchInput: "programming", expected: [java, springboot, django] },
             { searchInput: "javascript typescript", expected: [nodejs, nextjs, react] },
@@ -123,7 +123,7 @@ test.describe.serial("tacks", async () => {
                     params: { query },
                     headers: { token: token },
                 });
-                const gotTacks: Array<Piece> = await gotQueryResponse.json();
+                const gotTacks: Array<Tack> = await gotQueryResponse.json();
                 expect(
                     gotTacks.map((tack) => {
                         return { url: tack.url, tags: tack.tags };

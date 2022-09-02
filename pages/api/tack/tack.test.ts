@@ -1,12 +1,12 @@
-import { CreatePieceFrom } from "../user/types";
-import { PieceClass } from "./tack";
+import { CreateTackFrom } from "../user/types";
+import { TackClass } from "./tack";
 import * as url from "../url/url";
 
 jest.mock("../url/url");
 
 const getTitleMock = url.getTitle as jest.Mock;
 
-describe("construct Piece", () => {
+describe("construct Tack", () => {
     beforeEach(() => {
         getTitleMock.mockReturnValue(Promise.resolve("Title OF this Web page"));
     });
@@ -17,10 +17,10 @@ describe("construct Piece", () => {
 
     const userId = "123";
     test("create from input without tags", async () => {
-        const createFrom: CreatePieceFrom = {
+        const createFrom: CreateTackFrom = {
             inputString: "https://www.google.com",
         };
-        const tack: PieceClass = await PieceClass.create(createFrom, userId);
+        const tack: TackClass = await TackClass.create(createFrom, userId);
 
         expect(tack).toEqual(
             expect.objectContaining({
@@ -33,11 +33,11 @@ describe("construct Piece", () => {
     });
 
     test("create from input with tags", async () => {
-        const createFrom: CreatePieceFrom = {
+        const createFrom: CreateTackFrom = {
             inputString: "https://www.google.com #hello #bye",
         };
 
-        const tack: PieceClass = await PieceClass.create(createFrom, userId);
+        const tack: TackClass = await TackClass.create(createFrom, userId);
 
         expect(tack).toEqual(
             expect.objectContaining({

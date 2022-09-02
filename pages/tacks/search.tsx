@@ -2,13 +2,13 @@ export {};
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Piece } from "../api/tack/types";
+import { Tack } from "../api/tack/types";
 import { UserClass } from "../api/user/domain";
 import { findUserById } from "../api/user/persistence";
 import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
 import TacksList from "../components/tacks-list";
 
-export type Props = { tacks: Array<Piece>; query?: string };
+export type Props = { tacks: Array<Tack>; query?: string };
 
 const Search: NextPage<Props> = ({ query, tacks }: Props) => {
     const [searchQuery, setSearchQuery] = useState(query);

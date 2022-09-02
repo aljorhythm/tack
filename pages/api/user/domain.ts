@@ -1,9 +1,9 @@
 import { Filter } from "mongodb";
 import { sanitizeTag } from "../tack/helpers";
-import { createPiece, getTacksByUserId } from "../tack/persistence";
-import { PieceClass } from "../tack/tack";
-import { Piece } from "../tack/types";
-import { CreatePieceFrom, User, UserType } from "./types";
+import { createTack, getTacksByUserId } from "../tack/persistence";
+import { TackClass } from "../tack/tack";
+import { Tack } from "../tack/types";
+import { CreateTackFrom, User, UserType } from "./types";
 
 type ConstructUserFrom = UserType;
 export class UserClass implements User {
@@ -15,18 +15,18 @@ export class UserClass implements User {
         this.email = createFrom.email;
     }
 
-    async addPiece(createFrom: CreatePieceFrom): Promise<{ id: string }> {
-        const tack: Piece = await PieceClass.create(createFrom, this.id);
+    async addTack(createFrom: CreateTackFrom): Promise<{ id: string }> {
+        const tack: Tack = await TackClass.create(createFrom, this.id);
 
-        const id = await createPiece(tack);
+        const id = await createTack(tack);
         if (!id) {
             throw new Error(`failed to create tack from ${createFrom}`);
         }
         return id;
     }
 
-    async getTacks(query?: string): Promise<Piece[]> {
-        let filter: Filter<Piece> | undefined;
+    async getTacks(query?: string): Promise<Tack[]> {
+        let filter: Filter<Tack> | undefined;
         if (query === "") {
             return [];
         }

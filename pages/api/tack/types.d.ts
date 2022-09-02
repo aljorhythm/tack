@@ -1,4 +1,4 @@
-export type Piece = {
+export type Tack = {
     url: string;
     userId: string;
     _id?: string | undefined;
