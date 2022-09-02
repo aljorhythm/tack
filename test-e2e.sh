@@ -69,3 +69,6 @@ TEST_HOST=$HOST PLAYWRIGHT_SLOW_MO=$PLAYWRIGHT_SLOW_MO npx playwright@^1.24.2 te
     echo 'test failed'
     exit 1
 }
+
+cleanup
+
