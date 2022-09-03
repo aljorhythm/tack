@@ -18,17 +18,17 @@ build:
 test:
 	npm run test
 
-test-ci:
-	npm run test:ci
+test-nowatch:
+	npm run test:nowatch
 
 test-with-external:
 	npm run test:external
 
-test-with-external-ci:
-	npm run test:external:ci
+test-with-external-nowatch:
+	npm run test:external:nowatch
 
 test-e2e:
-	sh test-e2e.sh
+	DEBUG=pw:api sh test-e2e.sh
 
 .PHONY: dev
 dev:

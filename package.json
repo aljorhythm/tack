@@ -8,9 +8,9 @@
         "start": "next start",
         "lint": "next lint",
         "test": "jest --verbose --watch",
-        "test:ci": "jest --verbose --ci",
+        "test:nowatch": "jest --verbose --ci",
         "test:external": "jest --verbose --watch --config=jest.external.config.js",
-        "test:external:ci": "jest --verbose --ci --config=jest.external.config.js"
+        "test:external:nowatch": "jest --verbose --ci --config=jest.external.config.js"
     },
     "dependencies": {
         "@types/jsonwebtoken": "^8.5.8",

@@ -19,7 +19,7 @@ jobs:
                   node-version: 18
                   cache: "npm"
             - run: make setup
-            - run: make test-ci
+            - run: make test-nowatch
             - run: make build
             - uses: amondnet/vercel-action@v20
               id: deploy
