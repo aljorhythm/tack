@@ -53,8 +53,14 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
             <div className="flex items-center">
                 <div className="w-2/4 text-xl  text-slate-800">
                     <div className="title font-medium">{tack.title}</div>
-
-                    <div className="url text-sm">{tack.url}</div>
+                    <a
+                        className="url text-sm hover:underline hover:text-slate-600"
+                        href={tack.url}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {tack.url}
+                    </a>
                 </div>
 
                 <div className="flex items-center">

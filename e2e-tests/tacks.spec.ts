@@ -116,4 +116,16 @@ test.describe.serial("tacks", async () => {
         iframe = await tack.locator("iframe");
         expect(iframe).not.toBeVisible();
     });
+
+    test("should open website in new tab when url is clicked", async () => {
+        const site = sites[0];
+        const { url } = site;
+        const newPageWait = page.context().waitForEvent("page", () => true);
+
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+        await tack.locator(".url").click();
+
+        const newPage = await newPageWait;
+        expect(newPage).toHaveURL(url);
+    });
 });
