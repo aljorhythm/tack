@@ -28,7 +28,7 @@ test-with-external-nowatch:
 	npm run test:external:nowatch
 
 test-e2e:
-	DEBUG=pw:api sh test-e2e.sh
+	sh test-e2e.sh
 
 .PHONY: dev
 dev:
