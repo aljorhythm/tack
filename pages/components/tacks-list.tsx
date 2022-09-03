@@ -50,19 +50,18 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
 
     return (
         <>
-            <div className="flex items-top">
+            <div className="flex items-center">
                 <div className="w-2/4 text-xl  text-slate-800">
                     <div className="title font-medium">{tack.title}</div>
 
                     <div className="url text-sm">{tack.url}</div>
                 </div>
 
-                <div className="flex flex-row items-top">
+                <div className="flex items-center">
                     <div className="created-at mr-2 text-sm text-slate-800">
                         {formatDate(tack.created_at)}
                     </div>
-                    {/* invisible lg:visible */}
-                    <div>
+                    <div className="flex items-start">
                         <button
                             className={classNames("flex", "p-2", "rounded", "items-start", {
                                 "bg-slate-400": isViewing,
