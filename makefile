@@ -2,6 +2,7 @@ setup:
 	git config core.hooksPath .githooks
 	npm ci
 	npx playwright install --with-deps chromium webkit
+	npm i -g local-ssl-proxy
 
 format-check:
 	npx prettier --check .
