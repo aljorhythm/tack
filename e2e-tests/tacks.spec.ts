@@ -1,4 +1,4 @@
-import { test, expect, Page } from "@playwright/test";
+import { test, expect, Page, BrowserContext } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
 import sites from "../pages/api/url/sites-data";
@@ -10,9 +10,9 @@ const password = faker.internet.password();
 test.describe.serial("tacks", async () => {
     let page: Page;
     let pom: PageObjectModel;
-
+    let context: BrowserContext;
     test.beforeAll(async ({ browser }) => {
-        const context = await browser.newContext();
+        context = await browser.newContext();
         page = await context.newPage();
         pom = new PageObjectModel(page);
         await page.goto("/");
@@ -82,7 +82,7 @@ test.describe.serial("tacks", async () => {
         const site = sites[0];
         const { url } = site;
         await retry(
-            async (bail) => {
+            async () => {
                 const tack = await page.locator(`.tack:has-text("${url}")`);
                 const tagElements = await (await tack.locator(`.tag`)).elementHandles();
                 const expectedTags = await Promise.all(
@@ -94,5 +94,26 @@ test.describe.serial("tacks", async () => {
                 retries: 3,
             },
         );
+    });
+
+    test("should be able to see iframe of target website after clicking 🔍", async () => {
+        const site = sites[0];
+        const { url } = site;
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+
+        let iframe = await tack.locator("iframe");
+        expect(iframe).not.toBeVisible();
+
+        // open
+        await tack.locator("text=🔍").click();
+        iframe = await tack.locator("iframe");
+        expect(iframe).toBeVisible();
+
+        expect(await iframe.getAttribute("src")).toBe(url);
+
+        // close
+        await tack.locator("text=🔍").click();
+        iframe = await tack.locator("iframe");
+        expect(iframe).not.toBeVisible();
     });
 });

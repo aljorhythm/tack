@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Tack } from "../api/tack/types";
+import classNames from "classnames";
 
 function formatDate(date: Date): string {
     date = new Date(date);
@@ -14,6 +15,7 @@ function formatDate(date: Date): string {
 
 function TackItem({ tack: tackArg }: { tack: Tack }) {
     const [tack, setTack] = useState(tackArg);
+    const [isViewing, setViewing] = useState(false);
     const [isEditing, setEditing] = useState(false);
     const [editTagsInputValue, setEditTagsInputValue] = useState(
         tack.tags.map((t) => `#${t}`).join(" "),
@@ -51,10 +53,25 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
             <div className="flex items-top">
                 <div className="w-2/4 text-xl  text-slate-800">
                     <div className="title font-medium">{tack.title}</div>
+
                     <div className="url text-sm">{tack.url}</div>
                 </div>
-                <div className="created-at text-sm text-slate-800">
-                    {formatDate(tack.created_at)}
+
+                <div className="flex flex-row items-top">
+                    <div className="created-at mr-2 text-sm text-slate-800">
+                        {formatDate(tack.created_at)}
+                    </div>
+                    {/* invisible lg:visible */}
+                    <div>
+                        <button
+                            className={classNames("flex", "p-2", "rounded", "items-start", {
+                                "bg-slate-400": isViewing,
+                            })}
+                            onClick={() => setViewing(!isViewing)}
+                        >
+                            🔍
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className="flex items-top">
@@ -94,6 +111,14 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                     )}
                 </div>
             </div>
+            {isViewing ? (
+                <>
+                    <div className="w-full border-slate-400 border-opacity-25 border-2   my-2"></div>
+                    <iframe className="w-full" src={tack.url} />{" "}
+                </>
+            ) : (
+                <></>
+            )}
         </>
     );
 }
