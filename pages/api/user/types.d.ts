@@ -15,7 +15,7 @@ interface User {
 }
 
 type DbUser = {
-    _id?: string | undefined | ObjectId;
+    _id?: ObjectId;
     email: string;
     password: string;
 };

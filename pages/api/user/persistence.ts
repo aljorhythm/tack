@@ -11,10 +11,8 @@ export type CreateUserRequest = {
 };
 
 interface User {
-    _id?: undefined;
     id: string;
     email: string;
-    password?: undefined;
 }
 
 let collection: Collection<DbUser> | null;
@@ -41,18 +39,17 @@ export async function createUser(userRequest: CreateUserRequest): Promise<{ id: 
     return { id: response.insertedId.toString() };
 }
 
-function SanitizeDbUser(user: WithId<DbUser>): User {
-    const returnUser: User = <User>(user as unknown);
-    delete returnUser.password;
-    returnUser.id = user._id.toString();
-    delete returnUser._id;
-    return returnUser;
+function ConvertDbUserToDomainUser(dbUser: WithId<DbUser>): User {
+    return {
+        id: dbUser._id.toString(),
+        email: dbUser.email,
+    };
 }
 
 export async function findUserById(id: string): Promise<null | User> {
     const user = await (await usersCollection()).findOne({ _id: new ObjectId(id) });
     if (user) {
-        return SanitizeDbUser(user);
+        return ConvertDbUserToDomainUser(user);
     }
     return null;
 }
@@ -71,5 +68,5 @@ export async function findUserByEmailAndPassword(
         return null;
     }
 
-    return SanitizeDbUser(user);
+    return ConvertDbUserToDomainUser(user);
 }
