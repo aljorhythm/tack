@@ -140,12 +140,14 @@ test.describe.serial("tacks", async () => {
 
     test("should open website in new tab when url is clicked", async () => {
         const { url } = site;
-        const newPageWait = page.context().waitForEvent("page", () => true);
+        const newPageWait = page.context().waitForEvent("page", (p) => {
+            return p.url() === url;
+        });
 
         const tack = await page.locator(`.tack:has-text("${url}")`);
         await tack.locator(".url").click();
 
         const newPage = await newPageWait;
-        expect(newPage).toHaveURL(url);
+        expect(newPage.url()).toStrictEqual(url);
     });
 });
