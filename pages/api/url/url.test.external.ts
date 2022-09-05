@@ -1,10 +1,23 @@
-import { getTitle } from "./url";
+import { getTitle, getText } from "./url";
 import sites from "./sites-data";
 
-describe("getTitle()", () => {
-    afterEach(() => {
-        jest.clearAllMocks();
+describe("getText()", () => {
+    let fetch: (url: RequestInfo, init?: RequestInit) => Promise<Response>;
+
+    const { text: expectedText, url } = sites[0];
+
+    it("should get correct text", async () => {
+        const actualText: string | null = await getText(url);
+        expect(actualText).toStrictEqual(expectedText);
     });
+
+    it("should return null if fetch fails", async () => {
+        const actualText = await getText("www.no-exist.com.no-exist");
+        expect(actualText).toBeNull();
+    });
+});
+
+describe("getTitle()", () => {
     it("should get correct title", async () => {
         for (let site of sites) {
             const { url, title: expectedTitle } = site;
@@ -14,13 +27,6 @@ describe("getTitle()", () => {
     });
 
     it("should return null if fetch fails", async () => {
-        jest.mock("node-fetch", () => {
-            const fn = jest.fn();
-            fn.mockImplementation(() => {
-                throw Error();
-            });
-            return fn;
-        });
         const actualTitle = await getTitle("https://www.no-exist.com.no-exist");
         expect(actualTitle).toBeNull();
     });

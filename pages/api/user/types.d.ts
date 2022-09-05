@@ -7,6 +7,7 @@ type UserType = {
 };
 
 interface User {
+    getTackText(arg0: string): Promise<string | null>;
     getTack(arg0: string): Promise<Tack | null>;
     editTags(tackId: string, tagsString: string): Promise<boolean>;
     addTack(createFrom: CreateTackFrom): Promise<{ id: string }>;

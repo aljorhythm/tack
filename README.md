@@ -24,6 +24,8 @@
 
 # Contribution
 
+`make setup`
+
 ## Environment variables
 
 ```

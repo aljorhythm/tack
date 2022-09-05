@@ -4,6 +4,8 @@ import PageObjectModel from "./page-object-model";
 import sites from "../pages/api/url/sites-data";
 import retry from "async-retry";
 
+const site = sites[0];
+
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
 
@@ -24,7 +26,6 @@ test.describe.serial("tacks", async () => {
         await page.locator("nav >> text=Tacks").click();
         await page.waitForURL("/tacks");
 
-        const site = sites[0];
         const { url, title } = site;
 
         const inputString = `${url} #hello #there`;
@@ -48,7 +49,6 @@ test.describe.serial("tacks", async () => {
     });
 
     test("should be able to edit tack", async () => {
-        const site = sites[0];
         const { url } = site;
         const tack = await page.locator(`.tack:has-text("${url}")`);
 
@@ -79,7 +79,6 @@ test.describe.serial("tacks", async () => {
     });
 
     test("should be able to see updated tack after editing", async () => {
-        const site = sites[0];
         const { url } = site;
         await retry(
             async () => {
@@ -97,7 +96,6 @@ test.describe.serial("tacks", async () => {
     });
 
     test("should be able to see iframe of target website after clicking 🔍", async () => {
-        const site = sites[0];
         const { url } = site;
         const tack = await page.locator(`.tack:has-text("${url}")`);
 
@@ -117,8 +115,30 @@ test.describe.serial("tacks", async () => {
         expect(iframe).not.toBeVisible();
     });
 
+    test("should be able to see text of target website after clicking 📖", async () => {
+        const { url, text } = site;
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+        let urlToText;
+
+        urlToText = await tack.locator(".url-to-text");
+        expect(urlToText).not.toBeVisible();
+
+        // open
+        await tack.locator("text=📖").click();
+
+        await retry(
+            async () => {
+                let urlToText = await tack.locator(".url-to-text");
+                expect(urlToText).toBeVisible();
+                expect(await urlToText.textContent()).toStrictEqual(text);
+            },
+            {
+                retries: 3,
+            },
+        );
+    });
+
     test("should open website in new tab when url is clicked", async () => {
-        const site = sites[0];
         const { url } = site;
         const newPageWait = page.context().waitForEvent("page", () => true);
 

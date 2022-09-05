@@ -48,7 +48,11 @@ const Tacks: NextPage<Props> = ({ tacks }: Props) => {
                     tack
                 </button>
             </div>
-            <TacksList tacks={tacks}></TacksList>
+            <div className="flex justify-center">
+                <div className="px-4 lg:w-10/12">
+                    <TacksList tacks={tacks}></TacksList>
+                </div>
+            </div>
         </>
     );
 };

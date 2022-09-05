@@ -17,6 +17,7 @@
         "babel-plugin-superjson-next": "^0.4.4",
         "bcryptjs": "^2.4.3",
         "classnames": "^2.3.1",
+        "html-to-text": "^8.2.1",
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^4.8.1",
         "next": "12.2.3",

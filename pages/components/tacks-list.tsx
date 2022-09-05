@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tack } from "../api/tack/types";
 import classNames from "classnames";
 
@@ -16,7 +16,9 @@ function formatDate(date: Date): string {
 function TackItem({ tack: tackArg }: { tack: Tack }) {
     const [tack, setTack] = useState(tackArg);
     const [isViewing, setViewing] = useState(false);
+    const [isViewingUrllToText, setViewingUrlToText] = useState(false);
     const [isEditing, setEditing] = useState(false);
+    const [urlToText, setUrlToText] = useState<string | null>(null);
     const [editTagsInputValue, setEditTagsInputValue] = useState(
         tack.tags.map((t) => `#${t}`).join(" "),
     );
@@ -48,6 +50,24 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
         setEditing(false);
     }
 
+    async function toggleSetViewingUrlToText() {
+        setViewingUrlToText(!isViewingUrllToText);
+
+        if (urlToText != undefined) {
+            return;
+        }
+
+        const response = await fetch(`/api/tack/${tack.id}/text`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const { text } = await response.json();
+        setUrlToText(text || "");
+    }
+
     return (
         <>
             <div className="flex items-center">
@@ -67,7 +87,7 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                     <div className="created-at mr-2 text-sm text-slate-800">
                         {formatDate(tack.created_at)}
                     </div>
-                    <div className="flex items-start">
+                    <div className="flex items-start m:space-x-2 lg:space-x-4">
                         <button
                             className={classNames("flex", "p-2", "rounded", "items-start", {
                                 "bg-slate-400": isViewing,
@@ -76,6 +96,14 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                         >
                             🔍
                         </button>
+                        <button
+                            className={classNames("flex", "p-2", "rounded", "items-start", {
+                                "bg-slate-400": isViewingUrllToText,
+                            })}
+                            onClick={toggleSetViewingUrlToText}
+                        >
+                            📖
+                        </button>
                     </div>
                 </div>
             </div>
@@ -83,7 +111,7 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                 {isEditing ? (
                     <input
                         value={editTagsInputValue}
-                        className="edit-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                        className="edit-input w-7/12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                         onChange={(e) => setEditTagsInputValue(e.target.value)}
                         required
                     />
@@ -117,10 +145,19 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                 </div>
             </div>
             {isViewing ? (
-                <>
-                    <div className="w-full border-slate-400 border-opacity-25 border-2   my-2"></div>
+                <div className="">
+                    <div className=" border-slate-400 border-opacity-25 border-2   my-2"></div>
                     <iframe className="w-full" src={tack.url} />{" "}
-                </>
+                </div>
+            ) : (
+                <></>
+            )}
+
+            {isViewingUrllToText ? (
+                <div className="">
+                    <div className="border-slate-400 border-opacity-25 border-2   my-2"></div>
+                    <div className="url-to-text">{urlToText}</div>
+                </div>
             ) : (
                 <></>
             )}
@@ -133,7 +170,7 @@ export default function TacksList({ tacks = [] }: { tacks: Array<Tack> }) {
         <div>
             {tacks.map((tack) => {
                 return (
-                    <div key={tack.id} className="tack px-4 lg:px-72 py-2 border-b-2 w-full ">
+                    <div key={tack.id} className="tack py-2 border-b-2 w-full">
                         <TackItem tack={tack}></TackItem>
                     </div>
                 );

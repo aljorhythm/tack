@@ -9,6 +9,7 @@ import {
 } from "../tack/persistence";
 import { TackClass } from "../tack/tack";
 import { DbTack, Tack } from "../tack/types";
+import { getText } from "../url/url";
 import { CreateTackFrom, User, UserType } from "./types";
 
 type ConstructUserFrom = UserType;
@@ -20,6 +21,11 @@ export class UserClass implements User {
     constructor(createFrom: ConstructUserFrom) {
         this.id = createFrom.id;
         this.email = createFrom.email;
+    }
+
+    async getTackText(tackId: string) {
+        let tack = await getTack({ _id: new ObjectId(tackId) });
+        return tack ? getText(tack?.url) : null;
     }
 
     async getTack(tackId: string): Promise<Tack | null> {
