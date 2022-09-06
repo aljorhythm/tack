@@ -59,7 +59,7 @@ const Tacks: NextPage<Props> = ({ tacks }: Props) => {
 
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
-        const tacks = await context.user?.getTacks();
+        const tacks = await context.user?.getMyTacks();
         return { props: { tacks } };
     },
     findUserById,

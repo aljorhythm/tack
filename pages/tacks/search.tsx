@@ -50,7 +50,7 @@ export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
         let query = context.query?.query || "";
         query = Array.isArray(query) ? query.join(" ") : query;
-        const tacks = await context.user?.getTacks(query);
+        const tacks = await context.user?.getMyTacks(query);
         return { props: { tacks: tacks } };
     },
     findUserById,

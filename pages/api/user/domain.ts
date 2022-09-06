@@ -50,7 +50,7 @@ export class UserClass implements User {
         return id;
     }
 
-    async getTacks(query?: string): Promise<Tack[]> {
+    async getMyTacks(query?: string): Promise<Tack[]> {
         let filter: Filter<DbTack> | undefined;
         if (query === "") {
             return [];

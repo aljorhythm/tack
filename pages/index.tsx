@@ -24,7 +24,7 @@ export default function Index(args: Props) {
 
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
-        const tacks = await context.user?.getTacks();
+        const tacks = await context.user?.getMyTacks();
         const indexProps: Props = { tacks: tacks || [], isLoggedIn: !!context.user };
         return { props: indexProps };
     },
