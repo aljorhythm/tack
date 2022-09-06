@@ -1,11 +1,8 @@
-import { NextApiResponse } from "next/types";
-import attachUserToRequest, { TackApiRequest } from "../../../request";
 import { UserClass } from "../domain";
 import { findUserById } from "../persistence";
-import nc from "next-connect";
+import { tackNextConnect } from "../../../request";
 
-const handler = nc<TackApiRequest, NextApiResponse>()
-    .use(attachUserToRequest(findUserById, UserClass))
+const handler = tackNextConnect(findUserById, UserClass)
     .get(async (req, res) => {
         const { id: tackId } = req.query;
         const result = await req.user!.getTack(tackId as string);
