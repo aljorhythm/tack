@@ -15,6 +15,11 @@ describe("getText()", () => {
         const actualText = await getText("www.no-exist.com.no-exist");
         expect(actualText).toBeNull();
     });
+
+    it("should return title from scheme appended url", async () => {
+        const actualText = await getText("aljorhythm.github.io/test-utils/pages/one.html");
+        expect(actualText).toBe("This is the text of one.html");
+    });
 });
 
 describe("getTitle()", () => {
