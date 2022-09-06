@@ -18,7 +18,7 @@ import {
     TestTack,
 } from "../test-helpers/tacks";
 
-test.describe.serial("tacks", async () => {
+test.describe.serial("tacks api", async () => {
     let token: string = "";
     const email = faker.internet.email();
     const password = faker.internet.password();
