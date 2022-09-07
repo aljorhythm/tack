@@ -103,3 +103,29 @@ export async function getTacksByUserId(id: string, extendFilter?: Filter<DbTack>
         .toArray();
     return results;
 }
+
+export async function groupTagsByUserId(userId: string): Promise<{ tag: string; count: number }[]> {
+    const results = await (
+        await tacksCollection()
+    ).aggregate([
+        {
+            $match: { userId: { $eq: new ObjectId(userId) } },
+        },
+        { $unwind: "$tags" },
+        {
+            $group: {
+                _id: "$tags",
+                count: { $sum: 1 },
+            },
+        },
+        {
+            $sort: {
+                count: -1,
+            },
+        },
+    ]);
+    const array = await results.toArray();
+    return array.map((row) => {
+        return { tag: row._id, count: row.count };
+    });
+}

@@ -7,14 +7,14 @@ import {
     updateTack,
     getTack,
     getMostCommonTags,
+    groupTagsByUserId,
 } from "../tack/persistence";
 import { TackClass } from "../tack/tack";
 import { DbTack, Tack } from "../tack/types";
 import { getText } from "../url/url";
-import { CreateTackFrom, User, UserType } from "./types";
+import { CreateTackFrom, PopularTag, User, UserType } from "./types";
 
 type ConstructUserFrom = UserType;
-
 export class UserClass implements User {
     id: string;
     email: string;
@@ -22,6 +22,11 @@ export class UserClass implements User {
     constructor(createFrom: ConstructUserFrom) {
         this.id = createFrom.id;
         this.email = createFrom.email;
+    }
+
+    async getMyPopularTags(): Promise<PopularTag[]> {
+        const result = await groupTagsByUserId(this.id);
+        return result;
     }
 
     getSearchPrompts(): Promise<string[]> {

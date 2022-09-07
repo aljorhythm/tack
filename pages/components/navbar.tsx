@@ -39,6 +39,11 @@ export default function Navbar() {
                                     Search
                                 </a>
                             </Link>
+                            <Link href="/explore">
+                                <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
+                                    Explore
+                                </a>
+                            </Link>
                         </>
                     ) : (
                         <></>
