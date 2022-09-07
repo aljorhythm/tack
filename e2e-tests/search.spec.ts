@@ -21,6 +21,12 @@ test.describe.serial("search tacks", async () => {
         testTacks = await createTestTacks(page.request, undefined);
     });
 
+    test("should show search query from url in search input", async () => {
+        const randomString = faker.random.word();
+        await page.goto(`/tacks/search?query=${randomString}`);
+        expect(await page.locator(`#search-tack-url`).inputValue()).toEqual(randomString);
+    });
+
     test("should be able to see search tag prompts", async () => {
         await page.goto("/tacks/search");
         const expectedPrompts = ["programming", "javascript", "typescript", "framework", "agile"];

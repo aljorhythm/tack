@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Tack } from "../api/tack/types";
 import { UserClass } from "../api/user/domain";
 import { findUserById } from "../api/user/persistence";
@@ -11,11 +11,11 @@ import Link from "next/link";
 export type Props = { tacks: Array<Tack>; query?: string; searchPrompts: string[] };
 
 const Search: NextPage<Props> = ({ query, tacks, searchPrompts }: Props) => {
-    const [searchQuery, setSearchQuery] = useState(query);
     const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState(query);
 
     async function search() {
-        router.push("slices", { query: { query: searchQuery } });
+        router.push({ query: { query: searchQuery } });
     }
 
     return (
@@ -23,7 +23,8 @@ const Search: NextPage<Props> = ({ query, tacks, searchPrompts }: Props) => {
             <div className="flex justify-center px-4">
                 <input
                     type="text"
-                    id="add-tack-url"
+                    id="search-tack-url"
+                    value={searchQuery}
                     className="bg-slate-50 lg:w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                     placeholder="#photography #singapore"
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -69,7 +70,7 @@ export const getServerSideProps = getTackServerSideProps(
             context.user?.getSearchPrompts(),
         ]);
 
-        return { props: { tacks: tacks, searchPrompts } };
+        return { props: { tacks: tacks, searchPrompts, query, key: query } };
     },
     findUserById,
     UserClass,

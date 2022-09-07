@@ -21,3 +21,14 @@ if [ $count -ne 0 ]; then
     echo $(echo "$found")
     exit 1
 fi
+
+found=$(grep -R --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.githooks --exclude-dir=.git 'test.only')
+count=$(echo "$found" | grep -e '^[^#]' | wc -l)
+echo test.only found: "$found"
+echo count: "$count"
+
+if [ $count -ne 0 ]; then
+    echo remove "$count" test.only "statement(s)"
+    echo $(echo "$found")
+    exit 1
+fi
