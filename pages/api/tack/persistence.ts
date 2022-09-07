@@ -60,6 +60,33 @@ export async function updateTack(
     return result.modifiedCount;
 }
 
+export async function getMostCommonTags(userId: string): Promise<string[]> {
+    const results = await (
+        await tacksCollection()
+    ).aggregate([
+        {
+            $match: { userId: { $eq: new ObjectId(userId) } },
+        },
+        { $unwind: "$tags" },
+        {
+            $group: {
+                _id: "$tags",
+                count: { $sum: 1 },
+            },
+        },
+        {
+            $sort: {
+                count: -1,
+            },
+        },
+        {
+            $limit: 4,
+        },
+    ]);
+    const array = await results.toArray();
+    return array.map((row) => row._id);
+}
+
 export async function getTacksByUserId(id: string, extendFilter?: Filter<DbTack>) {
     let filterByUserId: Filter<DbTack> = { userId: new ObjectId(id) };
     let filter = {};

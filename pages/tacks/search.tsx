@@ -1,16 +1,16 @@
-export {};
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tack } from "../api/tack/types";
 import { UserClass } from "../api/user/domain";
 import { findUserById } from "../api/user/persistence";
 import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
 import TacksList from "../components/tacks-list";
+import Link from "next/link";
 
-export type Props = { tacks: Array<Tack>; query?: string };
+export type Props = { tacks: Array<Tack>; query?: string; searchPrompts: string[] };
 
-const Search: NextPage<Props> = ({ query, tacks }: Props) => {
+const Search: NextPage<Props> = ({ query, tacks, searchPrompts }: Props) => {
     const [searchQuery, setSearchQuery] = useState(query);
     const router = useRouter();
 
@@ -19,7 +19,7 @@ const Search: NextPage<Props> = ({ query, tacks }: Props) => {
     }
 
     return (
-        <>
+        <div className="space-y-4">
             <div className="flex justify-center px-4">
                 <input
                     type="text"
@@ -37,12 +37,26 @@ const Search: NextPage<Props> = ({ query, tacks }: Props) => {
                     search
                 </button>
             </div>
+            <div className="flex justify-center search-prompts space-x-3">
+                {searchPrompts.slice(0, 4).map((prompt) => {
+                    return (
+                        <Link href={`/tacks/search?query=${prompt}`} key={prompt}>
+                            <a
+                                className="search-prompt hover:text-slate-700 hover:border-slate-500
+                         hover:bg-slate-100 p-2 btn rounded bg-white border-slate-400 border-2"
+                            >
+                                {prompt}
+                            </a>
+                        </Link>
+                    );
+                })}
+            </div>
             <div className="flex justify-center">
                 <div className="px-4 lg:w-10/12">
                     <TacksList tacks={tacks}></TacksList>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
@@ -50,8 +64,12 @@ export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
         let query = context.query?.query || "";
         query = Array.isArray(query) ? query.join(" ") : query;
-        const tacks = await context.user?.getMyTacks(query);
-        return { props: { tacks: tacks } };
+        const [tacks, searchPrompts] = await Promise.all([
+            context.user?.getMyTacks(query),
+            context.user?.getSearchPrompts(),
+        ]);
+
+        return { props: { tacks: tacks, searchPrompts } };
     },
     findUserById,
     UserClass,

@@ -12,6 +12,7 @@ interface User {
     editTags(tackId: string, tagsString: string): Promise<boolean>;
     addTack(createFrom: CreateTackFrom): Promise<{ id: string }>;
     getMyTacks: (query?: string) => Promise<Tack[]>;
+    getSearchPrompts(): Promise<string[]>;
     toObject: () => UserType;
 }
 

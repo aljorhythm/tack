@@ -1,4 +1,4 @@
-import { createTestTacks } from "../test-helpers/tacks";
+import { createTestTacks, TestTack } from "../test-helpers/tacks";
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
@@ -9,6 +9,7 @@ const password = faker.internet.password();
 test.describe.serial("search tacks", async () => {
     let page: Page;
     let pom: PageObjectModel;
+    let testTacks: { [key: string]: TestTack };
 
     test.beforeAll(async ({ browser }) => {
         const context = await browser.newContext();
@@ -17,12 +18,27 @@ test.describe.serial("search tacks", async () => {
         await page.goto("/");
         await pom.signup(email, password);
         await pom.login(email, password);
+        testTacks = await createTestTacks(page.request, undefined);
+    });
+
+    test("should be able to see search tag prompts", async () => {
+        await page.goto("/tacks/search");
+        const expectedPrompts = ["programming", "javascript", "typescript", "framework", "agile"];
+        const elementHandles = await page
+            .locator(".search-prompts .search-prompt")
+            .elementHandles();
+        expect(elementHandles.length).toStrictEqual(4);
+        const prompts = await Promise.all(elementHandles.map((e) => e.innerText()));
+        expect(prompts.every((prompt) => expectedPrompts.indexOf(prompt) >= 0)).toEqual(true);
+
+        const targetPrompt = elementHandles[0];
+        await targetPrompt.click();
+        await page.waitForURL(`/tacks/search?query=${await targetPrompt.innerText()}`);
     });
 
     test("should be able to search tacks", async () => {
-        const { daveFarley, jezHumble } = await createTestTacks(page.request, undefined);
         await page.goto("/");
-
+        const { daveFarley, jezHumble } = testTacks;
         await page.locator('nav :text("Search")').click();
         await page.waitForURL("/tacks/search");
 

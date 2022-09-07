@@ -6,6 +6,7 @@ import {
     getTacksByUserId,
     updateTack,
     getTack,
+    getMostCommonTags,
 } from "../tack/persistence";
 import { TackClass } from "../tack/tack";
 import { DbTack, Tack } from "../tack/types";
@@ -21,6 +22,10 @@ export class UserClass implements User {
     constructor(createFrom: ConstructUserFrom) {
         this.id = createFrom.id;
         this.email = createFrom.email;
+    }
+
+    getSearchPrompts(): Promise<string[]> {
+        return getMostCommonTags(this.id);
     }
 
     async getTackText(tackId: string) {

@@ -27,7 +27,7 @@ const config: PlaywrightTestConfig = {
 
         locale: "en-SG",
         trace: "on",
-        headless: CI,
+        headless: true || CI,
         launchOptions: {
             slowMo: slowMo,
         },
