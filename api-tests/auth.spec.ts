@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { test, expect } from "@playwright/test";
+import { generatePassword } from "../test-helpers/user";
 
 let email = `${Date.now().toString()}${faker.internet.email()}`;
-let password = faker.internet.password();
+let password = generatePassword();
 let username = email.split("@")[0].replaceAll(/[\W_]/g, "");
 
 test.describe.serial("sign up, login and token issuance", async () => {
@@ -66,7 +67,7 @@ test.describe.serial("sign up, login and token issuance", async () => {
         const response = await request.post(`/api/auth/token`, {
             data: {
                 email: email,
-                password: faker.internet.password(),
+                password: generatePassword(),
             },
         });
         expect(response.ok()).not.toBeTruthy();

@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { APIRequestContext } from "@playwright/test";
+import { generatePassword } from "./user";
 
 export async function signUp(request: APIRequestContext): Promise<{
     username: string;
@@ -8,7 +9,7 @@ export async function signUp(request: APIRequestContext): Promise<{
     token: string;
 }> {
     const email = faker.internet.email();
-    const password = faker.internet.password();
+    const password = generatePassword();
     const username = email.split("@")[0].replaceAll(/[\W_]/g, "");
 
     const userData = {

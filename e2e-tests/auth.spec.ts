@@ -1,9 +1,11 @@
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
+import retry from "async-retry";
+import { generatePassword } from "../test-helpers/user";
 
 const email = `${Date.now()}${faker.internet.email()}`;
-const password = faker.internet.password();
+const password = generatePassword();
 const username = email.split("@")[0].replaceAll(/[\W_]/g, "");
 
 test.describe.serial("auth", async () => {
@@ -33,8 +35,15 @@ test.describe.serial("auth", async () => {
         await page.locator('[placeholder="Email"]').fill("");
         await page.locator('[placeholder="•••••••••"]').fill("");
         await page.locator("main >> text=Sign Up").click();
-        expect(await page.locator("main >> .error-message").innerText()).toEqual(
-            "password must be at least 8 characters long, contain 1 lowercase, 1 uppercase and 1 digit. invalid email.",
+        retry(
+            async () => {
+                expect(await page.locator("main >> .error-message").innerText()).toEqual(
+                    "password must be at least 8 characters long, contain 1 lowercase, 1 uppercase and 1 digit. invalid email.",
+                );
+            },
+            {
+                retries: 3,
+            },
         );
     });
 

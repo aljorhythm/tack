@@ -7,9 +7,6 @@ import { signUp } from "../test-helpers/e2e-user";
 
 const site = sites[0];
 
-const email = `${Date.now()}${faker.internet.email()}`;
-const password = faker.internet.password();
-
 test.describe.serial("list tacks", async () => {
     let page: Page;
     let pom: PageObjectModel;

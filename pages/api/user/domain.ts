@@ -15,6 +15,7 @@ import { DbTack, Tack } from "../tack/types";
 import { getText } from "../url/url";
 import { CreateTackFrom, PopularTag, User, UserType } from "./types";
 import validator from "validator";
+import { isValidPassword } from "./validation";
 
 type ConstructUserFrom = UserType;
 export class UserClass implements User {
@@ -95,17 +96,7 @@ export async function createUser(userRequest: CreateUserRequest): Promise<{ id: 
     if (!userRequest.username || !validator.isAlphanumeric(userRequest.username)) {
         errors["username"] = "username must be non-empty alphanumeric";
     }
-    if (
-        !userRequest.password ||
-        !validator.isStrongPassword(userRequest.password, {
-            minLength: 8,
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 0,
-            returnScore: false,
-        })
-    ) {
+    if (!isValidPassword(userRequest.password)) {
         errors["password"] =
             "password must be at least 8 characters long, contain 1 lowercase, 1 uppercase and 1 digit";
     }

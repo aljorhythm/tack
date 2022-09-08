@@ -5,9 +5,6 @@ import PageObjectModel from "./page-object-model";
 import { type PopularTag } from "../pages/api/user/types";
 import { signUp } from "../test-helpers/e2e-user";
 
-const email = `${Date.now()}${faker.internet.email()}`;
-const password = faker.internet.password();
-
 test.describe.serial("explore tacks", async () => {
     let page: Page;
     let pom: PageObjectModel;

@@ -19,6 +19,7 @@ export default class PageObjectModel {
         await page.locator('[placeholder="•••••••••"]').fill(password);
 
         await page.locator("main >> text=Sign Up").click();
+        await page.waitForURL("/login");
     }
 
     async logout() {
