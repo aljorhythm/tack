@@ -1,12 +1,16 @@
-import { CreateUserRequest, createUser, findUserById } from "./persistence";
+import { findUserById } from "./persistence";
 import { tackNextConnect } from "../../request";
-import { UserClass } from "./domain";
+import { createUser, CreateUserRequest, UserClass } from "./domain";
 
 const handler = tackNextConnect(findUserById, UserClass)
     .post(async (req, res) => {
         const user: CreateUserRequest = req.body as CreateUserRequest;
-        const response = await createUser(user);
-        res.status(200).json(response);
+        try {
+            const response = await createUser(user);
+            res.status(200).json(response);
+        } catch (errors) {
+            res.status(400).json({ errors });
+        }
     })
     .get(async (req, res) => {
         if (req.user) {

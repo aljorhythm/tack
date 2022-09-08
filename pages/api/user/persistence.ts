@@ -6,15 +6,15 @@ import log from "../../../log";
 import { DbUser, User } from "./types";
 import { UserClass } from "./domain";
 
-export type CreateUserRequest = {
+let collection: Collection<DbUser> | null;
+
+type CreateUserRequest = {
     email: string;
     password: string;
     username: string;
 };
 
-let collection: Collection<DbUser> | null;
-
-async function usersCollection(): Promise<Collection<DbUser>> {
+export async function usersCollection(): Promise<Collection<DbUser>> {
     if (collection) {
         return collection;
     }
@@ -28,13 +28,7 @@ async function usersCollection(): Promise<Collection<DbUser>> {
     return collection;
 }
 
-const saltRounds = await bcrypt.genSalt();
-
-export async function createUser(userRequest: CreateUserRequest): Promise<{ id: string } | null> {
-    userRequest.password = await bcrypt.hash(userRequest.password, saltRounds);
-    const response = await (await usersCollection()).insertOne(userRequest);
-    return { id: response.insertedId.toString() };
-}
+export const saltRounds = await bcrypt.genSalt();
 
 function ConvertDbUserToDomainUser(dbUser: WithId<DbUser>): User {
     return new UserClass({
@@ -67,4 +61,10 @@ export async function findUserByEmailAndPassword(
     }
 
     return ConvertDbUserToDomainUser(user);
+}
+
+export async function createUser(userRequest: CreateUserRequest): Promise<{ id: string } | null> {
+    userRequest.password = await bcrypt.hash(userRequest.password, saltRounds);
+    const response = await (await usersCollection()).insertOne(userRequest);
+    return { id: response.insertedId.toString() };
 }

@@ -3,6 +3,7 @@ import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
 import { type PopularTag } from "../pages/api/user/types";
+import { signUp } from "../test-helpers/e2e-user";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
@@ -18,9 +19,7 @@ test.describe.serial("explore tacks", async () => {
         const context = await browser.newContext();
         page = await context.newPage();
         pom = new PageObjectModel(page);
-        await page.goto("/");
-        await pom.signup(email, password);
-        await pom.login(email, password);
+        await signUp(pom);
         testTacks = await createTestTacks(page.request, undefined);
 
         for (const [_, testTack] of Object.entries(testTacks)) {

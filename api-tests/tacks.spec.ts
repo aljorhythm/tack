@@ -17,27 +17,14 @@ import {
     springboot,
     TestTack,
 } from "../test-helpers/tacks";
+import { signUp } from "../test-helpers/api-user";
 
 test.describe.serial("tacks api", async () => {
     let token: string = "";
-    const email = faker.internet.email();
-    const password = faker.internet.password();
 
     test.beforeAll(async ({ request }) => {
-        const userData = {
-            email,
-            password,
-        };
-        await request.post(`/api/user`, {
-            data: userData,
-        });
-        const response = await (
-            await request.post(`/api/token`, {
-                data: userData,
-            })
-        ).json();
-        const body = await response;
-        token = body.token;
+        const userInfo = await signUp(request);
+        token = userInfo.token;
     });
 
     async function addTackHelper(

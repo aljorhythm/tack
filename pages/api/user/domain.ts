@@ -9,10 +9,12 @@ import {
     getMostCommonTagsByUserId,
     groupTagsByUserId,
 } from "../tack/persistence";
+import * as persistence from "./persistence";
 import { TackClass } from "../tack/tack";
 import { DbTack, Tack } from "../tack/types";
 import { getText } from "../url/url";
 import { CreateTackFrom, PopularTag, User, UserType } from "./types";
+import validator from "validator";
 
 type ConstructUserFrom = UserType;
 export class UserClass implements User {
@@ -80,4 +82,38 @@ export class UserClass implements User {
             username: this.username,
         };
     }
+}
+
+export type CreateUserRequest = {
+    email: string;
+    password: string;
+    username: string;
+};
+
+export async function createUser(userRequest: CreateUserRequest): Promise<{ id: string } | null> {
+    const errors: { [key: string]: string } = {};
+    if (!userRequest.username || !validator.isAlphanumeric(userRequest.username)) {
+        errors["username"] = "username must be non-empty alphanumeric";
+    }
+    if (
+        !userRequest.password ||
+        !validator.isStrongPassword(userRequest.password, {
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 0,
+            returnScore: false,
+        })
+    ) {
+        errors["password"] =
+            "password must be at least 8 characters long, contain 1 lowercase, 1 uppercase and 1 digit";
+    }
+    if (!userRequest.email || !validator.isEmail(userRequest.email)) {
+        errors["email"] = "invalid email";
+    }
+    if (Object.keys(errors).length > 0) {
+        throw { ...errors };
+    }
+    return await persistence.createUser(userRequest);
 }

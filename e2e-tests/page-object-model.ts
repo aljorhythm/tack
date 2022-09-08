@@ -6,7 +6,7 @@ export default class PageObjectModel {
         this.page = page;
     }
 
-    async signup(email: string, password: string) {
+    async signup(email: string, password: string, username: string) {
         const page = this.page;
 
         await page.goto("/");
@@ -15,6 +15,7 @@ export default class PageObjectModel {
         await page.waitForURL("/signup");
 
         await page.locator('[placeholder="Email"]').fill(email);
+        await page.locator('[placeholder="Username"]').fill(username);
         await page.locator('[placeholder="•••••••••"]').fill(password);
 
         await page.locator("main >> text=Sign Up").click();

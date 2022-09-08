@@ -4,7 +4,7 @@ import PageObjectModel from "./page-object-model";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
-const username = email.split("@")[0];
+const username = email.split("@")[0].replaceAll(/[\W_]/g, "");
 
 test.describe.serial("auth", async () => {
     let page: Page;

@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
 import sites from "../pages/api/url/sites-data";
 import retry from "async-retry";
+import { signUp } from "../test-helpers/e2e-user";
 
 const site = sites[0];
 
@@ -17,9 +18,7 @@ test.describe.serial("list tacks", async () => {
         context = await browser.newContext();
         page = await context.newPage();
         pom = new PageObjectModel(page);
-        await page.goto("/");
-        await pom.signup(email, password);
-        await pom.login(email, password);
+        await signUp(pom);
     });
 
     test("should be able to insert tack and see added tack", async () => {

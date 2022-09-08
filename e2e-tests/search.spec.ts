@@ -2,9 +2,7 @@ import { createTestTacks, TestTack } from "../test-helpers/tacks";
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
-
-const email = `${Date.now()}${faker.internet.email()}`;
-const password = faker.internet.password();
+import { signUp } from "../test-helpers/e2e-user";
 
 test.describe.serial("search tacks", async () => {
     let page: Page;
@@ -16,8 +14,7 @@ test.describe.serial("search tacks", async () => {
         page = await context.newPage();
         pom = new PageObjectModel(page);
         await page.goto("/");
-        await pom.signup(email, password);
-        await pom.login(email, password);
+        await signUp(pom);
         testTacks = await createTestTacks(page.request, undefined);
     });
 
