@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import Router from "next/router";
 import { useState } from "react";
 import { Tack } from "./api/tack/types";
-import { UserClass } from "./api/user/domain";
 import { findUserById } from "./api/user/persistence";
 import { CreateTackFrom } from "./api/user/types";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
