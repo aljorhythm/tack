@@ -60,7 +60,7 @@ export async function updateTack(
     return result.modifiedCount;
 }
 
-export async function getMostCommonTags(userId: string): Promise<string[]> {
+export async function getMostCommonTagsByUserId(userId: string): Promise<string[]> {
     const results = await (
         await tacksCollection()
     ).aggregate([

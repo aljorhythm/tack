@@ -6,7 +6,7 @@ import {
     getTacksByUserId,
     updateTack,
     getTack,
-    getMostCommonTags,
+    getMostCommonTagsByUserId,
     groupTagsByUserId,
 } from "../tack/persistence";
 import { TackClass } from "../tack/tack";
@@ -29,8 +29,8 @@ export class UserClass implements User {
         return result;
     }
 
-    getSearchPrompts(): Promise<string[]> {
-        return getMostCommonTags(this.id);
+    async getSearchPrompts(): Promise<string[]> {
+        return await getMostCommonTagsByUserId(this.id);
     }
 
     async getTackText(tackId: string) {
