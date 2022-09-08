@@ -65,5 +65,12 @@ test.describe.serial("explore tacks", async () => {
         );
 
         expect(receivedPopularTags).toEqual(expect.arrayContaining(expectedPopularTags));
+
+        const url = `/tacks/search?query=${await popularTagElements
+            .nth(0)
+            .locator(".tag")
+            .innerText()}`;
+        await popularTagElements.nth(0).click();
+        await page.waitForURL(url);
     });
 });
