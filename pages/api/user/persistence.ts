@@ -3,17 +3,14 @@ import { connectToDatabase } from "../external/mongodb";
 
 import bcrypt from "bcryptjs";
 import log from "../../../log";
-import { DbUser } from "./types";
+import { DbUser, User } from "./types";
+import { UserClass } from "./domain";
 
 export type CreateUserRequest = {
     email: string;
     password: string;
+    username: string;
 };
-
-interface User {
-    id: string;
-    email: string;
-}
 
 let collection: Collection<DbUser> | null;
 
@@ -40,10 +37,11 @@ export async function createUser(userRequest: CreateUserRequest): Promise<{ id: 
 }
 
 function ConvertDbUserToDomainUser(dbUser: WithId<DbUser>): User {
-    return {
+    return new UserClass({
         id: dbUser._id.toString(),
         email: dbUser.email,
-    };
+        username: dbUser.username,
+    });
 }
 
 export async function findUserById(id: string): Promise<null | User> {

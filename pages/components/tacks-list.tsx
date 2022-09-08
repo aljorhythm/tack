@@ -129,7 +129,7 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                 <div className="flex justify-end">
                     {isEditing ? (
                         <button
-                            className="btn btn-slate p-2 radius rounded text-white bg-slate-700"
+                            className="btn btn-slate p-2 radius rounded font-bold text-black hover:bg-slate-300 bg-slate-200"
                             onClick={save}
                         >
                             save
@@ -137,7 +137,7 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                     ) : (
                         <button
                             onClick={startEdit}
-                            className="btn btn-slate p-2 radius rounded text-white bg-slate-400"
+                            className="btn btn-slate p-2 radius rounded font-bold text-black hover:bg-slate-200 bg-slate-300"
                         >
                             edit
                         </button>

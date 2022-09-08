@@ -4,20 +4,32 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
+import { type UserType } from "../api/user/types";
 
 export default function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState<null | UserType>(null);
     const router = useRouter();
 
     const [cookies, _, removeCookies] = useCookies(["token"]);
 
     useEffect(() => {
         setIsLoggedIn(!!cookies["token"]);
-    }, [isLoggedIn, cookies]);
+        (async () => {
+            if (!user && cookies.token) {
+                const response = await fetch("/api/user");
+                setUser(await response.json());
+            }
+        })();
+    }, [isLoggedIn, cookies, user]);
 
     function logout() {
         removeCookies("token");
         router.push("/login");
+    }
+
+    function goToProfile() {
+        router.push(`/profile/${user?.username}`);
     }
 
     return (
@@ -54,6 +66,16 @@ export default function Navbar() {
                 <div className="text-sm">
                     {isLoggedIn ? (
                         <>
+                            {user ? (
+                                <a
+                                    onClick={goToProfile}
+                                    className="hover:cursor-pointer block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5"
+                                >
+                                    {user?.username}
+                                </a>
+                            ) : (
+                                <></>
+                            )}
                             <a
                                 onClick={logout}
                                 className="hover:cursor-pointer block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5"

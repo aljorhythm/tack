@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { UserClass } from "./api/user/domain";
 import { findUserById } from "./api/user/persistence";
 import { PopularTag } from "./api/user/types";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
@@ -48,5 +47,4 @@ export const getServerSideProps = getTackServerSideProps(
         return { props };
     },
     findUserById,
-    UserClass,
 );

@@ -63,7 +63,6 @@ export const getServerSideProps = getTackServerSideProps(
         return { props: { tacks } };
     },
     findUserById,
-    UserClass,
 );
 
 export default Tacks;

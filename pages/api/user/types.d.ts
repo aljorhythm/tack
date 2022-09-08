@@ -9,6 +9,7 @@ export type PopularTag = {
 type UserType = {
     id: string;
     email: string;
+    username: string;
 };
 
 interface User {
@@ -26,6 +27,7 @@ type DbUser = {
     _id?: ObjectId;
     email: string;
     password: string;
+    username: string;
 };
 
 type CreateTackFrom = {

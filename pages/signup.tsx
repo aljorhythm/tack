@@ -6,6 +6,8 @@ const Signup: NextPage = () => {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("");
+
     async function signUp() {
         await fetch("/api/user", {
             method: "POST",
@@ -15,6 +17,7 @@ const Signup: NextPage = () => {
             body: JSON.stringify({
                 email,
                 password,
+                username,
             }),
         });
         router.push("/login");
@@ -22,6 +25,22 @@ const Signup: NextPage = () => {
 
     return (
         <div className="place-self-center w-96">
+            <div>
+                <label
+                    htmlFor="email"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >
+                    Choose Username
+                </label>
+                <input
+                    type="text"
+                    id="username"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                    placeholder="Username"
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+            </div>
             <div>
                 <label
                     htmlFor="email"

@@ -11,7 +11,7 @@ export default async function handler(
     const user = await findUserByEmailAndPassword(email, password);
 
     if (user) {
-        res.status(200).json({ token: await generateAccessToken(user.id) });
+        res.status(200).json({ token: await generateAccessToken(user.toObject().id) });
     } else {
         res.status(400).json(null);
     }

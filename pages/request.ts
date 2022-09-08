@@ -17,12 +17,11 @@ export type TackApiRequest = NextApiRequest & {
     user?: User | null;
 };
 
-type FindUserById = (id: string) => Promise<UserType | null>;
+type FindUserById = (id: string) => Promise<User | null>;
 
 export async function getUserFromToken(
     req: TackApiRequest,
     findUserById: FindUserById,
-    userConstructor: UserConstructor,
 ): Promise<User | null> {
     let tokens: string | string[] | null | undefined = req.headers.token;
 
@@ -48,13 +47,7 @@ export async function getUserFromToken(
         logError(e);
         return null;
     }
-    const dbUser = await findUserById(id);
-
-    if (!dbUser) {
-        return null;
-    }
-
-    return new userConstructor(dbUser);
+    return await findUserById(id);
 }
 
 const attachUserToRequest = function (
@@ -66,7 +59,7 @@ const attachUserToRequest = function (
         _: NextApiResponse,
         next: Function,
     ) => {
-        req.user = await getUserFromToken(req, findUserById, userConstructor);
+        req.user = await getUserFromToken(req, findUserById);
         next();
     };
     return fn;
@@ -81,14 +74,9 @@ export type TackServerSidePropsContext = GetServerSidePropsContext & {
 export const getTackServerSideProps = function (
     getServerSideProps: GetServerSideProps,
     findUserById: FindUserById,
-    userConstructor: UserConstructor,
 ): GetServerSideProps {
     const wrapped: GetServerSideProps = async function (context: TackServerSidePropsContext) {
-        const user = await getUserFromToken(
-            context.req as TackApiRequest,
-            findUserById,
-            userConstructor,
-        );
+        const user = await getUserFromToken(context.req as TackApiRequest, findUserById);
         context.user = user;
         return getServerSideProps(context);
     };

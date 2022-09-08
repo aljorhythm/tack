@@ -18,10 +18,12 @@ type ConstructUserFrom = UserType;
 export class UserClass implements User {
     id: string;
     email: string;
+    username: string;
 
     constructor(createFrom: ConstructUserFrom) {
         this.id = createFrom.id;
         this.email = createFrom.email;
+        this.username = createFrom.username;
     }
 
     async getMyPopularTags(): Promise<PopularTag[]> {
@@ -75,6 +77,7 @@ export class UserClass implements User {
         return {
             id: this.id,
             email: this.email,
+            username: this.username,
         };
     }
 }

@@ -4,6 +4,7 @@ import PageObjectModel from "./page-object-model";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();
+const username = email.split("@")[0];
 
 test.describe.serial("auth", async () => {
     let page: Page;
@@ -23,12 +24,13 @@ test.describe.serial("auth", async () => {
         await expect(await page.locator("nav >> text=Search").count()).toEqual(0);
     });
 
-    test("register and sign in", async () => {
+    test("register, sign in and see profile page", async () => {
         await page.goto("/");
         await page.locator(`nav >> text=Sign Up`).click();
 
         await page.waitForURL("/signup");
 
+        await page.locator('[placeholder="Username"]').fill(username);
         await page.locator('[placeholder="Email"]').fill(email);
         await page.locator('[placeholder="•••••••••"]').fill(password);
 
@@ -41,9 +43,10 @@ test.describe.serial("auth", async () => {
 
         await page.waitForNavigation({ url: "/tacks" });
 
-        await page.goto("/profile");
-        await page.waitForURL("/profile");
-        await expect(page.locator(`text=${email}`)).toBeVisible();
+        await page.locator(`nav >> text='${username}'`).click();
+        await page.waitForURL(`/profile/${username}`);
+        await expect(page.locator(`main :text-is("${email}")`)).toBeVisible();
+        await expect(page.locator(`main :text-is("${username}")`)).toBeVisible();
 
         await page.goto("/");
         await page.waitForSelector(`[placeholder="https://tack.app #app #index"]`);

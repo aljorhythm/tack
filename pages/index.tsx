@@ -1,5 +1,4 @@
 import { Tack } from "./api/tack/types";
-import { UserClass } from "./api/user/domain";
 import { findUserById } from "./api/user/persistence";
 import Tacks from "./tacks";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
@@ -29,5 +28,4 @@ export const getServerSideProps = getTackServerSideProps(
         return { props: indexProps };
     },
     findUserById,
-    UserClass,
 );

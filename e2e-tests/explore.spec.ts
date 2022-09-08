@@ -2,7 +2,7 @@ import { createTestTacks, TestTack } from "../test-helpers/tacks";
 import { test, expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
-import { type PopularTag } from "../pages/api/explore";
+import { type PopularTag } from "../pages/api/user/types";
 
 const email = `${Date.now()}${faker.internet.email()}`;
 const password = faker.internet.password();

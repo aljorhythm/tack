@@ -73,7 +73,6 @@ export const getServerSideProps = getTackServerSideProps(
         return { props: { tacks: tacks, searchPrompts, query, key: query } };
     },
     findUserById,
-    UserClass,
 );
 
 export default Search;
