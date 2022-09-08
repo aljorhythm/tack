@@ -24,7 +24,21 @@ test.describe.serial("auth", async () => {
         await expect(await page.locator("nav >> text=Search").count()).toEqual(0);
     });
 
-    test("register, sign in and see profile page", async () => {
+    test("should show error message on sign up failure", async () => {
+        await page.goto("/");
+        await page.locator(`nav >> text=Sign Up`).click();
+        await page.waitForURL("/signup");
+
+        await page.locator('[placeholder="Username"]').fill(username);
+        await page.locator('[placeholder="Email"]').fill("");
+        await page.locator('[placeholder="•••••••••"]').fill("");
+        await page.locator("main >> text=Sign Up").click();
+        expect(await page.locator("main >> .error-message").innerText()).toEqual(
+            "password must be at least 8 characters long, contain 1 lowercase, 1 uppercase and 1 digit. invalid email.",
+        );
+    });
+
+    test("sign up, sign in and see profile page", async () => {
         await page.goto("/");
         await page.locator(`nav >> text=Sign Up`).click();
 

@@ -1,15 +1,17 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { SignUpResponse } from "./api/user";
 
 const Signup: NextPage = () => {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     async function signUp() {
-        await fetch("/api/user", {
+        const response = await fetch("/api/user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -20,7 +22,16 @@ const Signup: NextPage = () => {
                 username,
             }),
         });
-        router.push("/login");
+        if (response.status === 200) {
+            router.push("/login");
+        } else {
+            const data: SignUpResponse = (await response.json()) as SignUpResponse;
+            setErrorMessage(
+                Object.values(data.errors)
+                    .map((e) => `${e}.`)
+                    .join(" "),
+            );
+        }
     }
 
     return (
@@ -80,6 +91,8 @@ const Signup: NextPage = () => {
             >
                 Sign Up
             </button>
+
+            <div className="error-message">{errorMessage}</div>
         </div>
     );
 };
