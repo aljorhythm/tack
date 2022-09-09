@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import NotLoggedInUserClass from "./api/notLoggedInUser/notLoggedInUser";
 import { findUserById } from "./api/user/persistence";
 import { PopularTag } from "./api/user/types";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
@@ -47,4 +48,5 @@ export const getServerSideProps = getTackServerSideProps(
         return { props };
     },
     findUserById,
+    NotLoggedInUserClass,
 );

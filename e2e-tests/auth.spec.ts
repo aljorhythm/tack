@@ -68,7 +68,6 @@ test.describe.serial("auth", async () => {
 
         await page.locator(`nav >> text='${username}'`).click();
         await page.waitForURL(`/profile/${username}`);
-        await expect(page.locator(`main :text-is("${email}")`)).toBeVisible();
         await expect(page.locator(`main :text-is("${username}")`)).toBeVisible();
 
         await page.goto("/");

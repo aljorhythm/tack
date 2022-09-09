@@ -1,14 +1,14 @@
 import { NextPage } from "next";
+import NotLoggedInUserClass from "../api/notLoggedInUser/notLoggedInUser";
 import { findUserById } from "../api/user/persistence";
 import { UserType } from "../api/user/types";
-import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
+import { getFirstParamValue, getTackServerSideProps, TackServerSidePropsContext } from "../request";
 
 type Props = { user: UserType | null };
 
 const Profile: NextPage<Props> = ({ user }: Props) => {
     return (
         <div>
-            <div>{user?.email}</div>
             <div>{user?.username}</div>
         </div>
     );
@@ -16,9 +16,21 @@ const Profile: NextPage<Props> = ({ user }: Props) => {
 
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
-        return { props: { user: context.user?.toObject() } };
+        const user = await (async function () {
+            const username = getFirstParamValue(context.params, "username");
+            if (!username) {
+                return null;
+            }
+            if (context.user) {
+                const retrievedUser = await context.user?.getUserByUsername(username);
+                return retrievedUser ? retrievedUser.toObject() : null;
+            }
+            return context.notLoggedInUser?.getUserByUsername(username);
+        })();
+        return { props: { user } };
     },
     findUserById,
+    NotLoggedInUserClass,
 );
 
 export default Profile;

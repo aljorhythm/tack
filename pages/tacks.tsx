@@ -6,6 +6,7 @@ import { findUserById } from "./api/user/persistence";
 import { CreateTackFrom } from "./api/user/types";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
 import TacksList from "./components/tacks-list";
+import NotLoggedInUserClass from "./api/notLoggedInUser/notLoggedInUser";
 
 type Props = { tacks: Array<Tack> };
 
@@ -62,6 +63,7 @@ export const getServerSideProps = getTackServerSideProps(
         return { props: { tacks } };
     },
     findUserById,
+    NotLoggedInUserClass,
 );
 
 export default Tacks;

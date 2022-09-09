@@ -29,6 +29,10 @@ export class UserClass implements User {
         this.username = createFrom.username;
     }
 
+    async getUserByUsername(username: string): Promise<User | null> {
+        return persistence.findOne({ username });
+    }
+
     async getMyPopularTags(): Promise<PopularTag[]> {
         const result = await groupTagsByUserId(this.id);
         return result;

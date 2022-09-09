@@ -2,6 +2,7 @@ import { Tack } from "./api/tack/types";
 import { findUserById } from "./api/user/persistence";
 import Tacks from "./tacks";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
+import NotLoggedInUserClass from "./api/notLoggedInUser/notLoggedInUser";
 
 export type Props = {
     isLoggedIn: boolean;
@@ -28,4 +29,5 @@ export const getServerSideProps = getTackServerSideProps(
         return { props: indexProps };
     },
     findUserById,
+    NotLoggedInUserClass,
 );

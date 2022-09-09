@@ -1,9 +1,9 @@
-import { Collection, ObjectId, WithId } from "mongodb";
+import { Collection, Filter, ObjectId, WithId } from "mongodb";
 import { connectToDatabase } from "../external/mongodb";
 
 import bcrypt from "bcryptjs";
 import log from "../../../log";
-import { DbUser, User } from "./types";
+import { DbUser, User, UserType } from "./types";
 import { UserClass } from "./domain";
 
 let collection: Collection<DbUser> | null;
@@ -73,4 +73,9 @@ export async function findUserByUsernameOrEmail(username: string, email: string)
     const response = await (await usersCollection()).find({ email, username });
     const arr = await response.toArray();
     return arr.map(ConvertDbUserToDomainUser);
+}
+
+export async function findOne(filter: Filter<DbUser>): Promise<User | null> {
+    const found = await (await usersCollection()).findOne(filter);
+    return found ? ConvertDbUserToDomainUser(found) : null;
 }

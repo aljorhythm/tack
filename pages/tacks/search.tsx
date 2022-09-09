@@ -6,6 +6,7 @@ import { findUserById } from "../api/user/persistence";
 import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
 import TacksList from "../components/tacks-list";
 import Link from "next/link";
+import NotLoggedInUserClass from "../api/notLoggedInUser/notLoggedInUser";
 
 export type Props = { tacks: Array<Tack>; query?: string; searchPrompts: string[] };
 
@@ -72,6 +73,7 @@ export const getServerSideProps = getTackServerSideProps(
         return { props: { tacks: tacks, searchPrompts, query, key: query } };
     },
     findUserById,
+    NotLoggedInUserClass,
 );
 
 export default Search;

@@ -10,6 +10,8 @@ import { User, UserType } from "./api/user/types";
 import nc from "next-connect";
 import { logError } from "../log";
 import { Cookies } from "next/dist/server/web/spec-extension/cookies";
+import { NotLoggedInUser } from "./api/notLoggedInUser/types";
+import { ParsedUrlQuery } from "querystring";
 
 type UserConstructor = new (createFrom: UserType) => User;
 
@@ -69,15 +71,20 @@ export default attachUserToRequest;
 
 export type TackServerSidePropsContext = GetServerSidePropsContext & {
     user?: User | null;
+    notLoggedInUser?: NotLoggedInUser | null;
 };
 
 export const getTackServerSideProps = function (
     getServerSideProps: GetServerSideProps,
     findUserById: FindUserById,
+    notLoggedInUserConstructor: new () => NotLoggedInUser,
 ): GetServerSideProps {
     const wrapped: GetServerSideProps = async function (context: TackServerSidePropsContext) {
         const user = await getUserFromToken(context.req as TackApiRequest, findUserById);
         context.user = user;
+        if (!context.user) {
+            context.notLoggedInUser = new notLoggedInUserConstructor();
+        }
         return getServerSideProps(context);
     };
     return wrapped;
@@ -93,4 +100,15 @@ export function tackNextConnect(findUserById: FindUserById, userConstructor: Use
             res.status(404).end("Page is not found");
         },
     }).use(attachUserToRequest(findUserById, userConstructor));
+}
+
+export function getFirstParamValue(params: ParsedUrlQuery | undefined, key: string): string | null {
+    if (!params) {
+        return null;
+    }
+    const values = params[key];
+    if (Array.isArray(values)) {
+        return values[0];
+    }
+    return values || null;
 }
