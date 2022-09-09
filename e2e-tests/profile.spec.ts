@@ -25,5 +25,7 @@ test.describe.serial("profile", async () => {
         const anotherPage = await anotherContext.newPage();
         await anotherPage.goto(`/profile/${username}`);
         await expect(anotherPage.locator(`main :text-is("${username}")`)).toBeVisible();
+        await anotherPage.close();
+        await anotherContext.close();
     });
 });
