@@ -35,6 +35,24 @@ test.describe.serial("sign up, login and token issuance", async () => {
         expect(Object.keys(await response.json())).toEqual(["id"]);
     });
 
+    test("should fail to create user with taken username/e-mail", async ({ request }) => {
+        const response = await request.post(`/api/user`, {
+            data: {
+                email: email,
+                password: password,
+                username,
+            },
+        });
+
+        expect(response.ok()).not.toBeTruthy();
+        expect(await response.json()).toEqual({
+            errors: {
+                username: "username already taken",
+                email: "email already taken",
+            },
+        });
+    });
+
     let token: string = "";
 
     test("should auth user and return token", async ({ request }) => {

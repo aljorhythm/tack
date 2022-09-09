@@ -103,6 +103,22 @@ export async function createUser(userRequest: CreateUserRequest): Promise<{ id: 
     if (!userRequest.email || !validator.isEmail(userRequest.email)) {
         errors["email"] = "invalid email";
     }
+
+    const users: User[] = await persistence.findUserByUsernameOrEmail(
+        userRequest.username,
+        userRequest.email,
+    );
+    if (users.length > 0) {
+        for (const user of users.map((u) => u.toObject())) {
+            if (user.email === userRequest.email) {
+                errors["email"] = "email already taken";
+            }
+            if (user.username === userRequest.username) {
+                errors["username"] = "username already taken";
+            }
+        }
+    }
+
     if (Object.keys(errors).length > 0) {
         throw { ...errors };
     }

@@ -68,3 +68,9 @@ export async function createUser(userRequest: CreateUserRequest): Promise<{ id: 
     const response = await (await usersCollection()).insertOne(userRequest);
     return { id: response.insertedId.toString() };
 }
+
+export async function findUserByUsernameOrEmail(username: string, email: string): Promise<User[]> {
+    const response = await (await usersCollection()).find({ email, username });
+    const arr = await response.toArray();
+    return arr.map(ConvertDbUserToDomainUser);
+}
