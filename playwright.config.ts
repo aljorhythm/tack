@@ -19,7 +19,7 @@ log(`playwright env config: ${JSON.stringify({ host, CI, slowMo })}`);
 const config: PlaywrightTestConfig = {
     forbidOnly: CI,
     retries: CI ? 2 : 0,
-    workers: CI ? 4 : 1,
+    workers: CI ? 4 : 2,
     testIgnore: ["pages/**", "__tests__/**"],
     use: {
         baseURL: host,

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
 import { type UserType } from "../api/user/types";
+import * as api from "../api/client";
 
 export default function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,8 +18,8 @@ export default function Navbar() {
         setIsLoggedIn(!!cookies["token"]);
         (async () => {
             if (!user && cookies.token) {
-                const response = await fetch("/api/user");
-                setUser(await response.json());
+                const me = await api.getMe();
+                setUser(me);
             }
         })();
     }, [isLoggedIn, cookies, user]);

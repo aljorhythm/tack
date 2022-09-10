@@ -1,5 +1,5 @@
 import { Tack } from "./tack/types";
-import { CreateTackFrom, SignUpResponse } from "./user/types";
+import { CreateTackFrom, SignUpResponse, UserType } from "./user/types";
 
 export async function editMyTag(tackId: string, tagsString: string) {
     return await fetch(`/api/user/tack/${tackId}`, {
@@ -90,6 +90,11 @@ export async function getTackText(tackId: string): Promise<string | null> {
     });
     const { text } = await response.json();
     return text;
+}
+
+export async function getMe(): Promise<UserType> {
+    const response = await fetch("/api/user");
+    return await response.json();
 }
 
 const client = { editMyTag };
