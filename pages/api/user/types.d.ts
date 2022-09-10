@@ -38,3 +38,8 @@ type CreateTackFrom = {
 type CreateResponse = {
     id: string;
 };
+
+export type SignUpResponse = {
+    errors: { [key: string]: string };
+    id?: string;
+};

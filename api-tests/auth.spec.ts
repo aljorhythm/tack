@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { test, expect } from "@playwright/test";
+import { type SignUpResponse } from "../pages/api/user/types";
 import { generatePassword } from "../test-helpers/user";
 
 let email = `${Date.now().toString()}${faker.internet.email()}`;
@@ -32,7 +33,9 @@ test.describe.serial("sign up, login and token issuance", async () => {
         });
 
         expect(response.ok()).toBeTruthy();
-        expect(Object.keys(await response.json())).toEqual(["id"]);
+        const data: SignUpResponse = await response.json();
+        expect(data.id).toBeTruthy();
+        expect(data.errors).toEqual({});
     });
 
     test("should fail to create user with taken username/e-mail", async ({ request }) => {

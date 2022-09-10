@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { SignUpResponse } from "./api/user";
+import * as api from "./api/client";
+import { SignUpResponse } from "./api/user/types";
 
 const Signup: NextPage = () => {
     const router = useRouter();
@@ -11,23 +12,12 @@ const Signup: NextPage = () => {
     const [errorMessage, setErrorMessage] = useState("");
 
     async function signUp() {
-        const response = await fetch("/api/user", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                password,
-                username,
-            }),
-        });
-        if (response.status === 200) {
+        try {
+            await api.signUp(email, password, username);
             router.push("/login");
-        } else {
-            const data: SignUpResponse = (await response.json()) as SignUpResponse;
+        } catch (data) {
             setErrorMessage(
-                Object.values(data.errors)
+                Object.values((data as SignUpResponse).errors)
                     .map((e) => `${e}.`)
                     .join(" "),
             );

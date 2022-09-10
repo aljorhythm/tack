@@ -1,3 +1,5 @@
+import { SignUpResponse } from "./user/types";
+
 export async function editMyTag(tackId: string, tagsString: string) {
     return await fetch(`/api/user/tack/${tackId}`, {
         method: "PATCH",
@@ -8,6 +10,31 @@ export async function editMyTag(tackId: string, tagsString: string) {
             tagsString,
         }),
     });
+}
+
+export async function signUp(
+    email: string,
+    password: string,
+    username: string,
+): Promise<SignUpResponse> {
+    const response = await fetch("/api/user", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            email,
+            password,
+            username,
+        }),
+    });
+    const data: SignUpResponse = (await response.json()) as SignUpResponse;
+
+    if (response.status === 200) {
+        return data;
+    } else {
+        throw data;
+    }
 }
 
 export async function login(email: string, password: string): Promise<string> {
