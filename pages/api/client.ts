@@ -1,4 +1,4 @@
-import { SignUpResponse } from "./user/types";
+import { CreateTackFrom, SignUpResponse } from "./user/types";
 
 export async function editMyTag(tackId: string, tagsString: string) {
     return await fetch(`/api/user/tack/${tackId}`, {
@@ -53,6 +53,22 @@ export async function login(email: string, password: string): Promise<string> {
     }
     const { token } = (await response.json()) as TokenResponse;
     return token;
+}
+
+export async function addTack(addTackUrl: string): Promise<string> {
+    const createTackFrom: CreateTackFrom = {
+        inputString: addTackUrl,
+    };
+    const response = await fetch("/api/tack", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(createTackFrom),
+    });
+
+    const { id } = await response.json();
+    return id;
 }
 
 const client = { editMyTag };

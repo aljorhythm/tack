@@ -3,28 +3,17 @@ import Router from "next/router";
 import { useState } from "react";
 import { Tack } from "./api/tack/types";
 import { findUserById } from "./api/user/persistence";
-import { CreateTackFrom } from "./api/user/types";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
 import TacksList from "./components/tacks-list";
 import NotLoggedInUserClass from "./api/notLoggedInUser/notLoggedInUser";
+import * as api from "./api/client";
 
 type Props = { tacks: Array<Tack> };
 
 const Tacks: NextPage<Props> = ({ tacks }: Props) => {
     const [addTackUrl, setAddTackUrl] = useState("");
     async function addTack() {
-        const createTackFrom: CreateTackFrom = {
-            inputString: addTackUrl,
-        };
-        const response = await fetch("/api/tack", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(createTackFrom),
-        });
-
-        const { id } = await response.json();
+        const id = await api.addTack(addTackUrl);
         if (id) {
             Router.reload();
         }
