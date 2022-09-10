@@ -12,7 +12,6 @@ export async function signUp(pom: PageObjectModel): Promise<{
 
     await pom.signup(email, password, username);
     await pom.login(email, password);
-    await pom.page.waitForNavigation();
     return { username, email };
 }
 
