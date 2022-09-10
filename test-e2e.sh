@@ -38,7 +38,7 @@ done
 if [ -z "$CI" ]; then
 
     echo detected non-ci environment
-    PLAYWRIGHT_SLOW_MO="${PLAYWRIGHT_SLOW_MO:-400}"
+    PLAYWRIGHT_SLOW_MO=0
 
 fi
 

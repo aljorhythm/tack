@@ -24,11 +24,13 @@ export default class PageObjectModel {
 
     async logout() {
         const page = this.page;
+        await page.goto("/");
         await page.locator(`nav >> text=Logout`).click();
     }
 
     async login(email: string, password: string) {
         const page = this.page;
+        await page.goto("/");
         await page.locator(`nav >> text=Login`).click();
         await page.waitForURL("/login");
         await page.locator("#email").fill(email);

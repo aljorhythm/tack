@@ -1,34 +1,34 @@
 import { test, expect, Page, BrowserContext } from "@playwright/test";
-import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
-import sites from "../pages/api/url/sites-data";
 import retry from "async-retry";
 import { signUp } from "../test-helpers/e2e-user";
+import sites from "../pages/api/url/sites-data";
+import { browser } from "process";
 
 const site = sites[0];
 
 test.describe.serial("list tacks", async () => {
-    let page: Page;
-    let pom: PageObjectModel;
+    let email: string, password: string;
     let context: BrowserContext;
     test.beforeAll(async ({ browser }) => {
         context = await browser.newContext();
-        page = await context.newPage();
-        pom = new PageObjectModel(page);
-        await signUp(pom);
+        const page = await context.newPage();
+        const pom = new PageObjectModel(page);
+        const userInfo = await signUp(pom);
+        email = userInfo.email;
+        password = userInfo.password;
     });
 
     test("should be able to insert tack and see added tack", async () => {
-        await page.locator("nav >> text=Tacks").click();
-        await page.waitForURL("/tacks");
+        const page = await context.newPage();
+        await page.goto("/tacks");
 
         const { url, title } = site;
 
         const inputString = `${url} #hello #there`;
         await page.locator(`[placeholder="https://tack.app #app #index"]`).fill(inputString);
         await page.locator('button:text("tack")').click();
-        await page.waitForNavigation();
-
+        await page.waitForSelector(`.tack:has-text("${url}")`);
         const tack = await page.locator(`.tack:has-text("${url}")`);
         await expect(tack).toBeVisible();
 
@@ -45,6 +45,9 @@ test.describe.serial("list tacks", async () => {
     });
 
     test("should be able to edit tack", async () => {
+        const page = await context.newPage();
+        await page.goto("/tacks");
+
         const { url } = site;
         const tack = await page.locator(`.tack:has-text("${url}")`);
 
@@ -75,6 +78,9 @@ test.describe.serial("list tacks", async () => {
     });
 
     test("should be able to see updated tack after editing", async () => {
+        const page = await context.newPage();
+        await page.goto("/tacks");
+
         const { url } = site;
         await retry(
             async () => {
@@ -92,6 +98,9 @@ test.describe.serial("list tacks", async () => {
     });
 
     test("should be able to see iframe of target website after clicking 🔍", async () => {
+        const page = await context.newPage();
+        await page.goto("/tacks");
+
         const { url } = site;
         const tack = await page.locator(`.tack:has-text("${url}")`);
 
@@ -112,6 +121,9 @@ test.describe.serial("list tacks", async () => {
     });
 
     test("should be able to see text of target website after clicking 📖", async () => {
+        const page = await context.newPage();
+        await page.goto("/tacks");
+
         const { url, text } = site;
         const tack = await page.locator(`.tack:has-text("${url}")`);
         let urlToText;
@@ -135,6 +147,9 @@ test.describe.serial("list tacks", async () => {
     });
 
     test("should open website in new tab when url is clicked", async () => {
+        const page = await context.newPage();
+        await page.goto("/tacks");
+
         const { url } = site;
         const newPageWait = page.context().waitForEvent("page", (p) => {
             return p.url() === url;

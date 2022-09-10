@@ -1,30 +1,33 @@
 import { createTestTacks, TestTack } from "../test-helpers/tacks";
-import { test, expect, Page } from "@playwright/test";
+import { test, expect, Page, BrowserContext } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import PageObjectModel from "./page-object-model";
 import { signUp } from "../test-helpers/e2e-user";
 
-test.describe.serial("search tacks", async () => {
-    let page: Page;
-    let pom: PageObjectModel;
+test.describe("search tacks", async () => {
     let testTacks: { [key: string]: TestTack };
-
+    let email: string, password: string;
+    let context: BrowserContext;
     test.beforeAll(async ({ browser }) => {
-        const context = await browser.newContext();
-        page = await context.newPage();
-        pom = new PageObjectModel(page);
-        await page.goto("/");
-        await signUp(pom);
+        context = await browser.newContext();
+        const page = await context.newPage();
+        const pom = new PageObjectModel(page);
+        const userInfo = await signUp(pom);
+        email = userInfo.email;
+        password = userInfo.password;
         testTacks = await createTestTacks(page.request, undefined);
     });
 
     test("should show search query from url in search input", async () => {
+        const page = await context.newPage();
         const randomString = faker.random.word();
         await page.goto(`/tacks/search?query=${randomString}`);
         expect(await page.locator(`#search-tack-url`).inputValue()).toEqual(randomString);
     });
 
     test("should be able to see search tag prompts", async () => {
+        const page = await context.newPage();
+
         await page.goto("/tacks/search");
         const expectedPrompts = ["programming", "javascript", "typescript", "framework", "agile"];
         const elementHandles = await page
@@ -40,6 +43,8 @@ test.describe.serial("search tacks", async () => {
     });
 
     test("should be able to search tacks", async () => {
+        const page = await context.newPage();
+
         await page.goto("/");
         const { daveFarley, jezHumble } = testTacks;
         await page.locator('nav :text("Search")').click();
@@ -57,7 +62,7 @@ test.describe.serial("search tacks", async () => {
         await page.locator(`[placeholder="#photography #singapore"]`).fill(testCase.searchInput);
         await page.locator('button:text("search")').click();
         await page.waitForURL("/tacks/search?query=devops+agile+continuous-delivery");
-
+        await page.waitForSelector(".tack");
         const tacks = await (await page.locator(`.tack`)).elementHandles();
         await expect(tacks.length).toBe(testCase.expected.length);
         const expectedUrls = testCase.expected.map((tack) => tack.url);

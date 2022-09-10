@@ -8,7 +8,7 @@ let password = generatePassword();
 let username = email.split("@")[0].replaceAll(/[\W_]/g, "");
 
 test.describe.serial("sign up, login and token issuance", async () => {
-    test("should fail to create user", async ({ request }) => {
+    test("should fail to create user with invalid fields", async ({ request }) => {
         const response = await request.post(`/api/user`, {
             data: {},
         });
@@ -23,7 +23,7 @@ test.describe.serial("sign up, login and token issuance", async () => {
         });
     });
 
-    test("should create user", async ({ request }) => {
+    test("should create user with valid fields", async ({ request }) => {
         const response = await request.post(`/api/user`, {
             data: {
                 email: email,
@@ -72,22 +72,26 @@ test.describe.serial("sign up, login and token issuance", async () => {
     });
 
     test("should get user details with token", async ({ request }) => {
-        const response = await request.get(`/api/user`, {
-            headers: { token: token },
-        });
-        expect(response.ok()).toBeTruthy();
-        const body = await response.json();
-        expect(body).toMatchObject({
-            email: email,
-            id: expect.any(String),
-        });
-        expect(body.password).not.toBeDefined();
+        await Promise.all(
+            Array.from({ length: 100 }).map(async () => {
+                const response = await request.get(`/api/user`, {
+                    headers: { token: token },
+                });
+                expect(response.ok()).toBeTruthy();
+                const body = await response.json();
+                expect(body).toMatchObject({
+                    email: email,
+                    id: expect.any(String),
+                });
+                expect(body.password).not.toBeDefined();
+            }),
+        );
     });
 
-    test("should fail to auth user", async ({ request }) => {
+    test("should fail to auth non-existing user", async ({ request }) => {
         const response = await request.post(`/api/auth/token`, {
             data: {
-                email: email,
+                email: `${email}.net`,
                 password: generatePassword(),
             },
         });

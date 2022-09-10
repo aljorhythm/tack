@@ -8,17 +8,11 @@ const email = `${Date.now()}${faker.internet.email()}`;
 const password = generatePassword();
 const username = email.split("@")[0].replaceAll(/[\W_]/g, "");
 
-test.describe.serial("auth", async () => {
-    let page: Page;
-    let pom: PageObjectModel;
-    test.beforeAll(async ({ browser }) => {
+test.describe("auth with no signup", async () => {
+    test("should show not logged in message", async ({ browser }) => {
         const context = await browser.newContext();
-        page = await context.newPage();
-        pom = new PageObjectModel(page);
-        await page.goto("/");
-    });
+        const page = await context.newPage();
 
-    test("should show not logged in message", async () => {
         await page.goto("/");
         await page.waitForSelector(`text=Log in to view your tacks`);
 
@@ -26,7 +20,10 @@ test.describe.serial("auth", async () => {
         await expect(await page.locator("nav >> text=Search").count()).toEqual(0);
     });
 
-    test("should show error message on sign up failure", async () => {
+    test("should show error message on sign up failure", async ({ browser }) => {
+        const context = await browser.newContext();
+        const page = await context.newPage();
+
         await page.goto("/");
         await page.locator(`nav >> text=Sign Up`).click();
         await page.waitForURL("/signup");
@@ -46,8 +43,14 @@ test.describe.serial("auth", async () => {
             },
         );
     });
+});
 
-    test("sign up, sign in and see profile page", async () => {
+test.describe.serial("auth with sign up", async () => {
+    test("sign up, sign in, see profile page and sign out", async ({ browser }) => {
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        const pom = new PageObjectModel(page);
+
         await page.goto("/");
         await page.locator(`nav >> text=Sign Up`).click();
 
@@ -72,9 +75,7 @@ test.describe.serial("auth", async () => {
 
         await page.goto("/");
         await page.waitForSelector(`[placeholder="https://tack.app #app #index"]`);
-    });
 
-    test("logout", async () => {
         await page.goto("/");
         expect(await page.locator(`nav >> text=Sign Up`).count()).toBe(0);
         expect(await page.locator(`nav >> text=Login`).count()).toBe(0);
@@ -82,7 +83,9 @@ test.describe.serial("auth", async () => {
         expect(await page.locator(`nav >> text=Sign Up`).count()).toBe(1);
     });
 
-    test("should fail login with incorrect credentials", async () => {
+    test("should fail login with incorrect credentials", async ({ browser }) => {
+        const context = await browser.newContext();
+        const page = await context.newPage();
         await page.goto("/");
 
         await (await page.waitForSelector("nav >> text=Login")).click();
@@ -92,9 +95,5 @@ test.describe.serial("auth", async () => {
         await page.locator('[placeholder="•••••••••"]').fill(wrongPassword);
         await page.locator('button:text("Login")').click();
         await expect(page.locator(`text=Login unsuccessful`)).toBeVisible();
-    });
-
-    test("logging in", async () => {
-        await pom.login(email, password);
     });
 });
