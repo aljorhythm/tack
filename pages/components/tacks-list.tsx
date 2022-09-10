@@ -127,7 +127,7 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
             {isViewing ? (
                 <div className="">
                     <div className=" border-slate-400 border-opacity-25 border-2   my-2"></div>
-                    <iframe className="" src={tack.url} />{" "}
+                    <iframe className="w-full" src={tack.url} />{" "}
                 </div>
             ) : (
                 <></>
