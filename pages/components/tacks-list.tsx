@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Tack } from "../api/tack/types";
 import classNames from "classnames";
-import { editMyTag } from "../api/client";
+import * as api from "../api/client";
 
 function formatDate(date: Date): string {
     date = new Date(date);
@@ -30,14 +30,8 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
 
     function save() {
         (async function () {
-            await editMyTag(tack.id, editTagsInputValue);
-
-            const response = await fetch(`/api/user/tack/${tack.id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            const updatedTack = await response.json();
+            await api.editMyTag(tack.id, editTagsInputValue);
+            const updatedTack = await api.getMyTag(tack.id);
             setTack(updatedTack);
         })();
         setEditing(false);
@@ -50,14 +44,7 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
             return;
         }
 
-        const response = await fetch(`/api/tack/${tack.id}/text`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        const { text } = await response.json();
+        const text = await api.getTackText(tack.id);
         setUrlToText(text || "");
     }
 

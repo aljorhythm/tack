@@ -1,3 +1,4 @@
+import { Tack } from "./tack/types";
 import { CreateTackFrom, SignUpResponse } from "./user/types";
 
 export async function editMyTag(tackId: string, tagsString: string) {
@@ -69,6 +70,26 @@ export async function addTack(addTackUrl: string): Promise<string> {
 
     const { id } = await response.json();
     return id;
+}
+
+export async function getMyTag(tackId: string): Promise<Tack> {
+    const response = await fetch(`/api/user/tack/${tackId}`, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    return await response.json();
+}
+
+export async function getTackText(tackId: string): Promise<string | null> {
+    const response = await fetch(`/api/tack/${tackId}/text`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    const { text } = await response.json();
+    return text;
 }
 
 const client = { editMyTag };
