@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
 import { useState } from "react";
+import * as api from "./api/client";
 
 const Login: NextPage = () => {
     const router = useRouter();
@@ -11,23 +12,13 @@ const Login: NextPage = () => {
     const [_, setCookies] = useCookies(["token"]);
 
     async function login() {
-        const response = await fetch("/api/token", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                password,
-            }),
-        });
-        if (response.status != 200) {
+        try {
+            const token = await api.login(email, password);
+            setCookies("token", token);
+            router.push("/tacks");
+        } catch {
             setError("Login unsuccessful");
-            return;
         }
-        const { token } = (await response.json()) as TokenResponse;
-        setCookies("token", token);
-        router.push("/tacks");
     }
 
     return (
