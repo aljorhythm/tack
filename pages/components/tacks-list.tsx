@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Tack } from "../api/tack/types";
 import classNames from "classnames";
+import { editMyTag } from "../api/client";
 
 function formatDate(date: Date): string {
     date = new Date(date);
@@ -14,7 +15,7 @@ function formatDate(date: Date): string {
 }
 
 function TackItem({ tack: tackArg }: { tack: Tack }) {
-    const [tack, setTack] = useState(tackArg);
+    const [tack, setTack] = useState<Tack>(tackArg);
     const [isViewing, setViewing] = useState(false);
     const [isViewingUrllToText, setViewingUrlToText] = useState(false);
     const [isEditing, setEditing] = useState(false);
@@ -29,15 +30,7 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
 
     function save() {
         (async function () {
-            await fetch(`/api/user/tack/${tack.id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    tagsString: editTagsInputValue,
-                }),
-            });
+            await editMyTag(tack.id, editTagsInputValue);
 
             const response = await fetch(`/api/user/tack/${tack.id}`, {
                 headers: {

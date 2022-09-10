@@ -18,7 +18,7 @@ interface User {
     getTackText(arg0: string): Promise<string | null>;
     getTack(arg0: string): Promise<Tack | null>;
     editTags(tackId: string, tagsString: string): Promise<boolean>;
-    addTack(createFrom: CreateTackFrom): Promise<{ id: string }>;
+    addTack(createFrom: CreateTackFrom): Promise<CreateResponse>;
     getMyTacks: (query?: string) => Promise<Tack[]>;
     getSearchPrompts(): Promise<string[]>;
     toObject: () => UserType;
@@ -33,4 +33,8 @@ type DbUser = {
 
 type CreateTackFrom = {
     inputString: string;
+};
+
+type CreateResponse = {
+    id: string;
 };

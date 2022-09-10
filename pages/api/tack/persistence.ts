@@ -6,7 +6,7 @@ import { DbTack } from "./types";
 
 let collection: Collection<DbTack> | null;
 
-async function tacksCollection(): Promise<Collection<DbTack>> {
+export async function tacksCollection(): Promise<Collection<DbTack>> {
     if (collection) {
         return collection;
     }
@@ -20,14 +20,14 @@ async function tacksCollection(): Promise<Collection<DbTack>> {
     return collection;
 }
 
-export async function createTack(tack: DbTack): Promise<{ id: string } | null> {
+export async function createTack(tack: DbTack): Promise<string | null> {
     const response = await (await tacksCollection()).insertOne(tack);
-    return { id: response.insertedId.toString() };
+    return response.insertedId.toString();
 }
 
 function convertDbTackToDomainTack(dbTack: WithId<DbTack>): Tack {
     return {
-        id: dbTack._id ? dbTack._id.toString() : undefined,
+        id: dbTack._id.toString(),
         created_at: dbTack.created_at,
         url: dbTack.url,
         userId: dbTack.userId.toString(),
@@ -87,8 +87,8 @@ export async function getMostCommonTagsByUserId(userId: string): Promise<string[
     return array.map((row) => row._id);
 }
 
-export async function getTacksByUserId(id: string, extendFilter?: Filter<DbTack>) {
-    let filterByUserId: Filter<DbTack> = { userId: new ObjectId(id) };
+export async function getTacksByUserId(userId: string, extendFilter?: Filter<DbTack>) {
+    let filterByUserId: Filter<DbTack> = { userId: new ObjectId(userId) };
     let filter = {};
     if (extendFilter) {
         filter = { ...extendFilter, ...filterByUserId };
@@ -101,6 +101,7 @@ export async function getTacksByUserId(id: string, extendFilter?: Filter<DbTack>
         .sort({ _id: -1 })
         .map(convertDbTackToDomainTack)
         .toArray();
+
     return results;
 }
 
@@ -128,4 +129,12 @@ export async function groupTagsByUserId(userId: string): Promise<{ tag: string; 
     return array.map((row) => {
         return { tag: row._id, count: row.count };
     });
+}
+
+export async function findOneById(id: string): Promise<null | Tack> {
+    const dbTack = await (await tacksCollection()).findOne({ _id: new ObjectId(id) });
+    if (!dbTack) {
+        return null;
+    }
+    return convertDbTackToDomainTack(dbTack);
 }

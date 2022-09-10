@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { test, expect, APIRequestContext } from "@playwright/test";
 import { type Tack } from "../pages/api/tack/types";
-import { type CreateTackFrom } from "../pages/api/user/types";
+import { type CreateResponse, type CreateTackFrom } from "../pages/api/user/types";
 import randomCase from "random-case";
 
 import {
@@ -30,7 +30,7 @@ test.describe.serial("tacks api", async () => {
     async function addTackHelper(
         request: APIRequestContext,
         inputString: string,
-        assertGotCreateResponseBody: (body: { id: string }) => void,
+        assertGotCreateResponseBody: (body: CreateResponse) => void,
         assertGotTacksResponseBody: (body: Array<Tack>, id: string) => void,
         token: string,
     ) {
@@ -40,7 +40,7 @@ test.describe.serial("tacks api", async () => {
         const gotCreateResponse = await createTack(request, data, token);
         expect(gotCreateResponse.ok()).toBeTruthy();
 
-        const gotCreateResponseBody: { id: string } = await gotCreateResponse.json();
+        const gotCreateResponseBody: CreateResponse = await gotCreateResponse.json();
         assertGotCreateResponseBody(gotCreateResponseBody);
 
         const gotGetResponse = await request.get(`/api/tack/tacks`, {

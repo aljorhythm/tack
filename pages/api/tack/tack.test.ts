@@ -1,12 +1,13 @@
 import { CreateTackFrom } from "../user/types";
-import { TackClass } from "./tack";
 import * as url from "../url/url";
+import { createForDb } from "./domain";
+import { ObjectId } from "mongodb";
 
 jest.mock("../url/url");
 
 const getTitleMock = url.getTitle as jest.Mock;
 
-describe("construct Tack", () => {
+describe("create Tack", () => {
     beforeEach(() => {
         getTitleMock.mockReturnValue(Promise.resolve("Title OF this Web page"));
     });
@@ -15,18 +16,19 @@ describe("construct Tack", () => {
         getTitleMock.mockClear();
     });
 
-    const userId = "123";
+    const userId: string = new ObjectId().toString();
+
     test("create from input without tags", async () => {
         const createFrom: CreateTackFrom = {
             inputString: "https://www.google.com",
         };
-        const tack: TackClass = await TackClass.create(createFrom, userId);
+        const tack = await createForDb(createFrom, userId);
 
         expect(tack).toEqual(
             expect.objectContaining({
                 url: "https://www.google.com",
                 tags: [],
-                userId,
+                userId: new ObjectId(userId),
                 title: "Title OF this Web page",
             }),
         );
@@ -37,13 +39,12 @@ describe("construct Tack", () => {
             inputString: "https://www.google.com #hello #bye",
         };
 
-        const tack: TackClass = await TackClass.create(createFrom, userId);
-
+        const tack = await createForDb(createFrom, userId);
         expect(tack).toEqual(
             expect.objectContaining({
                 url: "https://www.google.com",
                 tags: ["hello", "bye"],
-                userId,
+                userId: new ObjectId(userId),
                 title: "Title OF this Web page",
             }),
         );

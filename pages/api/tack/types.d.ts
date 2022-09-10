@@ -1,7 +1,7 @@
 export type Tack = {
     url: string;
     userId: string;
-    id: string | undefined;
+    id: string;
     tags: Array<String>;
     created_at: Date;
     title: string | null;

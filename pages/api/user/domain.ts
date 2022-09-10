@@ -1,8 +1,6 @@
 import { Filter, ObjectId } from "mongodb";
 import { sanitizeTag } from "../tack/helpers";
 import {
-    convertDomainTackToDbTack,
-    createTack,
     getTacksByUserId,
     updateTack,
     getTack,
@@ -10,12 +8,12 @@ import {
     groupTagsByUserId,
 } from "../tack/persistence";
 import * as persistence from "./persistence";
-import { TackClass } from "../tack/tack";
 import { DbTack, Tack } from "../tack/types";
 import { getText } from "../url/url";
-import { CreateTackFrom, PopularTag, User, UserType } from "./types";
+import { CreateResponse, CreateTackFrom, PopularTag, User, UserType } from "./types";
 import validator from "validator";
 import { isValidPassword } from "./validation";
+import * as tacks from "../tack/tack";
 
 type ConstructUserFrom = UserType;
 export class UserClass implements User {
@@ -59,14 +57,12 @@ export class UserClass implements User {
         return result > 0;
     }
 
-    async addTack(createFrom: CreateTackFrom): Promise<{ id: string }> {
-        const tack: Tack = await TackClass.create(createFrom, this.id);
-
-        const id = await createTack(convertDomainTackToDbTack(tack));
+    async addTack(createFrom: CreateTackFrom): Promise<CreateResponse> {
+        const id = await tacks.create(createFrom, this.id);
         if (!id) {
             throw new Error(`failed to create tack from ${createFrom}`);
         }
-        return id;
+        return { id };
     }
 
     async getMyTacks(query?: string): Promise<Tack[]> {
