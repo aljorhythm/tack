@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Tack } from "../api/tack/types";
 import classNames from "classnames";
-import * as api from "../api/client";
+import { useState } from "react";
+import { Tack } from "../pages/api/tack/types";
+import * as api from "../pages/api/client";
 
 function formatDate(date: Date): string {
     date = new Date(date);
@@ -14,7 +14,16 @@ function formatDate(date: Date): string {
     return `${dateString} ${timeString.toLocaleLowerCase()}`;
 }
 
-function TackItem({ tack: tackArg }: { tack: Tack }) {
+function removeQuery(url: string): string {
+    try {
+        new URL(url);
+        return url.split("?")[0];
+    } catch {
+        return url;
+    }
+}
+
+export default function TackItem({ tack: tackArg }: { tack: Tack }) {
     const [tack, setTack] = useState<Tack>(tackArg);
     const [isViewing, setViewing] = useState(false);
     const [isViewingUrllToText, setViewingUrlToText] = useState(false);
@@ -59,7 +68,7 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                         target="_blank"
                         rel="noreferrer"
                     >
-                        {tack.url}
+                        {removeQuery(tack.url)}
                     </a>
                 </div>
 
@@ -142,19 +151,5 @@ function TackItem({ tack: tackArg }: { tack: Tack }) {
                 <></>
             )}
         </>
-    );
-}
-
-export default function TacksList({ tacks = [] }: { tacks: Array<Tack> }) {
-    return (
-        <div>
-            {tacks.map((tack) => {
-                return (
-                    <div key={tack.id} className="tack py-2 border-b-2 w-full">
-                        <TackItem tack={tack}></TackItem>
-                    </div>
-                );
-            })}
-        </div>
     );
 }

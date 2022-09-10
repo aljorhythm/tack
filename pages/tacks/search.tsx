@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Tack } from "../api/tack/types";
 import { findUserById } from "../api/user/persistence";
 import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
-import TacksList from "../components/tacks-list";
+import TacksList from "../../components/tacks-list";
 import Link from "next/link";
 import NotLoggedInUserClass from "../api/notLoggedInUser/notLoggedInUser";
 

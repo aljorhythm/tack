@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
-import { type UserType } from "../api/user/types";
-import * as api from "../api/client";
+import { type UserType } from "../pages/api/user/types";
+import * as api from "../pages/api/client";
 
 export default function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
