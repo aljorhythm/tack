@@ -1,9 +1,7 @@
-import { test, expect, Page, BrowserContext } from "@playwright/test";
-import PageObjectModel from "./page-object-model";
+import { test, expect, BrowserContext } from "@playwright/test";
 import retry from "async-retry";
-import { signUp } from "../test-helpers/e2e-user";
 import sites from "../pages/api/url/sites-data";
-import { browser } from "process";
+import e2eTestHelper from "../test-helpers/e2e-user";
 
 const site = sites[0];
 
@@ -11,12 +9,10 @@ test.describe.serial("list tacks", async () => {
     let email: string, password: string;
     let context: BrowserContext;
     test.beforeAll(async ({ browser }) => {
-        context = await browser.newContext();
-        const page = await context.newPage();
-        const pom = new PageObjectModel(page);
-        const userInfo = await signUp(pom);
-        email = userInfo.email;
-        password = userInfo.password;
+        const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
+        email = details.email;
+        password = details.password;
+        context = details.context;
     });
 
     test("should be able to insert tack and see added tack", async () => {

@@ -1,16 +1,14 @@
 import { test, expect, Page, BrowserContext } from "@playwright/test";
-import PageObjectModel from "./page-object-model";
-import { signUp } from "../test-helpers/e2e-user";
+import e2eTestHelper from "../test-helpers/e2e-user";
 
 test.describe("profile", async () => {
     let username: string;
     let context: BrowserContext;
+
     test.beforeAll(async ({ browser }) => {
-        context = await browser.newContext();
-        const page = await browser.newPage();
-        const pom = new PageObjectModel(page);
-        const userInfo = await signUp(pom);
-        username = userInfo.username;
+        const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
+        username = details.username;
+        context = details.context;
     });
 
     test("should show profile page elements", async () => {

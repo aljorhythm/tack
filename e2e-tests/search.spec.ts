@@ -1,21 +1,16 @@
 import { createTestTacks, TestTack } from "../test-helpers/tacks";
-import { test, expect, Page, BrowserContext } from "@playwright/test";
+import { test, expect, BrowserContext } from "@playwright/test";
 import { faker } from "@faker-js/faker";
-import PageObjectModel from "./page-object-model";
-import { signUp } from "../test-helpers/e2e-user";
+import e2eTestHelper from "../test-helpers/e2e-user";
 
 test.describe("search tacks", async () => {
     let testTacks: { [key: string]: TestTack };
-    let email: string, password: string;
     let context: BrowserContext;
+
     test.beforeAll(async ({ browser }) => {
-        context = await browser.newContext();
-        const page = await context.newPage();
-        const pom = new PageObjectModel(page);
-        const userInfo = await signUp(pom);
-        email = userInfo.email;
-        password = userInfo.password;
-        testTacks = await createTestTacks(page.request, undefined);
+        const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
+        context = details.context;
+        testTacks = await createTestTacks(context.request, undefined);
     });
 
     test("should show search query from url in search input", async () => {

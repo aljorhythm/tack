@@ -1,23 +1,19 @@
 import { createTestTacks, TestTack } from "../test-helpers/tacks";
-import { test, expect, Page } from "@playwright/test";
-import { faker } from "@faker-js/faker";
+import { test, expect, Page, BrowserContext } from "@playwright/test";
 import PageObjectModel from "./page-object-model";
 import { type PopularTag } from "../pages/api/user/types";
-import { signUp } from "../test-helpers/e2e-user";
+import e2eTestHelper from "../test-helpers/e2e-user";
 
 test.describe.serial("explore tacks", async () => {
-    let page: Page;
-    let pom: PageObjectModel;
     let testTacks: { [key: string]: TestTack };
     let tagsAggregate: { [key: string]: { count: number } } = {};
     let expectedPopularTags: PopularTag[] = [];
+    let context: BrowserContext;
 
     test.beforeAll(async ({ browser }) => {
-        const context = await browser.newContext();
-        page = await context.newPage();
-        pom = new PageObjectModel(page);
-        await signUp(pom);
-        testTacks = await createTestTacks(page.request, undefined);
+        const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
+        context = details.context;
+        testTacks = await createTestTacks(context.request, undefined);
 
         for (const [_, testTack] of Object.entries(testTacks)) {
             for (const tag of testTack.tags) {
@@ -39,6 +35,7 @@ test.describe.serial("explore tacks", async () => {
     });
 
     test("should show tags with counts at /explore", async () => {
+        const page = await context.newPage();
         await page.goto(`/`);
         await page.locator('nav :text("Explore")').click();
         await expect(page.locator("body")).toContainText("Your Popular Tags");
