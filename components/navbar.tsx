@@ -6,6 +6,80 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { type UserType } from "../pages/api/user/types";
 import * as api from "../pages/api/client";
+import { FaSearch, FaPlus } from "react-icons/fa";
+
+enum NavbarMode {
+    Search,
+    Add,
+}
+function NavbarInput({ username }: { username: string }) {
+    const [mode, setMode] = useState<NavbarMode>(NavbarMode.Add);
+    const [placeholder, setPlaceholder] = useState("");
+    const [inputTextValue, setInputTextValue] = useState("");
+    const router = useRouter();
+
+    async function addTack() {
+        const id = await api.addTack(inputTextValue);
+        if (id) {
+            router.push({ pathname: `/profile/${username}` });
+        }
+    }
+
+    async function search() {
+        router.push({ pathname: `/profile/${username}`, query: { query: inputTextValue } });
+    }
+
+    useEffect(() => {
+        const map: { [key in NavbarMode]: string } = {
+            [NavbarMode.Add]: "Add a tack https://...",
+            [NavbarMode.Search]: "Search",
+        };
+        setPlaceholder(map[mode]);
+    }, [mode]);
+
+    return (
+        <div className="flex space-x-2">
+            <div className="flex space-x-2 hover:cursor-pointer">
+                {mode != NavbarMode.Search ? (
+                    <FaSearch className="search-mode" onClick={() => setMode(NavbarMode.Search)} />
+                ) : (
+                    <></>
+                )}
+                {mode != NavbarMode.Add ? (
+                    <FaPlus className="add-mode" onClick={() => setMode(NavbarMode.Add)} />
+                ) : (
+                    <></>
+                )}
+            </div>
+            <input
+                className="bg-slate-50 lg:w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                placeholder={placeholder}
+                onChange={(e) => setInputTextValue(e.target.value)}
+            />
+            {mode == NavbarMode.Add ? (
+                <button
+                    className="px-4 py-1 text-m w-32 font-semibold rounded border border-slate-200 text-white bg-slate-600 hover:bg-slate-500 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
+                    onClick={addTack}
+                >
+                    add
+                </button>
+            ) : (
+                <></>
+            )}
+
+            {mode == NavbarMode.Search ? (
+                <button
+                    className="px-4 py-1 text-m w-32 font-semibold rounded border border-slate-200 text-white bg-slate-600 hover:bg-slate-500 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
+                    onClick={search}
+                >
+                    search
+                </button>
+            ) : (
+                <></>
+            )}
+        </div>
+    );
+}
 
 export default function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -63,6 +137,8 @@ export default function Navbar() {
                     )}
                 </div>
             </div>
+            {isLoggedIn ? <NavbarInput username={user?.username || ""} /> : <></>}
+
             <div className="w-full block flex-grow lg:flex lg:justify-end lg:w-auto">
                 <div className="text-sm">
                     {isLoggedIn ? (

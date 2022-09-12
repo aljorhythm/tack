@@ -1,6 +1,5 @@
 import { createTestTacks, TestTack } from "../test-helpers/tacks";
-import { test, expect, Page, BrowserContext } from "@playwright/test";
-import PageObjectModel from "./page-object-model";
+import { test, expect, BrowserContext } from "@playwright/test";
 import { type PopularTag } from "../pages/api/user/types";
 import e2eTestHelper from "../test-helpers/e2e-user";
 

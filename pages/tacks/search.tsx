@@ -64,7 +64,7 @@ const Search: NextPage<Props> = ({ query, tacks, searchPrompts }: Props) => {
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
         let query = context.query?.query || "";
-        query = Array.isArray(query) ? query.join(" ") : query;
+        query = Array.isArray(query) ? query.join(" ") : query; //todo use getFirstParamValue
         const [tacks, searchPrompts] = await Promise.all([
             context.user?.getMyTacks(query),
             context.user?.getSearchPrompts(),

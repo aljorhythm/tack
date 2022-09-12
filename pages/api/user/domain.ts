@@ -27,6 +27,17 @@ export class UserClass implements User {
         this.username = createFrom.username;
     }
 
+    async getTacksByUserId(userId: string, query?: string | null | undefined): Promise<Tack[]> {
+        let filter: Filter<DbTack> | undefined;
+        if (query === "") {
+            return [];
+        }
+        if (query) {
+            filter = { tags: { $all: query.split(" ").map(sanitizeTag) } };
+        }
+        return await getTacksByUserId(userId, filter);
+    }
+
     async getUserByUsername(username: string): Promise<User | null> {
         return persistence.findOne({ username });
     }
