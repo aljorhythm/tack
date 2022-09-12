@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Tack } from "../pages/api/tack/types";
 import * as api from "../pages/api/client";
 
@@ -32,6 +32,12 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
     const [editTagsInputValue, setEditTagsInputValue] = useState(
         tack.tags.map((t) => `#${t}`).join(" "),
     );
+
+    const editInput = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        isEditing && editInput.current!.focus();
+    }, [isEditing]);
 
     function startEdit() {
         setEditing(true);
@@ -99,6 +105,7 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
             <div className="flex items-top">
                 {isEditing ? (
                     <input
+                        ref={editInput}
                         value={editTagsInputValue}
                         className="edit-input w-7/12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                         onChange={(e) => setEditTagsInputValue(e.target.value)}
