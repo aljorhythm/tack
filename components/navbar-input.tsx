@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import api from "../pages/api/client";
 import classNames from "classnames";
+import { getFirstParamValue } from "../pages/request";
 
 enum NavbarInputMode {
     Search = "search",
@@ -20,9 +21,10 @@ type NavbarModeDetails = {
 
 export default function NavbarInput({ username }: { username: string }) {
     const [mode, setMode] = useState<NavbarInputMode>(NavbarInputMode.Add);
-    const [inputTextValue, setInputTextValue] = useState("");
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const queryFromUrl = getFirstParamValue(router?.query, "query") || "";
+    const [inputTextValue, setInputTextValue] = useState<string>(queryFromUrl);
 
     async function addTack() {
         const id = await api.addTack(inputTextValue);
@@ -86,6 +88,7 @@ export default function NavbarInput({ username }: { username: string }) {
                 />
                 <input
                     ref={inputRef}
+                    value={inputTextValue}
                     className="flex-grow bg-slate-50 focus:outline-none border-none"
                     placeholder={modeDetails[mode].inputPlaceholder}
                     onChange={(e) => setInputTextValue(e.target.value)}

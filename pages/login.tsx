@@ -15,7 +15,7 @@ const Login: NextPage = () => {
         try {
             const token = await api.login(email, password);
             setCookies("token", token);
-            router.push("/tacks");
+            router.reload();
         } catch {
             setError("Login unsuccessful");
         }

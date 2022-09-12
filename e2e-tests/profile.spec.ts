@@ -3,6 +3,7 @@ import e2eTestHelper from "../test-helpers/e2e-user";
 import sites from "../pages/api/url/sites-data";
 import { createTack } from "../test-helpers/tacks";
 import retry from "async-retry";
+import { faker } from "@faker-js/faker";
 const site = sites[0];
 
 test.describe("profile", async () => {
@@ -139,5 +140,23 @@ test.describe("profile", async () => {
 
         const newPage = await newPageWait;
         expect(newPage.url()).toStrictEqual(url);
+    });
+});
+
+test.describe("profile with query", () => {
+    let username: string;
+    let context: BrowserContext;
+
+    test.beforeAll(async ({ browser }) => {
+        const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
+        username = details.username;
+        context = details.context;
+    });
+
+    test("should show search query from url in search input", async () => {
+        const page = await context.newPage();
+        const randomString = faker.random.word();
+        await page.goto(`/profile/${username}?query=${randomString}`);
+        expect(await page.locator(`nav >> input`).inputValue()).toEqual(randomString);
     });
 });
