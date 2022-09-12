@@ -19,13 +19,13 @@ test.describe("profile", async () => {
         const context = await browser.newContext();
         const page = await context.newPage();
         await page.goto(`/profile/${username}`);
-        await expect(page.locator(`main :text-is("${username}")`)).toBeVisible();
+        await expect(page.locator(`text=@${username}`)).toBeVisible();
     });
 
-    test("should show profile page elements", async () => {
+    test("should show profile page elements when logged in", async () => {
         const page = await context.newPage();
         await page.goto(`/profile/${username}`);
-        await expect(page.locator(`main :text-is("${username}")`)).toBeVisible();
+        await expect(page.locator(`text=@${username}`)).toBeVisible();
     });
 
     test("should be able to edit tack", async () => {

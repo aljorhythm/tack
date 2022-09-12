@@ -67,8 +67,6 @@ test.describe.serial("auth with sign up", async () => {
         await page.waitForNavigation({ url: "/tacks" });
 
         await page.locator(`nav >> text='${username}'`).click();
-        await page.waitForURL(`/profile/${username}`);
-        await expect(page.locator(`main :text-is("${username}")`)).toBeVisible();
 
         await page.goto("/");
         await expect(page.locator(`main :text-is("Welcome!")`)).toBeVisible();
