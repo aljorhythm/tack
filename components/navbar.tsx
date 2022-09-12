@@ -180,7 +180,9 @@ export default function Navbar() {
     return (
         <nav className="py-2 px-10 flex items-center justify-between flex-wrap bg-slate-50">
             <div className="flex items-center text-white">
-                <span className="font-semibold text-xl tracking-tight text-slate-600">Tack</span>
+                <Link href="/">
+                    <a className="font-semibold text-xl tracking-tight text-slate-600">Tack</a>
+                </Link>
             </div>
             {isLoggedIn ? <NavbarInput username={user?.username || ""} /> : <></>}
             <NavbarRight

@@ -1,6 +1,7 @@
 import { test, expect, BrowserContext } from "@playwright/test";
 import e2eTestHelper from "../test-helpers/e2e-user";
 import sites from "../pages/api/url/sites-data";
+import { faker } from "@faker-js/faker";
 const site = sites[0];
 
 test.describe("navbar", async () => {
@@ -65,6 +66,13 @@ test.describe("navbar", async () => {
         await page.locator('nav >> button:text("search")').click();
 
         await page.waitForURL(`/profile/${username}?query=%23hello+%23there`);
+    });
+
+    test("should go to home when press on logo", async () => {
+        const page = await context.newPage();
+        await page.goto(`/${faker.random.word()}`);
+        await page.locator('nav >> :text("Tack")').click();
+        await page.waitForURL(`/`);
     });
 });
 
