@@ -64,9 +64,10 @@ test.describe.serial("auth with sign up", async () => {
         await page.locator('[placeholder="•••••••••"]').fill(password);
         await page.locator('button:text("Login")').click();
 
-        await page.waitForNavigation({ url: "/tacks" });
+        await page.waitForNavigation();
 
         await page.locator(`nav >> text='${username}'`).click();
+        await page.waitForNavigation();
 
         await page.goto("/");
         await expect(page.locator(`main :text-is("Welcome!")`)).toBeVisible();
