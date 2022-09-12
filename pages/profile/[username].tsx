@@ -10,11 +10,12 @@ type Props = { user: UserType; tacks: Tack[] };
 
 const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
     return (
-        <div className="flex justify-center">
+        <div className="flex flex-col">
             <div>{user?.username}</div>
-
-            <div className="px-4 w-screen lg:w-10/12">
-                <TacksList tacks={tacks} />
+            <div className="flex justify-center">
+                <div className="px-4 w-screen lg:w-10/12">
+                    <TacksList tacks={tacks} />
+                </div>
             </div>
         </div>
     );

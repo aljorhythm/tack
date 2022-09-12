@@ -112,31 +112,7 @@ export default function Navbar() {
             <div className="flex items-center flex-shrink-0 text-white mr-10">
                 <span className="font-semibold text-xl tracking-tight text-slate-600">Tack</span>
             </div>
-            <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-                <div className="text-sm lg:flex-grow">
-                    {isLoggedIn ? (
-                        <>
-                            <Link href="/tacks">
-                                <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
-                                    Tacks
-                                </a>
-                            </Link>
-                            <Link href="/tacks/search">
-                                <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
-                                    Search
-                                </a>
-                            </Link>
-                            <Link href="/explore">
-                                <a className="block mt-4 lg:inline-block lg:mt-0 text-stale-200 hover:text-slate-400 mr-5">
-                                    Explore
-                                </a>
-                            </Link>
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                </div>
-            </div>
+
             {isLoggedIn ? <NavbarInput username={user?.username || ""} /> : <></>}
 
             <div className="w-full block flex-grow lg:flex lg:justify-end lg:w-auto">

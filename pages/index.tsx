@@ -1,20 +1,17 @@
-import { Tack } from "./api/tack/types";
 import { findUserById } from "./api/user/persistence";
-import Tacks from "./tacks";
 import { getTackServerSideProps, TackServerSidePropsContext } from "./request";
 import NotLoggedInUserClass from "./api/notLoggedInUser/notLoggedInUser";
 
 export type Props = {
     isLoggedIn: boolean;
-    tacks: Array<Tack>;
 };
 
 export default function Index(args: Props) {
-    const { isLoggedIn, tacks } = args;
+    const { isLoggedIn } = args;
     return (
         <>
             {isLoggedIn ? (
-                <Tacks tacks={tacks} />
+                <div className="place-self-center">Welcome!</div>
             ) : (
                 <div className="place-self-center">Log in to view your tacks</div>
             )}
@@ -24,8 +21,7 @@ export default function Index(args: Props) {
 
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
-        const tacks = await context.user?.getMyTacks();
-        const indexProps: Props = { tacks: tacks || [], isLoggedIn: !!context.user };
+        const indexProps: Props = { isLoggedIn: !!context.user };
         return { props: indexProps };
     },
     findUserById,

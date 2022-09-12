@@ -39,11 +39,9 @@ test.describe("search tacks", async () => {
 
     test("should be able to search tacks", async () => {
         const page = await context.newPage();
+        await page.goto("/tacks/search");
 
-        await page.goto("/");
         const { daveFarley, jezHumble } = testTacks;
-        await page.locator('nav :text("Search")').click();
-        await page.waitForURL("/tacks/search");
 
         await page.waitForFunction(() => {
             return document.querySelectorAll(".tack").length == 0;

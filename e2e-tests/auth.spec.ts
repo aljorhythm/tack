@@ -15,9 +15,6 @@ test.describe("auth with no signup", async () => {
 
         await page.goto("/");
         await page.waitForSelector(`text=Log in to view your tacks`);
-
-        await expect(await page.locator("nav >> text=Tacks").count()).toEqual(0);
-        await expect(await page.locator("nav >> text=Search").count()).toEqual(0);
     });
 
     test("should show error message on sign up failure", async ({ browser }) => {
@@ -74,7 +71,11 @@ test.describe.serial("auth with sign up", async () => {
         await expect(page.locator(`main :text-is("${username}")`)).toBeVisible();
 
         await page.goto("/");
-        await page.waitForSelector(`[placeholder="https://tack.app #app #index"]`);
+        await expect(page.locator(`main :text-is("Welcome!")`)).toBeVisible();
+
+        await expect(await page.locator("nav >> text=Tacks").count()).toEqual(0);
+        await expect(await page.locator("nav >> text=Search").count()).toEqual(0);
+        await expect(await page.locator("nav >> text=Explore").count()).toEqual(0);
 
         await page.goto("/");
         expect(await page.locator(`nav >> text=Sign Up`).count()).toBe(0);

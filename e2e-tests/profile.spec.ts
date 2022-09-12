@@ -15,15 +15,14 @@ test.describe("profile", async () => {
         context = details.context;
     });
 
-    test("should show profile page elements", async () => {
+    test("should show profile page elements from public view", async ({ browser }) => {
+        const context = await browser.newContext();
         const page = await context.newPage();
-
         await page.goto(`/profile/${username}`);
         await expect(page.locator(`main :text-is("${username}")`)).toBeVisible();
     });
 
-    test("should show profile page elements from public view", async ({ browser }) => {
-        const context = await browser.newContext();
+    test("should show profile page elements", async () => {
         const page = await context.newPage();
         await page.goto(`/profile/${username}`);
         await expect(page.locator(`main :text-is("${username}")`)).toBeVisible();
@@ -32,7 +31,7 @@ test.describe("profile", async () => {
     test("should be able to edit tack", async () => {
         const page = await context.newPage();
         await createTack(context.request, { inputString: `${site.url} #hello #there` });
-        await page.goto("/tacks");
+        await page.goto(`/profile/${username}`);
 
         const { url } = site;
         const tack = await page.locator(`.tack:has-text("${url}")`);
@@ -75,5 +74,70 @@ test.describe("profile", async () => {
                 retries: 3,
             },
         );
+    });
+
+    test("should be able to see iframe of target website after clicking 🔍", async () => {
+        const page = await context.newPage();
+        await page.goto(`/profile/${username}`);
+
+        const { url } = site;
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+
+        let iframe = await tack.locator("iframe");
+        expect(iframe).not.toBeVisible();
+
+        // open
+        await tack.locator("text=🔍").click();
+        iframe = await tack.locator("iframe");
+        expect(iframe).toBeVisible();
+
+        expect(await iframe.getAttribute("src")).toBe(url);
+
+        // close
+        await tack.locator("text=🔍").click();
+        iframe = await tack.locator("iframe");
+        expect(iframe).not.toBeVisible();
+    });
+
+    test("should be able to see text of target website after clicking 📖", async () => {
+        const page = await context.newPage();
+        await page.goto(`/profile/${username}`);
+
+        const { url, text } = site;
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+        let urlToText;
+
+        urlToText = await tack.locator(".url-to-text");
+        expect(urlToText).not.toBeVisible();
+
+        // open
+        await tack.locator("text=📖").click();
+
+        await retry(
+            async () => {
+                let urlToText = await tack.locator(".url-to-text");
+                expect(urlToText).toBeVisible();
+                expect(await urlToText.textContent()).toStrictEqual(text);
+            },
+            {
+                retries: 3,
+            },
+        );
+    });
+
+    test("should open website in new tab when url is clicked", async () => {
+        const page = await context.newPage();
+        await page.goto(`/profile/${username}`);
+
+        const { url } = site;
+        const newPageWait = page.context().waitForEvent("page", (p) => {
+            return p.url() === url;
+        });
+
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+        await tack.locator(".url").click();
+
+        const newPage = await newPageWait;
+        expect(newPage.url()).toStrictEqual(url);
     });
 });

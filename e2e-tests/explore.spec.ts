@@ -35,8 +35,7 @@ test.describe.serial("explore tacks", async () => {
 
     test("should show tags with counts at /explore", async () => {
         const page = await context.newPage();
-        await page.goto(`/`);
-        await page.locator('nav :text("Explore")').click();
+        await page.goto(`/explore`);
         await expect(page.locator("body")).toContainText("Your Popular Tags");
         const container = await page.locator(".popular-tags");
         expect(container).toBeVisible();
