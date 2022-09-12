@@ -67,13 +67,11 @@ export default function Navbar() {
     const [cookies, _, removeCookies] = useCookies(["token"]);
 
     useEffect(() => {
+        const isLoggedIn = !!cookies["token"];
         setIsLoggedIn(!!cookies["token"]);
-        (async () => {
-            if (!user && cookies.token) {
-                const me = await api.getMe();
-                setUser(me);
-            }
-        })();
+        isLoggedIn &&
+            typeof window !== "undefined" &&
+            setUser(JSON.parse(localStorage.getItem("user") || "null"));
     }, [isLoggedIn, cookies, user]);
 
     function logout() {
