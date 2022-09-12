@@ -16,7 +16,7 @@ enum NavbarMode {
 
 type NavbarModeDetails = {
     className: string;
-    setModeIcon: IconType;
+    icon: IconType;
     btnOnClick: Function;
     btnText: string;
     inputPlaceholder: string;
@@ -40,14 +40,14 @@ function NavbarInput({ username }: { username: string }) {
 
     const modeDetails: { [key in NavbarMode]: NavbarModeDetails } = {
         [NavbarMode.Add]: {
-            setModeIcon: FaPlus,
+            icon: FaPlus,
             className: "add-mode",
             btnOnClick: addTack,
             btnText: "add",
             inputPlaceholder: "Add a tack https://...",
         },
         [NavbarMode.Search]: {
-            setModeIcon: FaSearch,
+            icon: FaSearch,
             className: "search-mode",
             btnOnClick: search,
             btnText: "search",
@@ -55,27 +55,40 @@ function NavbarInput({ username }: { username: string }) {
         },
     };
 
+    const CurrentIcon = modeDetails[mode].icon;
+
     return (
         <div className="flex flex-wrap space-x-2 items-center hover:cursor-pointer">
-            {Object.entries(modeDetails).map(([modeKey, details]) => {
-                if (mode == modeKey) {
-                    return <></>;
-                }
-                const Icon = details.setModeIcon;
-                return (
-                    <Icon
-                        key={modeKey}
-                        className={details.className}
-                        onClick={() => setMode(modeKey as NavbarMode)}
-                    />
-                );
-            })}
+            {Object.entries(modeDetails)
+                .filter(([modeKey]) => {
+                    return mode !== modeKey;
+                })
+                .map(([modeKey, details]) => {
+                    const Icon = details.icon;
+                    return (
+                        <Icon
+                            key={modeKey}
+                            className={details.className}
+                            onClick={() => setMode(modeKey as NavbarMode)}
+                        />
+                    );
+                })}
 
-            <input
-                className="bg-slate-50 lg:w-96 border border-slate-300 text-slate-900 text-sm rounded focus:ring-slate-500 focus:border-slate-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                placeholder={modeDetails[mode].inputPlaceholder}
-                onChange={(e) => setInputTextValue(e.target.value)}
-            />
+            <div
+                className="flex rounded items-center py-2 px-2 space-x-2
+                    lg:w-96
+                    bg-slate-50  border border-slate-300 text-slate-900 text-sm"
+            >
+                <CurrentIcon
+                    style={{ color: "SlateGray" }}
+                    className="border-slate-300 text-slate-900 font-light"
+                />
+                <input
+                    className="flex-grow bg-slate-50 focus:outline-none border-none"
+                    placeholder={modeDetails[mode].inputPlaceholder}
+                    onChange={(e) => setInputTextValue(e.target.value)}
+                />
+            </div>
 
             <button
                 className="px-4 py-1 text-m w-32 font-semibold rounded border border-slate-200 text-white bg-slate-600 hover:bg-slate-500 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
