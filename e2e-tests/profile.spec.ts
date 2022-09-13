@@ -159,7 +159,7 @@ test.describe("delete tack", () => {
         );
     });
 
-    test("should note show deleted tack", async () => {
+    test("should not show deleted tack", async () => {
         const page = await context.newPage();
         await page.goto(`/profile/${username}`);
         const { url } = site;
