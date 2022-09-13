@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { Tack } from "../pages/api/tack/types";
-import * as api from "../pages/api/client";
+import api from "../pages/api/client";
 
 function formatDate(date: Date): string {
     date = new Date(date);
@@ -43,12 +43,10 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
         setEditing(true);
     }
 
-    function save() {
-        (async function () {
-            await api.editMyTag(tack.id, editTagsInputValue);
-            const updatedTack = await api.getMyTag(tack.id);
-            setTack(updatedTack);
-        })();
+    async function save() {
+        await api.editMyTag(tack.id, editTagsInputValue);
+        const updatedTack = await api.getMyTag(tack.id);
+        setTack(updatedTack);
         setEditing(false);
     }
 
@@ -117,7 +115,14 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
                         ref={editInput}
                         value={editTagsInputValue}
                         className="edit-input w-7/12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                        onChange={(e) => setEditTagsInputValue(e.target.value)}
+                        onChange={(e) => {
+                            setEditTagsInputValue(e.target.value);
+                        }}
+                        onKeyDown={(event) => {
+                            if (event.code === "Enter" || event.code === "NumpadEnter") {
+                                save();
+                            }
+                        }}
                         required
                     />
                 ) : (

@@ -44,3 +44,5 @@ export type SignUpResponse = {
     errors: { [key: string]: string };
     id?: string;
 };
+
+export type UserEditTagResponse = boolean;

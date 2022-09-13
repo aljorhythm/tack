@@ -1,6 +1,7 @@
 import { UserClass } from "../domain";
 import { findUserById } from "../persistence";
 import { tackNextConnect } from "../../../request";
+import { UserEditTagResponse } from "../types";
 
 const handler = tackNextConnect(findUserById, UserClass)
     .get(async (req, res) => {
@@ -11,7 +12,10 @@ const handler = tackNextConnect(findUserById, UserClass)
     .patch(async (req, res) => {
         const { id: tackId } = req.query;
         const { tagsString } = req.body;
-        const result = await req.user!.editTags(tackId as string, tagsString as string);
+        const result: UserEditTagResponse = await req.user!.editTags(
+            tackId as string,
+            tagsString as string,
+        );
         res.send(result);
     });
 
