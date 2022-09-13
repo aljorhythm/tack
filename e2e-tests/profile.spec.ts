@@ -59,7 +59,6 @@ test.describe("profile", async () => {
 
         editButton = await tack.locator('button:text-is("edit")');
         expect(await editButton.count()).toBe(1);
-
         saveButton = await tack.locator('button:text-is("save")');
         expect(await saveButton.count()).toBe(0);
 

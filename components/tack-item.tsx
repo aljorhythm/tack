@@ -44,10 +44,10 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
     }
 
     async function save() {
+        setEditing(false);
         await api.editMyTag(tack.id, editTagsInputValue);
         const updatedTack = await api.getMyTag(tack.id);
         setTack(updatedTack);
-        setEditing(false);
     }
 
     async function toggleSetViewingUrlToText() {
