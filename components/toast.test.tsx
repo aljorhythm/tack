@@ -9,8 +9,11 @@ test("should disappear after 2 seconds", async () => {
     await act(async () => {
         rendered = render(<Toast milliseconds={2000} message={"this is a toast"} key={0} />);
     });
+
     expect(await rendered!.findByText("this is a toast")).toBeVisible();
-    await sleep(2100);
+    await act(async () => {
+        await sleep(2100);
+    });
     expect(rendered!.queryByText("this is a toast")).toBeNull();
 });
 
