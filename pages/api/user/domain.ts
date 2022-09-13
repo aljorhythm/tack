@@ -38,7 +38,7 @@ export class UserClass implements User {
             return [];
         }
         if (query) {
-            filter = { tags: { $all: query.split(" ").map(sanitizeTag) } };
+            filter = UserClass.queryToGetTacksFilter(query);
         }
         return await getTacksByUserId(userId, filter);
     }
@@ -68,7 +68,7 @@ export class UserClass implements User {
     async editTags(tackId: string, tagsString: string) {
         const result = await updateTack(
             { userId: new ObjectId(this.id), _id: new ObjectId(tackId) },
-            { $set: { tags: tagsString.split(" ").map(sanitizeTag) } },
+            { $set: { tags: UserClass.tagsStringToTags(tagsString) } },
         );
         return result > 0;
     }
@@ -87,7 +87,7 @@ export class UserClass implements User {
             return [];
         }
         if (query) {
-            filter = { tags: { $all: query.split(" ").map(sanitizeTag) } };
+            filter = UserClass.queryToGetTacksFilter(query);
         }
         return await getTacksByUserId(this.id, filter);
     }
@@ -98,6 +98,14 @@ export class UserClass implements User {
             email: this.email,
             username: this.username,
         };
+    }
+
+    static queryToGetTacksFilter(query: string): Filter<DbTack> {
+        return { tags: { $all: query.split(" ").map(sanitizeTag) } };
+    }
+
+    static tagsStringToTags(tagsString: string): String[] {
+        return tagsString.split(" ").map(sanitizeTag);
     }
 }
 

@@ -1,7 +1,7 @@
 import { Filter } from "mongodb";
-import { sanitizeTag } from "../tack/helpers";
 import { getTacksByUserId } from "../tack/persistence";
 import { DbTack, Tack } from "../tack/types";
+import { UserClass } from "../user/domain";
 import { findOne } from "../user/persistence";
 import { User } from "../user/types";
 
@@ -14,7 +14,7 @@ class NotLoggedInUserClass implements NotLoggedInUser {
             return [];
         }
         if (query) {
-            filter = { tags: { $all: query.split(" ").map(sanitizeTag) } }; // todo refactor into helper queryStringToFilter
+            filter = UserClass.queryToGetTacksFilter(query);
         }
         return await getTacksByUserId(userId, filter);
     }
