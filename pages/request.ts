@@ -107,8 +107,13 @@ export function getFirstParamValue(params: ParsedUrlQuery | undefined, key: stri
         return null;
     }
     const values = params[key];
+
+    if (typeof values === "undefined") {
+        return null;
+    }
     if (Array.isArray(values)) {
         return values[0];
     }
-    return values || null;
+
+    return values;
 }
