@@ -14,7 +14,7 @@ function formatDate(date: Date): string {
     return `${dateString} ${timeString.toLocaleLowerCase()}`;
 }
 
-function removeQuery(url: string): string {
+function removeQueryFromUrl(url: string): string {
     try {
         new URL(url);
         return url.split("?")[0];
@@ -64,59 +64,54 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
     }
 
     return (
-        <>
-            <div className="flex flex-wrap items-center">
-                <div className="w-2/4 text-xl  text-slate-800">
-                    <div className="title font-medium">{tack.title}</div>
-                    <a
-                        className="url text-sm hover:underline hover:text-slate-600"
-                        href={tack.url}
-                        target="_blank"
-                        rel="noreferrer"
+        <div className="space-y-2">
+            <div className="flex flex-wrap">
+                <div className="flex space-x-4 items-center">
+                    <div className="title text-lg font-medium">{tack.title}</div>
+                    <div className="created-at text-slate-800">{formatDate(tack.created_at)}</div>
+                    <button
+                        className={classNames(
+                            "flex",
+                            "p-2",
+                            "rounded",
+                            "items-start",
+                            "hover:border-b-2",
+                            {
+                                "border-b-2": isViewing,
+                            },
+                        )}
+                        onClick={() => setViewing(!isViewing)}
                     >
-                        {removeQuery(tack.url)}
-                    </a>
-                </div>
-
-                <div className="flex items-center">
-                    <div className="created-at mr-2 text-sm text-slate-800">
-                        {formatDate(tack.created_at)}
-                    </div>
-                    <div className="flex items-start m:space-x-2 lg:space-x-4">
-                        <button
-                            className={classNames(
-                                "flex",
-                                "p-2",
-                                "rounded",
-                                "items-start",
-                                "hover:border-b-2",
-                                {
-                                    "border-b-2": isViewingUrllToText,
-                                },
-                            )}
-                            onClick={() => setViewing(!isViewing)}
-                        >
-                            🔍
-                        </button>
-                        <button
-                            className={classNames(
-                                "flex",
-                                "p-2",
-                                "rounded",
-                                "items-start",
-                                "hover:border-b-2",
-                                {
-                                    "border-b-2": isViewingUrllToText,
-                                },
-                            )}
-                            onClick={toggleSetViewingUrlToText}
-                        >
-                            📖
-                        </button>
-                    </div>
+                        🔍
+                    </button>
+                    <button
+                        className={classNames(
+                            "flex",
+                            "p-2",
+                            "rounded",
+                            "items-start",
+                            "hover:border-b-2",
+                            {
+                                "border-b-2": isViewingUrllToText,
+                            },
+                        )}
+                        onClick={toggleSetViewingUrlToText}
+                    >
+                        📖
+                    </button>
                 </div>
             </div>
-            <div className="flex items-top">
+            <div className="flex flex-wrap">
+                <a
+                    className="url text-sm hover:underline hover:text-slate-600"
+                    href={tack.url}
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    {removeQueryFromUrl(tack.url)}
+                </a>
+            </div>
+            <div className="flex flex-wrap">
                 {isEditing ? (
                     <input
                         ref={editInput}
@@ -153,24 +148,24 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
                         </button>
                     )}
                 </div>
-            </div>
-            {isViewing ? (
-                <div className="">
-                    <div className=" border-slate-400 border-opacity-25 border-2  my-2"></div>
-                    <iframe className="w-full" src={tack.url} />{" "}
-                </div>
-            ) : (
-                <></>
-            )}
+                {isViewing ? (
+                    <div className="w-full">
+                        <div className=" border-slate-400 border-opacity-25 border-2  my-2"></div>
+                        <iframe className="w-full" src={tack.url} />{" "}
+                    </div>
+                ) : (
+                    <></>
+                )}
 
-            {isViewingUrllToText ? (
-                <div className="">
-                    <div className="border-slate-400 border-opacity-25 border-2 my-2"></div>
-                    <div className="w-full url-to-text">{urlToText}</div>
-                </div>
-            ) : (
-                <></>
-            )}
-        </>
+                {isViewingUrllToText ? (
+                    <div className="">
+                        <div className="border-slate-400 border-opacity-25 border-2 my-2"></div>
+                        <div className="w-full url-to-text">{urlToText}</div>
+                    </div>
+                ) : (
+                    <></>
+                )}
+            </div>
+        </div>
     );
 }
