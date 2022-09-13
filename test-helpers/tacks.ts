@@ -8,6 +8,14 @@ export async function createTack(request: APIRequestContext, data: CreateTackFro
     });
 }
 
+export async function createTacks(
+    request: APIRequestContext,
+    list: CreateTackFrom[],
+    token?: string,
+) {
+    return await Promise.all(list.map((item) => createTack(request, item, token)));
+}
+
 export type TestTack = { url: string; tags: string[] };
 
 export const google = {

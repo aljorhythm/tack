@@ -6,6 +6,7 @@ import {
     getTack,
     getMostCommonTagsByUserId,
     groupTagsByUserId,
+    deleteTackWithUserId,
 } from "../tack/persistence";
 import * as persistence from "./persistence";
 import { DbTack, Tack } from "../tack/types";
@@ -25,6 +26,10 @@ export class UserClass implements User {
         this.id = createFrom.id;
         this.email = createFrom.email;
         this.username = createFrom.username;
+    }
+
+    async deleteMyTack(tackId: string): Promise<boolean> {
+        return (await deleteTackWithUserId(this.id, tackId)) > 0;
     }
 
     async getTacksByUserId(userId: string, query?: string | null | undefined): Promise<Tack[]> {

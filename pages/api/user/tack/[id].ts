@@ -1,6 +1,6 @@
 import { UserClass } from "../domain";
 import { findUserById } from "../persistence";
-import { tackNextConnect } from "../../../request";
+import { getFirstParamValue, tackNextConnect } from "../../../request";
 import { UserEditTagResponse } from "../types";
 
 const handler = tackNextConnect(findUserById, UserClass)
@@ -16,6 +16,14 @@ const handler = tackNextConnect(findUserById, UserClass)
             tackId as string,
             tagsString as string,
         );
+        res.send(result);
+    })
+    .delete(async (req, res) => {
+        const tackId = getFirstParamValue(req.query, "id");
+        if (!req.user) {
+            throw "no user";
+        }
+        const result = await req.user.deleteMyTack(tackId!);
         res.send(result);
     });
 

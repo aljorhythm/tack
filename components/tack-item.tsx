@@ -28,6 +28,7 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
     const [isViewing, setViewing] = useState(false);
     const [isViewingUrllToText, setViewingUrlToText] = useState(false);
     const [isEditing, setEditing] = useState(false);
+    const [isDeleted, setIsDeleted] = useState(false);
     const [urlToText, setUrlToText] = useState<string | null>(null);
     const [editTagsInputValue, setEditTagsInputValue] = useState(
         tack.tags.map((t) => `#${t}`).join(" "),
@@ -38,6 +39,11 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
     useEffect(() => {
         isEditing && editInput.current!.focus();
     }, [isEditing]);
+
+    async function deleteTack() {
+        setIsDeleted(true);
+        await api.deleteMyTack(tack.id);
+    }
 
     function startEdit() {
         setEditing(true);
@@ -61,8 +67,10 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
         setUrlToText(text || "");
     }
 
-    return (
-        <div className="space-y-2">
+    return isDeleted ? (
+        <></>
+    ) : (
+        <div className="space-y-2 border-b-2 pb-2">
             <div className="flex flex-wrap">
                 <div className="flex space-x-4 items-center">
                     <div className="title text-lg font-medium">{tack.title}</div>
@@ -152,6 +160,13 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
                             edit
                         </button>
                     )}
+
+                    <button
+                        onClick={deleteTack}
+                        className="delete btn btn-slate p-2 radius rounded font-bold text-black hover:bg-slate-200 bg-slate-300"
+                    >
+                        delete
+                    </button>
                 </div>
                 {isViewing ? (
                     <div className="w-full">

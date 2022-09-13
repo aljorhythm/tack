@@ -13,6 +13,7 @@ type UserType = {
 };
 
 interface User {
+    deleteMyTack(tackId: string): Promise<boolean>;
     getTacksByUserId(username: string, query?: string | null): Promise<Tack[]>;
     getUserByUsername(username: string | null): Promise<User | null>;
     getMyPopularTags(): Promise<PopularTag[]>;

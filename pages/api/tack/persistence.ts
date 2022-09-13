@@ -105,6 +105,14 @@ export async function getTacksByUserId(userId: string, extendFilter?: Filter<DbT
     return results;
 }
 
+export async function deleteTackWithUserId(userId: string, tackId: string): Promise<number> {
+    return (
+        await (
+            await tacksCollection()
+        ).deleteOne({ _id: new ObjectId(tackId), userId: new ObjectId(userId) })
+    ).deletedCount;
+}
+
 export async function groupTagsByUserId(userId: string): Promise<{ tag: string; count: number }[]> {
     const results = await (
         await tacksCollection()
@@ -138,3 +146,5 @@ export async function findOneById(id: string): Promise<null | Tack> {
     }
     return convertDbTackToDomainTack(dbTack);
 }
+
+//todo combine all into persistence object

@@ -16,6 +16,15 @@ const api = {
         const response = await fetch("/api/user");
         return await response.json();
     },
+    async deleteMyTack(tackId: string) {
+        const response = await fetch(`/api/user/tack/${tackId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return await response.json();
+    },
     async editMyTack(tackId: string, tagsString: string): Promise<UserEditTagResponse> {
         const response = await fetch(`/api/user/tack/${tackId}`, {
             method: "PATCH",

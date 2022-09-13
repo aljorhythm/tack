@@ -1,7 +1,7 @@
 import { test, expect, BrowserContext } from "@playwright/test";
 import e2eTestHelper from "../test-helpers/e2e-user";
 import sites from "../pages/api/url/sites-data";
-import testTacks, { createTack } from "../test-helpers/tacks";
+import testTacks, { createTack, createTacks } from "../test-helpers/tacks";
 import retry from "async-retry";
 import { faker } from "@faker-js/faker";
 import log from "../log";
@@ -140,6 +140,35 @@ test.describe("profile", async () => {
 
         const newPage = await newPageWait;
         expect(newPage.url()).toStrictEqual(url);
+    });
+});
+
+test.describe("delete tack", () => {
+    let username: string;
+    let context: BrowserContext;
+
+    test.beforeAll(async ({ browser }) => {
+        const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
+        username = details.username;
+        context = details.context;
+        await createTacks(
+            context.request,
+            sites.map((site) => {
+                return { inputString: site.url };
+            }),
+        );
+    });
+
+    test("should note show deleted tack", async () => {
+        const page = await context.newPage();
+        await page.goto(`/profile/${username}`);
+        const { url } = site;
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+        let deleteButton = await tack.locator(".delete");
+        await deleteButton.click();
+        await expect(page.locator(`.tack:has-text("${url}")`)).not.toBeVisible();
+        await page.reload();
+        await expect(page.locator(`.tack:has-text("${url}")`)).not.toBeVisible();
     });
 });
 
