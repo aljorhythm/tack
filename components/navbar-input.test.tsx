@@ -1,4 +1,6 @@
 import { act, fireEvent, render } from "@testing-library/react";
+import exp from "constants";
+import { query } from "express";
 import api from "../pages/api/client";
 import NavbarInput from "./navbar-input";
 
@@ -54,5 +56,11 @@ describe("input area behaviors", () => {
         });
 
         expect(addTackSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test("mode should be search when query exists", async () => {
+        mockQuery.mockReturnValue({ query: "abc" });
+        const rendered = render(<NavbarInput username="" />);
+        expect(rendered.getByRole("button", { name: /search/ })).toBeVisible();
     });
 });

@@ -27,6 +27,9 @@ export default function NavbarInput({ username }: { username: string }) {
 
     useEffect(() => {
         setInputTextValue(getFirstParamValue(router?.query, "query") || "");
+        if (router?.query?.query) {
+            setMode(NavbarInputMode.Search);
+        }
     }, [router.query]);
 
     function setModeOnClick(mode: NavbarInputMode) {
