@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { FaCopy } from "react-icons/fa";
 import TacksList from "../../components/tacks-list";
+import Toast, { useToast } from "../../components/toast";
 import NotLoggedInUserClass from "../api/notLoggedInUser/notLoggedInUser";
 import { Tack } from "../api/tack/types";
 import { findUserById } from "../api/user/persistence";
@@ -10,6 +11,7 @@ import { getFirstParamValue, getTackServerSideProps, TackServerSidePropsContext 
 type Props = { user: UserType; tacks: Tack[]; key: string | null };
 
 const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
+    const [toast, toastOptions] = useToast();
     async function copyToClipboard() {
         await navigator.clipboard.writeText(
             tacks
@@ -18,6 +20,8 @@ const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
                 })
                 .join("\n\n"),
         );
+
+        toast("copied to clipboard", 600);
     }
     return (
         <div className="flex flex-col items-center space-y-5">
@@ -32,6 +36,11 @@ const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
                     <TacksList tacks={tacks} />
                 </div>
             </div>
+            <Toast
+                key={toastOptions.key}
+                milliseconds={toastOptions.milliseconds}
+                message={toastOptions.message}
+            />
         </div>
     );
 };

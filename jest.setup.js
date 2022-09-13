@@ -6,3 +6,9 @@ global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
 jestFetchMock.enableMocks();
+
+Object.assign(navigator, {
+    clipboard: {
+        writeText: () => {},
+    },
+});

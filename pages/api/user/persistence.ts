@@ -28,7 +28,7 @@ export async function usersCollection(): Promise<Collection<DbUser>> {
     return collection;
 }
 
-export const saltRounds = await bcrypt.genSalt();
+export const saltRounds = bcrypt.genSaltSync();
 
 function ConvertDbUserToDomainUser(dbUser: WithId<DbUser>): User {
     return new UserClass({
