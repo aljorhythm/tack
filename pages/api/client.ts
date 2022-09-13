@@ -97,6 +97,6 @@ export async function getMe(): Promise<UserType> {
     return await response.json();
 }
 
-const api = { editMyTag, addTack };
+const api = { editMyTag, addTack, login };
 
 export default api;

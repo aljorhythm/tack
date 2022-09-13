@@ -1,12 +1,9 @@
-import { useCookies } from "react-cookie";
-
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useEffect, useState } from "react";
 import { type UserType } from "../pages/api/user/types";
-import * as api from "../pages/api/client";
 import NavbarInput from "./navbar-input";
+import useSessionUser from "../pages/useSessionUser";
 
 function NavbarRight({
     isLoggedIn,
@@ -60,24 +57,8 @@ function NavbarRight({
 }
 
 export default function Navbar() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState<null | UserType>(null);
+    const [user, isLoggedIn, _, __, logout] = useSessionUser();
     const router = useRouter();
-
-    const [cookies, _, removeCookies] = useCookies(["token"]);
-
-    useEffect(() => {
-        const isLoggedIn = !!cookies["token"];
-        setIsLoggedIn(!!cookies["token"]);
-        isLoggedIn &&
-            typeof window !== "undefined" &&
-            setUser(JSON.parse(localStorage.getItem("user") || "null"));
-    }, [isLoggedIn, cookies]);
-
-    function logout() {
-        removeCookies("token");
-        router.push({ pathname: "/login" });
-    }
 
     function goToProfile() {
         router.push({ pathname: `/profile/${user?.username}` });

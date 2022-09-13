@@ -152,7 +152,6 @@ test.describe("profile with query", () => {
         const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
         username = details.username;
         context = details.context;
-        await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     });
 
     test("should show search query from url in search input", async () => {
@@ -167,6 +166,7 @@ test.describe("profile with query", () => {
             log("skipping clipboard copy test on non-chromium");
             return;
         }
+        await context.grantPermissions(["clipboard-read", "clipboard-write"]);
         for (const tack of sites) {
             await createTack(context.request, {
                 inputString: `${tack.url}`,

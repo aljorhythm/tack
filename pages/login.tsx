@@ -1,33 +1,14 @@
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
-import { useEffect, useState } from "react";
-import * as api from "./api/client";
+import { useState } from "react";
+import useSessionUser from "./useSessionUser";
 
 const Login: NextPage = () => {
-    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [cookies, setCookies] = useCookies(["token"]);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [_, isLoggedIn, hookLogin, loginErrorMessage] = useSessionUser();
 
-    useEffect(() => {
-        setIsLoggedIn(!!cookies.token);
-        if (cookies.token) {
-            router.push("/");
-        }
-    }, [cookies, router]);
-
-    async function login() {
-        try {
-            const token = await api.login(email, password);
-            setCookies("token", token);
-            typeof window !== "undefined" &&
-                localStorage.setItem("user", JSON.stringify(await api.getMe()));
-        } catch {
-            setError("Login unsuccessful");
-        }
+    function login() {
+        hookLogin(email, password);
     }
 
     return (
@@ -75,7 +56,7 @@ const Login: NextPage = () => {
                     >
                         Login
                     </button>
-                    <div>{error}</div>
+                    <div>{loginErrorMessage}</div>
                 </>
             ) : (
                 <></>

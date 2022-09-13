@@ -66,7 +66,7 @@ test.describe.serial("auth with sign up", async () => {
 
         await page.waitForNavigation();
 
-        await page.locator(`nav >> text='${username}'`).click();
+        await page.locator(`nav >> text=${username}`).click();
         await page.waitForNavigation();
 
         await page.goto("/");
@@ -80,6 +80,7 @@ test.describe.serial("auth with sign up", async () => {
         expect(await page.locator(`nav >> text=Sign Up`).count()).toBe(0);
         expect(await page.locator(`nav >> text=Login`).count()).toBe(0);
         await pom.logout();
+        expect(await page.locator(`nav >> text=${username}`).count()).toBe(0);
         expect(await page.locator(`nav >> text=Sign Up`).count()).toBe(1);
     });
 
