@@ -26,6 +26,11 @@ export default function NavbarInput({ username }: { username: string }) {
     const queryFromUrl = getFirstParamValue(router?.query, "query") || "";
     const [inputTextValue, setInputTextValue] = useState<string>(queryFromUrl);
 
+    function setModeOnClick(mode: NavbarInputMode) {
+        setMode(mode);
+        setInputTextValue("");
+    }
+
     async function addTack() {
         const id = await api.addTack(inputTextValue);
         if (id) {
@@ -72,7 +77,7 @@ export default function NavbarInput({ username }: { username: string }) {
                         <Icon
                             key={modeKey}
                             className={classNames("set-mode-icon", details.className)}
-                            onClick={() => setMode(modeKey as NavbarInputMode)}
+                            onClick={() => setModeOnClick(modeKey as NavbarInputMode)}
                         />
                     );
                 })}
