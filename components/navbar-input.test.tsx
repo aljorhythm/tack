@@ -2,49 +2,57 @@ import { act, fireEvent, render } from "@testing-library/react";
 import api from "../pages/api/client";
 import NavbarInput from "./navbar-input";
 
+const mockQuery = jest.fn();
+
 jest.mock("next/router", () => ({
     useRouter() {
         return {
             route: "/",
             pathname: "",
-            query: "",
+            query: mockQuery(),
             asPath: "",
         };
     },
 }));
 
-test("input should be focused after selecting mode", async () => {
-    const rendered = render(<NavbarInput username="" />);
-    const editButton = rendered.container.querySelector(".set-mode-icon");
-    await act(() => {
+describe("input area behaviors", () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    test("input should be focused after selecting mode", async () => {
+        const rendered = render(<NavbarInput username="" />);
+        const editButton = rendered.container.querySelector(".set-mode-icon");
+        await act(() => {
+            fireEvent.click(editButton!);
+        });
+        const input = await rendered.findByPlaceholderText("Search");
+        expect(input).toHaveFocus();
+    });
+
+    test("input should be cleared after selecting mode", async () => {
+        const rendered = render(<NavbarInput username="" />);
+        const input = await rendered.container.querySelector("input");
+        await act(() => {
+            fireEvent.change(input!, { target: { value: "abc def" } });
+        });
+        const editButton = rendered.container.querySelector(".set-mode-icon");
         fireEvent.click(editButton!);
-    });
-    const input = await rendered.findByPlaceholderText("Search");
-    expect(input).toHaveFocus();
-});
-
-test("input should be cleared after selecting mode", async () => {
-    const rendered = render(<NavbarInput username="" />);
-    const input = await rendered.container.querySelector("input");
-    await act(() => {
-        fireEvent.change(input!, { target: { value: "abc def" } });
-    });
-    const editButton = rendered.container.querySelector(".set-mode-icon");
-    fireEvent.click(editButton!);
-    expect(input).toHaveValue("");
-});
-
-test("keypress enter in input should submit", async () => {
-    const addTackSpy = jest.spyOn(api, "addTack").mockReturnValue(Promise.resolve(""));
-    const rendered = render(<NavbarInput username="" />);
-    const input = await rendered.container.querySelector("input");
-    await act(() => {
-        fireEvent.change(input!, { target: { value: "abc def" } });
+        expect(input).toHaveValue("");
     });
 
-    await act(async () => {
-        fireEvent.keyDown(input!, { key: "Enter", code: "Enter", charCode: 13 });
-    });
+    test("keypress enter in input should submit", async () => {
+        const addTackSpy = jest.spyOn(api, "addTack").mockReturnValue(Promise.resolve(""));
+        const rendered = render(<NavbarInput username="" />);
+        const input = await rendered.container.querySelector("input");
+        await act(() => {
+            fireEvent.change(input!, { target: { value: "abc def" } });
+        });
 
-    expect(addTackSpy).toHaveBeenCalledTimes(1);
+        await act(async () => {
+            fireEvent.keyDown(input!, { key: "Enter", code: "Enter", charCode: 13 });
+        });
+
+        expect(addTackSpy).toHaveBeenCalledTimes(1);
+    });
 });
