@@ -6,16 +6,19 @@ import { findUserById } from "../api/user/persistence";
 import { type UserType } from "../api/user/types";
 import { getFirstParamValue, getTackServerSideProps, TackServerSidePropsContext } from "../request";
 
-type Props = { user: UserType; tacks: Tack[] };
+type Props = { user: UserType; tacks: Tack[]; key: string };
 
 const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
     return (
         <div className="flex flex-col">
             <div className="flex justify-center">
-                <div className="px-4 w-screen lg:w-10/12">@{user?.username}</div>
+                <div className="w-screen lg:w-10/12">@{user?.username}</div>
             </div>
-            <div className="flex justify-center">
-                <div className="px-4 w-screen lg:w-10/12">
+            <div className="flex flex-wrap justify-center">
+                <div className="">
+                    <button className="copy-to-clipboard">copy</button>
+                </div>
+                <div className="w-screen lg:w-10/12">
                     <TacksList tacks={tacks} />
                 </div>
             </div>
@@ -56,7 +59,7 @@ export const getServerSideProps = getTackServerSideProps(
             }
             return context.notLoggedInUser!.getTacksByUserId(profileUser.id, query);
         })();
-        const props: Props = { user: profileUser, tacks };
+        const props: Props = { user: profileUser, tacks, key: query };
         return { props };
     },
     findUserById,

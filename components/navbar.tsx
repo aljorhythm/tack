@@ -72,15 +72,15 @@ export default function Navbar() {
         isLoggedIn &&
             typeof window !== "undefined" &&
             setUser(JSON.parse(localStorage.getItem("user") || "null"));
-    }, [isLoggedIn, cookies, user]);
+    }, [isLoggedIn, cookies]);
 
     function logout() {
         removeCookies("token");
-        router.push("/login");
+        router.push({ pathname: "/login" });
     }
 
     function goToProfile() {
-        router.push(`/profile/${user?.username}`);
+        router.push({ pathname: `/profile/${user?.username}` });
     }
 
     return (

@@ -1,7 +1,7 @@
 import { test, expect, BrowserContext } from "@playwright/test";
 import e2eTestHelper from "../test-helpers/e2e-user";
 import sites from "../pages/api/url/sites-data";
-import { createTack } from "../test-helpers/tacks";
+import testTacks, { createTack } from "../test-helpers/tacks";
 import retry from "async-retry";
 import { faker } from "@faker-js/faker";
 const site = sites[0];
@@ -158,5 +158,19 @@ test.describe("profile with query", () => {
         const randomString = faker.random.word();
         await page.goto(`/profile/${username}?query=${randomString}`);
         expect(await page.locator(`nav >> input`).inputValue()).toEqual(randomString);
+    });
+
+    test("copy to clipboard", async () => {
+        const tacks = [testTacks.google, testTacks.java];
+        await Promise.all(
+            tacks.map((tack) => {
+                return createTack(context.request, {
+                    inputString: `${tack.url} ${tack.tags.join(" ")}`,
+                });
+            }),
+        );
+        const page = await context.newPage();
+        await page.goto(`/profile/${username}`);
+        await page.click(".copy-to-clipboard");
     });
 });
