@@ -34,7 +34,7 @@ test.describe("navbar", async () => {
         const { url, title } = site;
         const inputString = `${url} #hello #there`;
 
-        await page.locator("nav >> [placeholder='Add a tack https://...']").fill(inputString);
+        await page.locator("nav >> [placeholder='Tack a url https://...']").fill(inputString);
         await page.locator('nav >> button:text("add")').click();
 
         await page.waitForURL(`/profile/${username}`);

@@ -48,7 +48,7 @@ export default function NavbarInput({ username }: { username: string }) {
             className: "add-mode",
             btnOnClick: addTack,
             btnText: "add",
-            inputPlaceholder: "Add a tack https://...",
+            inputPlaceholder: "Tack a url https://...",
         },
         [NavbarInputMode.Search]: {
             icon: FaSearch,
