@@ -97,6 +97,11 @@ export default function NavbarInput({ username }: { username: string }) {
                 <input
                     ref={inputRef}
                     value={inputTextValue}
+                    onKeyDown={(event) => {
+                        if (event.code === "Enter" || event.code === "NumpadEnter") {
+                            modeDetails[mode].btnOnClick();
+                        }
+                    }}
                     className="flex-grow bg-slate-50 focus:outline-none border-none"
                     placeholder={modeDetails[mode].inputPlaceholder}
                     onChange={(e) => setInputTextValue(e.target.value)}
