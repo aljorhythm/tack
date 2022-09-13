@@ -65,7 +65,7 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
 
     return (
         <>
-            <div className="flex items-center">
+            <div className="flex flex-wrap items-center">
                 <div className="w-2/4 text-xl  text-slate-800">
                     <div className="title font-medium">{tack.title}</div>
                     <a
@@ -84,17 +84,31 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
                     </div>
                     <div className="flex items-start m:space-x-2 lg:space-x-4">
                         <button
-                            className={classNames("flex", "p-2", "rounded", "items-start", {
-                                "bg-slate-400": isViewing,
-                            })}
+                            className={classNames(
+                                "flex",
+                                "p-2",
+                                "rounded",
+                                "items-start",
+                                "hover:border-b-2",
+                                {
+                                    "border-b-2": isViewingUrllToText,
+                                },
+                            )}
                             onClick={() => setViewing(!isViewing)}
                         >
                             🔍
                         </button>
                         <button
-                            className={classNames("flex", "p-2", "rounded", "items-start", {
-                                "bg-slate-400": isViewingUrllToText,
-                            })}
+                            className={classNames(
+                                "flex",
+                                "p-2",
+                                "rounded",
+                                "items-start",
+                                "hover:border-b-2",
+                                {
+                                    "border-b-2": isViewingUrllToText,
+                                },
+                            )}
                             onClick={toggleSetViewingUrlToText}
                         >
                             📖
@@ -142,7 +156,7 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
             </div>
             {isViewing ? (
                 <div className="">
-                    <div className=" border-slate-400 border-opacity-25 border-2   my-2"></div>
+                    <div className=" border-slate-400 border-opacity-25 border-2  my-2"></div>
                     <iframe className="w-full" src={tack.url} />{" "}
                 </div>
             ) : (
@@ -151,8 +165,8 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
 
             {isViewingUrllToText ? (
                 <div className="">
-                    <div className="border-slate-400 border-opacity-25 border-2   my-2"></div>
-                    <div className="url-to-text">{urlToText}</div>
+                    <div className="border-slate-400 border-opacity-25 border-2 my-2"></div>
+                    <div className="w-full url-to-text">{urlToText}</div>
                 </div>
             ) : (
                 <></>

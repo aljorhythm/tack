@@ -21,14 +21,16 @@ const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
     }
     return (
         <div className="flex flex-col items-center space-y-5">
-            <div className="flex items-left w-screen lg:w-10/12">@{user?.username}</div>
-            <div className="flex flex-row flex-wrap w-screen lg:w-10/12">
-                <div className="flex w-2/12 ">
-                    <div className="h-fit p-2 hover:cursor-pointer hover:border-b-2 hover:border-slate-500">
+            <div className="flex items-left w-10/12 lg:w-10/12">@{user?.username}</div>
+            <div className="flex flex-row flex-wrap w-10/12 lg:w-10/12">
+                <div className="flex lg:w-2/12 ">
+                    <div className="h-fit p-2 hover:cursor-pointer hover:border-b-2 border-slate-500">
                         <FaCopy className="copy-to-clipboard" onClick={copyToClipboard} />
                     </div>
                 </div>
-                <TacksList tacks={tacks} />
+                <div className="lg:w-10/12">
+                    <TacksList tacks={tacks} />
+                </div>
             </div>
         </div>
     );
