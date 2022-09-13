@@ -16,7 +16,7 @@ const api = {
         const response = await fetch("/api/user");
         return await response.json();
     },
-    async editMyTag(tackId: string, tagsString: string): Promise<UserEditTagResponse> {
+    async editMyTack(tackId: string, tagsString: string): Promise<UserEditTagResponse> {
         const response = await fetch(`/api/user/tack/${tackId}`, {
             method: "PATCH",
             headers: {
@@ -80,7 +80,7 @@ const api = {
         const { id } = await response.json();
         return id;
     },
-    async getMyTag(tackId: string): Promise<Tack> {
+    async getMyTack(tackId: string): Promise<Tack> {
         const response = await fetch(`/api/user/tack/${tackId}`, {
             headers: {
                 "Content-Type": "application/json",

@@ -41,7 +41,7 @@ describe("tack item", () => {
     });
 
     test("edit tags input should submit on enter", async () => {
-        const spyEditMyTag = jest.spyOn(api, "editMyTag").mockReturnValue(Promise.resolve(true));
+        const spyEditMyTag = jest.spyOn(api, "editMyTack").mockReturnValue(Promise.resolve(true));
         const tack: Tack = {
             url: "",
             userId: "",
@@ -50,7 +50,7 @@ describe("tack item", () => {
             created_at: new Date(),
             title: null,
         };
-        jest.spyOn(api, "getMyTag").mockReturnValue(Promise.resolve(tack));
+        jest.spyOn(api, "getMyTack").mockReturnValue(Promise.resolve(tack));
 
         const rendered = render(<TackItem tack={tack} />);
         const editButton = rendered.getByRole("button", { name: /edit/ });

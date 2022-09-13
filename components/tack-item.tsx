@@ -45,8 +45,8 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
 
     async function save() {
         setEditing(false);
-        await api.editMyTag(tack.id, editTagsInputValue);
-        const updatedTack = await api.getMyTag(tack.id);
+        await api.editMyTack(tack.id, editTagsInputValue);
+        const updatedTack = await api.getMyTack(tack.id);
         setTack(updatedTack);
     }
 
