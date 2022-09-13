@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { FaCopy } from "react-icons/fa";
 import TacksList from "../../components/tacks-list";
 import NotLoggedInUserClass from "../api/notLoggedInUser/notLoggedInUser";
 import { Tack } from "../api/tack/types";
@@ -6,21 +7,28 @@ import { findUserById } from "../api/user/persistence";
 import { type UserType } from "../api/user/types";
 import { getFirstParamValue, getTackServerSideProps, TackServerSidePropsContext } from "../request";
 
-type Props = { user: UserType; tacks: Tack[]; key: string };
+type Props = { user: UserType; tacks: Tack[]; key: string | null };
 
 const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
+    async function copyToClipboard() {
+        await navigator.clipboard.writeText(
+            tacks
+                .map((t) => {
+                    return `${t.title}\n${t.url}`;
+                })
+                .join("\n\n"),
+        );
+    }
     return (
-        <div className="flex flex-col">
-            <div className="flex justify-center">
-                <div className="w-screen lg:w-10/12">@{user?.username}</div>
-            </div>
-            <div className="flex flex-wrap justify-center">
-                <div className="">
-                    <button className="copy-to-clipboard">copy</button>
+        <div className="flex flex-col items-center space-y-5">
+            <div className="flex items-left w-screen lg:w-10/12">@{user?.username}</div>
+            <div className="flex flex-row flex-wrap w-screen lg:w-10/12">
+                <div className="flex w-2/12 ">
+                    <div className="h-fit p-2 hover:cursor-pointer hover:border-b-2 hover:border-slate-500">
+                        <FaCopy className="copy-to-clipboard" onClick={copyToClipboard} />
+                    </div>
                 </div>
-                <div className="w-screen lg:w-10/12">
-                    <TacksList tacks={tacks} />
-                </div>
+                <TacksList tacks={tacks} />
             </div>
         </div>
     );

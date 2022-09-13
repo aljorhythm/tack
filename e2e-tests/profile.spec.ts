@@ -4,6 +4,7 @@ import sites from "../pages/api/url/sites-data";
 import testTacks, { createTack } from "../test-helpers/tacks";
 import retry from "async-retry";
 import { faker } from "@faker-js/faker";
+import log from "../log";
 const site = sites[0];
 
 test.describe("profile", async () => {
@@ -151,6 +152,7 @@ test.describe("profile with query", () => {
         const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
         username = details.username;
         context = details.context;
+        await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     });
 
     test("should show search query from url in search input", async () => {
@@ -161,16 +163,23 @@ test.describe("profile with query", () => {
     });
 
     test("copy to clipboard", async () => {
-        const tacks = [testTacks.google, testTacks.java];
-        await Promise.all(
-            tacks.map((tack) => {
-                return createTack(context.request, {
-                    inputString: `${tack.url} ${tack.tags.join(" ")}`,
-                });
-            }),
-        );
+        if (context.browser.name !== "chromium") {
+            log("skipping clipboard copy test on non-chromium");
+            return;
+        }
+        for (const tack of sites) {
+            await createTack(context.request, {
+                inputString: `${tack.url}`,
+            });
+        }
         const page = await context.newPage();
         await page.goto(`/profile/${username}`);
         await page.click(".copy-to-clipboard");
+        const text = await page.evaluate(async () => await navigator.clipboard.readText());
+        expect(text).toEqual(`${sites[1].title}
+${sites[1].url}
+
+${sites[0].title}
+${sites[0].url}`);
     });
 });
