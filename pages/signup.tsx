@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import * as api from "./api/client";
+import api from "./api/client";
 import { SignUpResponse } from "./api/user/types";
 
 const Signup: NextPage = () => {

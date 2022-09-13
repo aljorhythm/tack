@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import api, { getMe } from "./api/client";
+import api from "./api/client";
 import { UserType } from "./api/user/types";
 
 export default function useSessionUser(): [
@@ -25,7 +25,7 @@ export default function useSessionUser(): [
                 if (storedUser) {
                     setUser(JSON.parse(storedUser));
                 } else {
-                    const retrievedUser = await getMe();
+                    const retrievedUser = await api.getMe();
                     localStorage.setItem("sessionUser", JSON.stringify(retrievedUser));
                     setUser(retrievedUser);
                 }
