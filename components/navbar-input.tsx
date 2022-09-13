@@ -42,7 +42,11 @@ export default function NavbarInput({ username }: { username: string }) {
     }
 
     async function search() {
-        router.push({ pathname: `/profile/${username}`, query: { query: inputTextValue } });
+        const query = { query: inputTextValue };
+        router.push(
+            { pathname: `/profile/[username]`, query: query },
+            { pathname: `/profile/${username}`, query: query },
+        );
     }
 
     const modeDetails: { [key in NavbarInputMode]: NavbarModeDetails } = {
