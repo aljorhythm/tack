@@ -104,7 +104,7 @@ export class UserClass implements User {
         return { tags: { $all: query.split(" ").map(sanitizeTag) } };
     }
 
-    static tagsStringToTags(tagsString: string): String[] {
+    static tagsStringToTags(tagsString: string): string[] {
         return tagsString.split(" ").map(sanitizeTag);
     }
 }

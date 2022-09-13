@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import { FaCopy } from "react-icons/fa";
 import TacksList from "../../components/tacks-list";
 import Toast, { useToast } from "../../components/toast";
@@ -12,6 +13,7 @@ type Props = { user: UserType; tacks: Tack[]; key: string | null };
 
 const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
     const [toast, toastOptions] = useToast();
+    const router = useRouter();
     async function copyToClipboard() {
         await navigator.clipboard.writeText(
             tacks
@@ -23,6 +25,16 @@ const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
 
         toast("copied to clipboard", 600);
     }
+
+    function tagOnClick(tag: string) {
+        router.push({
+            pathname: `/profile/${user.username}`,
+            query: {
+                query: tag,
+            },
+        });
+    }
+
     return (
         <div className="flex flex-col items-center space-y-5">
             <div className="flex items-left w-10/12 lg:w-10/12">@{user?.username}</div>
@@ -33,7 +45,7 @@ const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
                     </div>
                 </div>
                 <div className="lg:w-10/12">
-                    <TacksList tacks={tacks} />
+                    <TacksList tagOnClick={tagOnClick} tacks={tacks} />
                 </div>
             </div>
             <Toast

@@ -23,8 +23,11 @@ export default function NavbarInput({ username }: { username: string }) {
     const [mode, setMode] = useState<NavbarInputMode>(NavbarInputMode.Add);
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const queryFromUrl = getFirstParamValue(router?.query, "query") || "";
-    const [inputTextValue, setInputTextValue] = useState<string>(queryFromUrl);
+    const [inputTextValue, setInputTextValue] = useState<string>("");
+
+    useEffect(() => {
+        setInputTextValue(getFirstParamValue(router?.query, "query") || "");
+    }, [router.query]);
 
     function setModeOnClick(mode: NavbarInputMode) {
         setMode(mode);

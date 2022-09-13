@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { Tack } from "../pages/api/tack/types";
 import api from "../pages/api/client";
+import { useRouter } from "next/router";
 
 function formatDate(date: Date): string {
     date = new Date(date);
@@ -14,7 +15,7 @@ function formatDate(date: Date): string {
     return `${dateString} ${timeString.toLocaleLowerCase()}`;
 }
 
-function removeQueryFromUrl(url: string): string {
+function presentUrl(url: string): string {
     try {
         new URL(url);
         return url.split("?")[0];
@@ -23,7 +24,13 @@ function removeQueryFromUrl(url: string): string {
     }
 }
 
-export default function TackItem({ tack: tackArg }: { tack: Tack }) {
+export default function TackItem({
+    tack: tackArg,
+    tagOnClick,
+}: {
+    tack: Tack;
+    tagOnClick?: (tag: string) => void;
+}) {
     const [tack, setTack] = useState<Tack>(tackArg);
     const [isViewing, setViewing] = useState(false);
     const [isViewingUrllToText, setViewingUrlToText] = useState(false);
@@ -33,7 +40,6 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
     const [editTagsInputValue, setEditTagsInputValue] = useState(
         tack.tags.map((t) => `#${t}`).join(" "),
     );
-
     const editInput = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
@@ -114,7 +120,7 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
                     target="_blank"
                     rel="noreferrer"
                 >
-                    {removeQueryFromUrl(tack.url)}
+                    {presentUrl(tack.url)}
                 </a>
             </div>
             <div className="flex flex-wrap">
@@ -134,10 +140,14 @@ export default function TackItem({ tack: tackArg }: { tack: Tack }) {
                         required
                     />
                 ) : (
-                    <div className="tags w-10/12">
+                    <div className="tags w-10/12 flex flex-wrap space-x-2">
                         {tack.tags.sort().map((tag, i) => {
                             return (
-                                <div className="inline-block tag mr-4 text-slate-600" key={i}>
+                                <div
+                                    onClick={() => tagOnClick && tagOnClick(tag)}
+                                    className="tag text-slate-800 hover:cursor-pointer hover:text-slate-600 hover:border-b-2 h-fit"
+                                    key={i}
+                                >
                                     {tag}
                                 </div>
                             );

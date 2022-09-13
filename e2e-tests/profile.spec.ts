@@ -180,6 +180,11 @@ test.describe("profile with query", () => {
         const details = await e2eTestHelper.newContextSignUpAndLogin(browser);
         username = details.username;
         context = details.context;
+        for (const tack of sites) {
+            await createTack(context.request, {
+                inputString: `${tack.url} ${tack.tags.join(" ")}`,
+            });
+        }
     });
 
     test("should show search query from url in search input", async () => {
@@ -195,11 +200,7 @@ test.describe("profile with query", () => {
             return;
         }
         await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-        for (const tack of sites) {
-            await createTack(context.request, {
-                inputString: `${tack.url}`,
-            });
-        }
+
         const page = await context.newPage();
         await page.goto(`/profile/${username}`);
         await page.click(".copy-to-clipboard");
@@ -209,5 +210,17 @@ ${sites[1].url}
 
 ${sites[0].title}
 ${sites[0].url}`);
+    });
+
+    test("clicking on tag in tack item should redirect to profile page with query", async () => {
+        const page = await context.newPage();
+        await page.goto(`/profile/${username}`);
+
+        const { url } = site;
+        const tack = await page.locator(`.tack:has-text("${url}")`);
+        const tag = await tack.locator(`.tag`).nth(0);
+        const tagValue = await tag.innerText();
+        await tag.click();
+        await page.waitForURL(`/profile/${username}?query=${tagValue}`);
     });
 });

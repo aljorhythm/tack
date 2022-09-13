@@ -1,6 +1,17 @@
 import { act, fireEvent, render } from "@testing-library/react";
 import NavbarInput from "./navbar-input";
 
+jest.mock("next/router", () => ({
+    useRouter() {
+        return {
+            route: "/",
+            pathname: "",
+            query: "",
+            asPath: "",
+        };
+    },
+}));
+
 test("input should be focused after selecting mode", async () => {
     const rendered = render(<NavbarInput username="" />);
     const editButton = rendered.container.querySelector(".set-mode-icon");
