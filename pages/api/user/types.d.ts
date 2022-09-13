@@ -21,7 +21,7 @@ interface User {
     getTack(arg0: string): Promise<Tack | null>;
     editTags(tackId: string, tagsString: string): Promise<boolean>;
     addTack(createFrom: CreateTackFrom): Promise<CreateResponse>;
-    getMyTacks: (query?: string) => Promise<Tack[]>;
+    getMyTacks: (query?: string | null) => Promise<Tack[]>;
     getSearchPrompts(): Promise<string[]>;
     toObject: () => UserType;
 }

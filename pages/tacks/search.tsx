@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Tack } from "../api/tack/types";
 import { findUserById } from "../api/user/persistence";
-import { getTackServerSideProps, TackServerSidePropsContext } from "../request";
+import { getFirstParamValue, getTackServerSideProps, TackServerSidePropsContext } from "../request";
 import TacksList from "../../components/tacks-list";
 import Link from "next/link";
 import NotLoggedInUserClass from "../api/notLoggedInUser/notLoggedInUser";
@@ -63,8 +63,7 @@ const Search: NextPage<Props> = ({ query, tacks, searchPrompts }: Props) => {
 
 export const getServerSideProps = getTackServerSideProps(
     async (context: TackServerSidePropsContext) => {
-        let query = context.query?.query || "";
-        query = Array.isArray(query) ? query.join(" ") : query; //todo use getFirstParamValue
+        let query = getFirstParamValue(context.query, "query");
         const [tacks, searchPrompts] = await Promise.all([
             context.user?.getMyTacks(query),
             context.user?.getSearchPrompts(),
