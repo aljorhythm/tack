@@ -77,7 +77,7 @@ export default function NavbarInput({ username }: { username: string }) {
     const CurrentIcon = modeDetails[mode].icon;
 
     return (
-        <div className="flex flex-wrap space-x-2 items-center hover:cursor-pointer">
+        <div className="flex flex-wrap space-x-2 w-full justify-center items-center">
             {Object.entries(modeDetails)
                 .filter(([modeKey]) => {
                     return mode !== modeKey;
@@ -93,11 +93,7 @@ export default function NavbarInput({ username }: { username: string }) {
                     );
                 })}
 
-            <div
-                className="flex rounded items-center py-2 px-2 space-x-2
-                    lg:w-96
-                    bg-slate-50  border border-slate-300 text-slate-900 text-sm"
-            >
+            <div className="lg:w-8/12 flex rounded items-center py-2 px-2 space-x-2  bg-slate-50  border border-slate-300 text-slate-900 text-sm">
                 <CurrentIcon
                     style={{ color: "SlateGray" }}
                     className="border-slate-300 text-slate-900 font-light"

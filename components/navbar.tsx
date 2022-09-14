@@ -71,7 +71,9 @@ export default function Navbar() {
                     <a className="font-semibold text-xl tracking-tight text-slate-600">Tack</a>
                 </Link>
             </div>
-            {isLoggedIn ? <NavbarInput username={user?.username || ""} /> : <></>}
+            <div className="flex lg:w-7/12 justify-center">
+                {isLoggedIn ? <NavbarInput username={user?.username || ""} /> : <></>}
+            </div>
             <NavbarRight
                 logout={logout}
                 goToProfile={goToProfile}
