@@ -1,6 +1,5 @@
 import { act, fireEvent, render } from "@testing-library/react";
-import exp from "constants";
-import { query } from "express";
+import sleep from "sleep-promise";
 import api from "../pages/api/client";
 import NavbarInput from "./navbar-input";
 
@@ -43,7 +42,7 @@ describe("input area behaviors", () => {
         expect(input).toHaveValue("");
     });
 
-    test("submit on keypress enter in input and clear input on add", async () => {
+    test("submit on keypress enter in input, show loading and clear input on add", async () => {
         const addTackSpy = jest.spyOn(api, "addTack").mockReturnValue(Promise.resolve(""));
         const rendered = render(<NavbarInput username="" />);
         const input = await rendered.container.querySelector("input");
@@ -51,12 +50,14 @@ describe("input area behaviors", () => {
             fireEvent.change(input!, { target: { value: "abc def" } });
         });
 
-        await act(async () => {
-            fireEvent.keyDown(input!, { key: "Enter", code: "Enter", charCode: 13 });
-        });
+        fireEvent.keyDown(input!, { key: "Enter", code: "Enter", charCode: 13 });
+        expect(rendered.queryByText("adding...")).toBeVisible();
 
         expect(addTackSpy).toHaveBeenCalledTimes(1);
-        expect(input!).toHaveValue("");
+        await sleep(100);
+        expect(rendered.queryByText("adding...")).toBeNull();
+
+        expect(await rendered.container.querySelector("input")!).toHaveValue("");
     });
 
     test("mode should be search when query exists", async () => {

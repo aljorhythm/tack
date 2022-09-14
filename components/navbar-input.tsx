@@ -14,9 +14,10 @@ enum NavbarInputMode {
 type NavbarModeDetails = {
     className: string;
     icon: IconType;
-    btnOnClick: Function;
+    onTrigger: Function;
     btnText: string;
     inputPlaceholder: string;
+    loadingText?: string;
 };
 
 export default function NavbarInput({ username }: { username: string }) {
@@ -24,6 +25,7 @@ export default function NavbarInput({ username }: { username: string }) {
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [inputTextValue, setInputTextValue] = useState<string>("");
+    const [loadingText, setLoadingText] = useState<string | undefined | null>(null);
 
     useEffect(() => {
         setInputTextValue(getFirstParamValue(router?.query, "query") || "");
@@ -39,7 +41,6 @@ export default function NavbarInput({ username }: { username: string }) {
 
     async function addTack() {
         const id = await api.addTack(inputTextValue);
-        setInputTextValue("");
         if (id) {
             router.push({ pathname: `/profile/${username}` });
         }
@@ -57,14 +58,15 @@ export default function NavbarInput({ username }: { username: string }) {
         [NavbarInputMode.Add]: {
             icon: FaPlus,
             className: "add-mode",
-            btnOnClick: addTack,
+            onTrigger: addTack,
             btnText: "add",
             inputPlaceholder: "Tack a url https://...",
+            loadingText: "adding...",
         },
         [NavbarInputMode.Search]: {
             icon: FaSearch,
             className: "search-mode",
-            btnOnClick: search,
+            onTrigger: search,
             btnText: "search",
             inputPlaceholder: "Search",
         },
@@ -74,9 +76,22 @@ export default function NavbarInput({ username }: { username: string }) {
         inputRef.current!.focus();
     }, [mode]);
 
+    async function triggerAction(modeDetails: NavbarModeDetails): Promise<void> {
+        if (modeDetails.loadingText) {
+            setLoadingText(modeDetails.loadingText);
+        }
+        try {
+            await modeDetails.onTrigger();
+        } catch {}
+        setLoadingText(null);
+        setInputTextValue("");
+    }
+
     const CurrentIcon = modeDetails[mode].icon;
 
-    return (
+    return loadingText ? (
+        <>{loadingText}</>
+    ) : (
         <div className="flex flex-wrap space-x-2 w-full justify-center items-center">
             {Object.entries(modeDetails)
                 .filter(([modeKey]) => {
@@ -103,7 +118,7 @@ export default function NavbarInput({ username }: { username: string }) {
                     value={inputTextValue}
                     onKeyDown={(event) => {
                         if (event.code === "Enter" || event.code === "NumpadEnter") {
-                            modeDetails[mode].btnOnClick();
+                            triggerAction(modeDetails[mode]);
                         }
                     }}
                     className="flex-grow bg-slate-50 focus:outline-none border-none"
@@ -114,7 +129,7 @@ export default function NavbarInput({ username }: { username: string }) {
 
             <button
                 className="px-4 py-1 text-m w-32 font-semibold rounded border border-slate-200 text-white bg-slate-600 hover:bg-slate-500 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
-                onClick={() => modeDetails[mode].btnOnClick()}
+                onClick={() => triggerAction(modeDetails[mode])}
             >
                 {modeDetails[mode].btnText}
             </button>
