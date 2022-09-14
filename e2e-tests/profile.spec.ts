@@ -1,7 +1,7 @@
 import { test, expect, BrowserContext } from "@playwright/test";
 import e2eTestHelper from "../test-helpers/e2e-user";
 import sites from "../pages/api/url/sites-data";
-import testTacks, { createTack, createTacks } from "../test-helpers/tacks";
+import { createTack, createTacks } from "../test-helpers/tacks";
 import retry from "async-retry";
 import { faker } from "@faker-js/faker";
 import log from "../log";
