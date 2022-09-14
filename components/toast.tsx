@@ -24,6 +24,9 @@ function Toast({ milliseconds, message }: ToastProps) {
             className="bg-slate-200 p-4 rounded"
             style={{
                 position: "fixed",
+                left: "50%",
+                transform: "translateX(-50%)",
+                top: "3%",
             }}
         >
             {message}{" "}

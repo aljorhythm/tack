@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { Tack } from "../pages/api/tack/types";
 import api from "../pages/api/client";
-import { useRouter } from "next/router";
 
 function formatDate(date: Date): string {
     date = new Date(date);
@@ -73,40 +72,28 @@ export default function TackItem({
         setUrlToText(text || "");
     }
 
+    const actionButtonClassNames = classNames("p-2 hover:border-b-2 border-slate");
+
     return isDeleted ? (
         <></>
     ) : (
         <div className="space-y-2 border-b-2 pb-2">
-            <div className="flex flex-wrap">
-                <div className="flex space-x-4 items-center">
-                    <div className="title text-lg font-medium">{tack.title}</div>
+            <div className="flex justify-between items-center">
+                <div className="title text-lg font-medium">{tack.title}</div>
+                <div className="flex items-center flex-row flex-wrap flex-grow justify-end">
                     <div className="created-at text-slate-800">{formatDate(tack.created_at)}</div>
                     <button
-                        className={classNames(
-                            "flex",
-                            "p-2",
-                            "rounded",
-                            "items-start",
-                            "hover:border-b-2",
-                            {
-                                "border-b-2": isViewing,
-                            },
-                        )}
+                        className={classNames("flex", "p-2", "hover:border-b-2", {
+                            "border-b-2": isViewing,
+                        })}
                         onClick={() => setViewing(!isViewing)}
                     >
                         🔍
                     </button>
                     <button
-                        className={classNames(
-                            "flex",
-                            "p-2",
-                            "rounded",
-                            "items-start",
-                            "hover:border-b-2",
-                            {
-                                "border-b-2": isViewingUrllToText,
-                            },
-                        )}
+                        className={classNames("flex", "p-2", "hover:border-b-2", {
+                            "border-b-2": isViewingUrllToText,
+                        })}
                         onClick={toggleSetViewingUrlToText}
                     >
                         📖
@@ -123,12 +110,12 @@ export default function TackItem({
                     {presentUrl(tack.url)}
                 </a>
             </div>
-            <div className="flex flex-wrap">
+            <div className="flex flex-wrap justify-between">
                 {isEditing ? (
                     <input
                         ref={editInput}
                         value={editTagsInputValue}
-                        className="edit-input w-7/12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                        className="edit-input rounded w-7/12 border-4 border-slate-300 focus:outline-none p-1 text-slate-900"
                         onChange={(e) => {
                             setEditTagsInputValue(e.target.value);
                         }}
@@ -154,27 +141,17 @@ export default function TackItem({
                         })}
                     </div>
                 )}
-                <div className="flex justify-end">
+                <div className="flex justify-end space-x-2">
                     {isEditing ? (
-                        <button
-                            className="btn btn-slate p-2 radius rounded font-bold text-black hover:bg-slate-300 bg-slate-200"
-                            onClick={save}
-                        >
+                        <button className={actionButtonClassNames} onClick={save}>
                             save
                         </button>
                     ) : (
-                        <button
-                            onClick={startEdit}
-                            className="btn btn-slate p-2 radius rounded font-bold text-black hover:bg-slate-200 bg-slate-300"
-                        >
-                            edit
+                        <button onClick={startEdit} className={actionButtonClassNames}>
+                            edit tags
                         </button>
                     )}
-
-                    <button
-                        onClick={deleteTack}
-                        className="delete btn btn-slate p-2 radius rounded font-bold text-black hover:bg-slate-200 bg-slate-300"
-                    >
+                    <button onClick={deleteTack} className={actionButtonClassNames}>
                         delete
                     </button>
                 </div>

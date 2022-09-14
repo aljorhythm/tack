@@ -41,7 +41,7 @@ test.describe("profile", async () => {
         let tagsContainer = await tack.locator(".tags");
         expect(await tagsContainer.count()).toBe(1);
 
-        let editButton = await tack.locator('button:text-is("edit")');
+        let editButton = await tack.locator('button:text-is("edit tags")');
         await editButton.click();
 
         tagsContainer = await tack.locator(".tags");
@@ -51,13 +51,13 @@ test.describe("profile", async () => {
         expect(await editInput.inputValue()).toBe("#hello #there");
         await editInput.fill("#another #two");
 
-        editButton = await tack.locator('button:text-is("edit")');
+        editButton = await tack.locator('button:text-is("edit tags")');
         expect(await editButton.count()).toBe(0);
 
         let saveButton = await tack.locator('button:text-is("save")');
         await saveButton.click();
 
-        editButton = await tack.locator('button:text-is("edit")');
+        editButton = await tack.locator('button:text-is("edit tags")');
         expect(await editButton.count()).toBe(1);
         saveButton = await tack.locator('button:text-is("save")');
         expect(await saveButton.count()).toBe(0);
@@ -164,7 +164,7 @@ test.describe("delete tack", () => {
         await page.goto(`/profile/${username}`);
         const { url } = site;
         const tack = await page.locator(`.tack:has-text("${url}")`);
-        let deleteButton = await tack.locator(".delete");
+        let deleteButton = await tack.locator(":text-is('delete')");
         await deleteButton.click();
         await expect(page.locator(`.tack:has-text("${url}")`)).not.toBeVisible();
         await page.reload();

@@ -36,9 +36,10 @@ const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
     }
 
     return (
-        <div className="flex flex-col items-center space-y-5">
-            <div className="flex items-left w-10/12 lg:w-10/12">@{user?.username}</div>
-            <div className="flex flex-row flex-wrap w-10/12 lg:w-10/12">
+        <div className="flex flex-col w-full items-center">
+            <div className="flex flex-row flex-wrap w-8/12 lg:w-7/12">
+                <div className="w-full">@{user?.username}</div>
+
                 <div className="flex lg:w-2/12 ">
                     <div className="h-fit p-2 hover:cursor-pointer hover:border-b-2 border-slate-500">
                         <FaCopy className="copy-to-clipboard" onClick={copyToClipboard} />
@@ -47,12 +48,13 @@ const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
                 <div className="lg:w-10/12">
                     <TacksList tagOnClick={tagOnClick} tacks={tacks} />
                 </div>
+
+                <Toast
+                    key={toastOptions.key}
+                    milliseconds={toastOptions.milliseconds}
+                    message={toastOptions.message}
+                />
             </div>
-            <Toast
-                key={toastOptions.key}
-                milliseconds={toastOptions.milliseconds}
-                message={toastOptions.message}
-            />
         </div>
     );
 };

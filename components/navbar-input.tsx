@@ -102,7 +102,10 @@ export default function NavbarInput({ username }: { username: string }) {
                     return (
                         <Icon
                             key={modeKey}
-                            className={classNames("set-mode-icon", details.className)}
+                            className={classNames(
+                                "set-mode-icon hover:text-lg hover:cursor-pointer",
+                                details.className,
+                            )}
                             onClick={() => setModeOnClick(modeKey as NavbarInputMode)}
                         />
                     );
