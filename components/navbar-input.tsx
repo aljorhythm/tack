@@ -39,6 +39,7 @@ export default function NavbarInput({ username }: { username: string }) {
 
     async function addTack() {
         const id = await api.addTack(inputTextValue);
+        setInputTextValue("");
         if (id) {
             router.push({ pathname: `/profile/${username}` });
         }

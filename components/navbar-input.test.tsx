@@ -43,7 +43,7 @@ describe("input area behaviors", () => {
         expect(input).toHaveValue("");
     });
 
-    test("keypress enter in input should submit", async () => {
+    test("submit on keypress enter in input and clear input on add", async () => {
         const addTackSpy = jest.spyOn(api, "addTack").mockReturnValue(Promise.resolve(""));
         const rendered = render(<NavbarInput username="" />);
         const input = await rendered.container.querySelector("input");
@@ -56,6 +56,7 @@ describe("input area behaviors", () => {
         });
 
         expect(addTackSpy).toHaveBeenCalledTimes(1);
+        expect(input!).toHaveValue("");
     });
 
     test("mode should be search when query exists", async () => {
