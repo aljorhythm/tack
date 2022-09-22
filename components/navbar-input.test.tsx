@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render, waitForElementToBeRemoved } from "@testing-library/react";
 import sleep from "sleep-promise";
 import api from "../pages/api/client";
 import NavbarInput from "./navbar-input";
@@ -19,6 +19,7 @@ jest.mock("next/router", () => ({
 describe("input area behaviors", () => {
     beforeEach(() => {
         jest.resetAllMocks();
+        jest.useRealTimers();
     });
 
     test("input should be focused after selecting mode", async () => {
@@ -43,20 +44,26 @@ describe("input area behaviors", () => {
     });
 
     test("submit on keypress enter in input, show loading and clear input on add", async () => {
-        const addTackSpy = jest.spyOn(api, "addTack").mockReturnValue(Promise.resolve(""));
+        jest.useFakeTimers();
+        const addTackSpy = jest.spyOn(api, "addTack").mockReturnValue(
+            new Promise(async (resolve) => {
+                await sleep(1000);
+                resolve("");
+            }),
+        );
         const rendered = render(<NavbarInput username="" />);
         const input = await rendered.container.querySelector("input");
-        await act(() => {
+        await act(async () => {
             fireEvent.change(input!, { target: { value: "abc def" } });
+            fireEvent.keyDown(input!, { key: "Enter", code: "Enter", charCode: 13 });
+        });
+        expect(await rendered.findByText("adding...")).toBeVisible();
+
+        await act(async () => {
+            jest.advanceTimersByTime(1100);
         });
 
-        fireEvent.keyDown(input!, { key: "Enter", code: "Enter", charCode: 13 });
-        expect(rendered.queryByText("adding...")).toBeVisible();
-
-        expect(addTackSpy).toHaveBeenCalledTimes(1);
-        await sleep(100);
         expect(rendered.queryByText("adding...")).toBeNull();
-
         expect(await rendered.container.querySelector("input")!).toHaveValue("");
     });
 
