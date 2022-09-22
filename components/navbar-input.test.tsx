@@ -45,7 +45,7 @@ describe("input area behaviors", () => {
 
     test("submit on keypress enter in input, show loading and clear input on add", async () => {
         jest.useFakeTimers();
-        const addTackSpy = jest.spyOn(api, "addTack").mockReturnValue(
+        jest.spyOn(api, "addTack").mockReturnValue(
             new Promise(async (resolve) => {
                 await sleep(1000);
                 resolve("");
