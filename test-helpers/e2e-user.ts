@@ -3,12 +3,14 @@ import { Browser, BrowserContext } from "@playwright/test";
 import PageObjectModel from "../e2e-tests/page-object-model";
 import { generatePassword } from "./user";
 
-async function newContextSignUpAndLogin(browser: Browser): Promise<{
+export type ContextDetails = {
     username: string;
     email: string;
     password: string;
     context: BrowserContext;
-}> {
+};
+
+async function newContextSignUpAndLogin(browser: Browser): Promise<ContextDetails> {
     const context = await browser.newContext();
     const page = await context.newPage();
     const pom: PageObjectModel = new PageObjectModel(page);

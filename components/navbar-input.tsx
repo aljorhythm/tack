@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import api from "../pages/api/client";
 import classNames from "classnames";
 import { getFirstParamValue } from "../pages/request";
+import { Command } from "./command";
 
 enum NavbarInputMode {
     Search = "search",
@@ -26,6 +27,14 @@ export default function NavbarInput({ username }: { username: string }) {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [inputTextValue, setInputTextValue] = useState<string>("");
     const [loadingText, setLoadingText] = useState<string | undefined | null>(null);
+
+    useEffect(() => {
+        document.addEventListener("tack_command", (event) => {
+            if ((event as CustomEvent).detail.command === Command.focus_nav_add) {
+                setMode(NavbarInputMode.Add);
+            }
+        });
+    });
 
     useEffect(() => {
         setInputTextValue(getFirstParamValue(router?.query, "query") || "");
