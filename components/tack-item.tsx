@@ -72,7 +72,9 @@ export default function TackItem({
         setUrlToText(text || "");
     }
 
-    const actionButtonClassNames = classNames("p-2 hover:border-b-2 border-slate");
+    const actionButtonClassNames = classNames(
+        "p-2 bg-slate-400/40 hover:bg-slate-400/80 text-center text-xs w-12 h-12 rounded-full",
+    );
 
     return isDeleted ? (
         <></>
@@ -81,7 +83,9 @@ export default function TackItem({
             <div className="flex justify-between items-center">
                 <div className="title text-lg font-medium">{tack.title}</div>
                 <div className="flex items-center flex-row flex-wrap flex-grow justify-end">
-                    <div className="created-at text-slate-800">{formatDate(tack.created_at)}</div>
+                    <div className="created-at text-slate-800 text-sm">
+                        {formatDate(tack.created_at)}
+                    </div>
                     <button
                         className={classNames("flex", "p-2", "hover:border-b-2", {
                             "border-b-2": isViewing,
@@ -98,6 +102,16 @@ export default function TackItem({
                     >
                         📖
                     </button>
+                    {isEditing ? (
+                        <></>
+                    ) : (
+                        <button onClick={startEdit} className={actionButtonClassNames}>
+                            edit tags
+                        </button>
+                    )}
+                    <button onClick={deleteTack} className={actionButtonClassNames}>
+                        delete
+                    </button>
                 </div>
             </div>
             <div className="flex flex-wrap">
@@ -112,27 +126,32 @@ export default function TackItem({
             </div>
             <div className="flex flex-wrap justify-between">
                 {isEditing ? (
-                    <input
-                        ref={editInput}
-                        value={editTagsInputValue}
-                        className="edit-input rounded w-7/12 border-4 border-slate-300 focus:outline-none p-1 text-slate-900"
-                        onChange={(e) => {
-                            setEditTagsInputValue(e.target.value);
-                        }}
-                        onKeyDown={(event) => {
-                            if (event.code === "Enter" || event.code === "NumpadEnter") {
-                                save();
-                            }
-                        }}
-                        required
-                    />
+                    <>
+                        <input
+                            ref={editInput}
+                            value={editTagsInputValue}
+                            className="edit-input rounded w-10/12 border-4 border-slate-300 focus:outline-none p-1 text-slate-900"
+                            onChange={(e) => {
+                                setEditTagsInputValue(e.target.value);
+                            }}
+                            onKeyDown={(event) => {
+                                if (event.code === "Enter" || event.code === "NumpadEnter") {
+                                    save();
+                                }
+                            }}
+                            required
+                        />
+                        <button className={actionButtonClassNames} onClick={save}>
+                            save
+                        </button>
+                    </>
                 ) : (
-                    <div className="tags w-10/12 flex flex-wrap space-x-2">
+                    <div className="tags w-10/12 flex flex-wrap">
                         {tack.tags.sort().map((tag, i) => {
                             return (
                                 <div
                                     onClick={() => tagOnClick && tagOnClick(tag)}
-                                    className="tag text-slate-800 hover:cursor-pointer hover:text-slate-600 hover:border-b-2 h-fit"
+                                    className="tag mr-2 text-slate-800 rounded-3xl bg-slate-300/40 hover:bg-slate-300/80 hover:cursor-pointer text-sm p-2 h-fit"
                                     key={i}
                                 >
                                     {tag}
@@ -141,20 +160,6 @@ export default function TackItem({
                         })}
                     </div>
                 )}
-                <div className="flex justify-end space-x-2">
-                    {isEditing ? (
-                        <button className={actionButtonClassNames} onClick={save}>
-                            save
-                        </button>
-                    ) : (
-                        <button onClick={startEdit} className={actionButtonClassNames}>
-                            edit tags
-                        </button>
-                    )}
-                    <button onClick={deleteTack} className={actionButtonClassNames}>
-                        delete
-                    </button>
-                </div>
                 {isViewing ? (
                     <div className="w-full">
                         <div className=" border-slate-400 border-opacity-25 border-2  my-2"></div>
