@@ -11,6 +11,11 @@ const sites = [
         text: "",
         tags: ["two"],
     },
+    {
+        url: "https://medium.com/aljorhythm/textbook-recommended-videos-93767ed0965d",
+        title: "[Textbook] Recommended Videos - aljorhythm - Medium",
+        tags: [""],
+    },
 ];
 
 export default sites;

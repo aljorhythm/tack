@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { getTitle, getText } from "./url";
 import sites from "./sites-data";
 
