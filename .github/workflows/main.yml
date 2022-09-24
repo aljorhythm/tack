@@ -30,8 +30,6 @@ jobs:
                   vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}} #Required
                   working-directory: ./
             - name: run e2e-test against ${{ steps.deploy.outputs.preview-url }}
-              with:
-                  max_attempts: 3
               run: make HOST=${{ steps.deploy.outputs.preview-url }} test-e2e
             - uses: actions/upload-artifact@v3
               if: always()
