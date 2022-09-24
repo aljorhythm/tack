@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { createGlobalState } from "react-hooks-global-state";
 
-type ToastProps = { key: number; milliseconds: number; message: string };
+type ToastProps = { id: number; milliseconds: number; message: string | null };
 
 const { useGlobalState } = createGlobalState<{ toastOptions: ToastProps }>({
     toastOptions: {
-        key: 0,
+        id: 0,
         milliseconds: 0,
         message: "",
     },
 });
 
-function Toast({ milliseconds, message }: ToastProps) {
-    const [isVisible, setVisible] = useState<boolean>(milliseconds > 0 ? true : false);
-
+export function Toast({ milliseconds, message, id }: ToastProps) {
+    const [isVisible, setVisible] = useState<boolean>(false);
     useEffect(() => {
-        setTimeout(() => {
-            setVisible(false);
-        }, milliseconds);
-    }, [milliseconds]);
+        if (milliseconds > 0) {
+            setVisible(true);
+            setTimeout(() => {
+                setVisible(false);
+            }, milliseconds);
+        }
+    }, [id]);
+
     return isVisible ? (
         <div
             className="bg-slate-200 p-4 rounded"
@@ -36,19 +39,26 @@ function Toast({ milliseconds, message }: ToastProps) {
     );
 }
 
-export default Toast;
+export function GlobalToast() {
+    const [toastOptions] = useGlobalState("toastOptions");
+    return (
+        <Toast
+            id={toastOptions.id}
+            milliseconds={toastOptions.milliseconds}
+            message={toastOptions.message}
+        />
+    );
+}
 
-export function useToast(): [(message: string, milliseconds: number) => void, ToastProps] {
+export function useToast(): [(message: string, milliseconds: number) => void] {
     const [toastOptions, setToastOptions] = useGlobalState("toastOptions");
-
     return [
         function (message: string, milliseconds: number) {
             setToastOptions({
-                key: new Date().getMilliseconds(),
+                id: new Date().getTime(),
                 milliseconds,
                 message,
             });
         },
-        toastOptions,
     ];
 }

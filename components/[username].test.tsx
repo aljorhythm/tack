@@ -1,10 +1,11 @@
-import { act, fireEvent, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, Queries, render, RenderResult, waitFor } from "@testing-library/react";
 import { RenderedResult } from "../test-helpers/testing-library";
 import Profile from "../pages/profile/[username]";
+import Layout from "./layout";
 
 describe("copy to clipboard", () => {
     test("should show toast", async () => {
-        let rendered: RenderedResult;
+        let rendered: RenderResult<Queries, HTMLElement, HTMLElement>;
         await act(() => {
             rendered = render(
                 <Profile
@@ -16,6 +17,9 @@ describe("copy to clipboard", () => {
                     }}
                     tacks={[]}
                 />,
+                {
+                    wrapper: Layout,
+                },
             );
         });
         for (const _ in Array.from({ length: 3 })) {

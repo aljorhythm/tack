@@ -1,6 +1,7 @@
 import { EventHandler, useEffect } from "react";
 import { Command } from "./command";
 import Navbar from "./navbar";
+import { GlobalToast } from "./toast";
 
 function Footer() {
     return <div></div>;
@@ -29,6 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <div onKeyDown={(event) => {}} className="space-y-4">
             <Navbar />
+            <GlobalToast />
             <main className="grid w-full">{children}</main>
             <Footer />
         </div>

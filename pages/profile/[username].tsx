@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { FaCopy } from "react-icons/fa";
 import TacksList from "../../components/tacks-list";
-import Toast, { useToast } from "../../components/toast";
+import { useToast, GlobalToast } from "../../components/toast";
 import NotLoggedInUserClass from "../api/notLoggedInUser/notLoggedInUser";
 import { Tack } from "../api/tack/types";
 import { findUserById } from "../api/user/persistence";
@@ -12,7 +12,7 @@ import { getFirstParamValue, getTackServerSideProps, TackServerSidePropsContext 
 type Props = { user: UserType; tacks: Tack[]; key: string | null };
 
 const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
-    const [toast, toastOptions] = useToast();
+    const [toast] = useToast();
     const router = useRouter();
     async function copyToClipboard() {
         await navigator.clipboard.writeText(
@@ -48,12 +48,6 @@ const Profile: NextPage<Props> = ({ user, tacks }: Props) => {
                 <div className="lg:w-10/12">
                     <TacksList tagOnClick={tagOnClick} tacks={tacks} />
                 </div>
-
-                <Toast
-                    key={toastOptions.key}
-                    milliseconds={toastOptions.milliseconds}
-                    message={toastOptions.message}
-                />
             </div>
         </div>
     );
