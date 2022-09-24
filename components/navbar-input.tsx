@@ -28,12 +28,18 @@ export default function NavbarInput({ username }: { username: string }) {
     const [inputTextValue, setInputTextValue] = useState<string>("");
     const [loadingText, setLoadingText] = useState<string | undefined | null>(null);
 
+    function tackCommandHandler(event: Event) {
+        if ((event as CustomEvent).detail.command === Command.focus_nav_add) {
+            setMode(NavbarInputMode.Add);
+            inputRef.current!.focus();
+        }
+    }
+
     useEffect(() => {
-        document.addEventListener("tack_command", (event) => {
-            if ((event as CustomEvent).detail.command === Command.focus_nav_add) {
-                setMode(NavbarInputMode.Add);
-            }
-        });
+        document.addEventListener("tack_command", tackCommandHandler);
+        return () => {
+            document.removeEventListener("tack_command", tackCommandHandler);
+        };
     });
 
     useEffect(() => {
@@ -133,6 +139,7 @@ export default function NavbarInput({ username }: { username: string }) {
                             triggerAction(modeDetails[mode]);
                         }
                     }}
+                    type="text"
                     className="flex-grow bg-slate-50 focus:outline-none border-none"
                     placeholder={modeDetails[mode].inputPlaceholder}
                     onChange={(e) => setInputTextValue(e.target.value)}

@@ -1,6 +1,7 @@
 import { act, fireEvent, render, waitForElementToBeRemoved } from "@testing-library/react";
 import sleep from "sleep-promise";
 import api from "../pages/api/client";
+import { Command } from "./command";
 import NavbarInput from "./navbar-input";
 
 const mockQuery = jest.fn();
@@ -30,6 +31,22 @@ describe("input area behaviors", () => {
         });
         const input = await rendered.findByPlaceholderText("Search");
         expect(input).toHaveFocus();
+    });
+
+    test("input should be focused on focus add command", async () => {
+        const rendered = render(<NavbarInput username="" />);
+        (await rendered.findByRole("button")).focus();
+        expect(await rendered.findByRole("textbox")).not.toHaveFocus();
+
+        await act(() => {
+            document.dispatchEvent(
+                new CustomEvent("tack_command", {
+                    detail: { command: Command.focus_nav_add },
+                }),
+            );
+        });
+
+        expect(await rendered.findByRole("textbox")).toHaveFocus();
     });
 
     test("input should be cleared after selecting mode", async () => {
