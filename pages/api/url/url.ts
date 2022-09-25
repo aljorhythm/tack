@@ -5,6 +5,7 @@ import { log } from "../../../log";
 
 export async function getTitle(url: string): Promise<string | null> {
     url = url.indexOf("://") === -1 ? "https://" + url : url;
+    log("#toremove", "getTitle", url, axios.defaults);
     try {
         const response = await axios({
             method: "get",

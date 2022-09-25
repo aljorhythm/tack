@@ -45,6 +45,11 @@ describe("getTitle()", () => {
         expect(actualTitle).toBeNull();
     });
 
+    it.only("should return null if url does not have title", async () => {
+        const actualTitle = await getTitle("www.java.com");
+        expect(actualTitle).toBeNull();
+    });
+
     it("should return title from scheme appended url", async () => {
         const actualTitle = await getTitle("www.google.com");
         expect(actualTitle).toBe("Google");
