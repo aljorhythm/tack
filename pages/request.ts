@@ -12,7 +12,6 @@ import { logError } from "../log";
 import { Cookies } from "next/dist/server/web/spec-extension/cookies";
 import { NotLoggedInUser } from "./api/notLoggedInUser/types";
 import { ParsedUrlQuery } from "querystring";
-import { AxiosError } from "axios";
 
 type UserConstructor = new (createFrom: UserType) => User;
 
@@ -47,7 +46,7 @@ export async function getUserFromToken(
     try {
         id = (await verifyToken(token)).id;
     } catch (e) {
-        // logError((e as AxiosError).message);
+        logError(e);
         return null;
     }
     return await findUserById(id);

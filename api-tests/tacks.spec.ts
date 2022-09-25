@@ -95,33 +95,45 @@ test.describe.serial("tacks api", async () => {
         );
     });
 
-    test("should be able to search tack with tags", async ({ request }) => {
+    const testCases: Array<{ searchInput: string; expected: Array<TestTack> }> = [
+        { searchInput: "doesnotexist", expected: [] },
+        { searchInput: "programming", expected: [java, springboot, django] },
+        { searchInput: "javascript typescript", expected: [nodejs, nextjs, react] },
+        { searchInput: "javascript #typescript", expected: [nodejs, nextjs, react] },
+        { searchInput: "devops agile continuous-delivery", expected: [daveFarley, jezHumble] },
+        { searchInput: "devops agile #continuous-delivery", expected: [daveFarley, jezHumble] },
+    ];
+
+    test("create test tacks", async ({ request }) => {
         await createTestTacks(request, token);
-        const testCases: Array<{ searchInput: string; expected: Array<TestTack> }> = [
-            { searchInput: "doesnotexist", expected: [] },
-            { searchInput: "programming", expected: [java, springboot, django] },
-            { searchInput: "javascript typescript", expected: [nodejs, nextjs, react] },
-            { searchInput: "javascript #typescript", expected: [nodejs, nextjs, react] },
-            { searchInput: "devops agile continuous-delivery", expected: [daveFarley, jezHumble] },
-            { searchInput: "devops agile #continuous-delivery", expected: [daveFarley, jezHumble] },
-        ];
-        await Promise.all(
-            testCases.map(async (testCase) => {
-                const { searchInput: query, expected } = testCase;
-                const gotQueryResponse = await request.get(`/api/tack/tacks`, {
-                    params: { query },
-                    headers: { token: token },
-                });
-                const gotTacks: Array<Tack> = await gotQueryResponse.json();
-                expect(
-                    gotTacks.map((tack) => {
-                        return { url: tack.url, tags: tack.tags };
-                    }),
-                ).toEqual(expect.arrayContaining(expected));
-                expect(gotTacks.length).toEqual(expected.length);
+        const gotGetResponse = await request.get(`/api/tack/tacks`, {
+            headers: { token },
+        });
+        expect(
+            ((await gotGetResponse.json()) as Tack[]).some((t) => {
+                return t.url === "www.java.com";
             }),
-        );
+        ).toBe(true);
     });
+
+    for (const testCase of testCases) {
+        test(`should be able to search tack with tags ${testCase.searchInput}`, async ({
+            request,
+        }) => {
+            const { searchInput: query, expected } = testCase;
+            const gotQueryResponse = await request.get(`/api/tack/tacks`, {
+                params: { query },
+                headers: { token: token },
+            });
+            const gotTacks: Array<Tack> = await gotQueryResponse.json();
+            expect(
+                gotTacks.map((tack) => {
+                    return { url: tack.url, tags: tack.tags };
+                }),
+            ).toEqual(expect.arrayContaining(expected));
+            expect(gotTacks.length).toEqual(expected.length);
+        });
+    }
 
     test("should be able to add and search tack with case insensitive tags", async ({
         request,
