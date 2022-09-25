@@ -13,14 +13,39 @@ export type ContextDetails = {
 async function newContextSignUpAndLogin(browser: Browser): Promise<ContextDetails> {
     const context = await browser.newContext();
     const page = await context.newPage();
-    const pom: PageObjectModel = new PageObjectModel(page);
+    await page.goto("/");
     const email = `${Date.now()}${faker.internet.email()}`;
     const username = email.split("@")[0].replaceAll(/[\W_]/g, "");
     const password = generatePassword();
 
-    await pom.signup(email, password, username);
-    await pom.login(email, password);
-    await page.close();
+    await (async function signUp() {
+        const response = await page.request.post(`/api/user`, {
+            data: {
+                email,
+                password,
+                username,
+            },
+        });
+        if (!(await response.ok())) {
+            throw "signup failed";
+        }
+    })();
+
+    await (async function login() {
+        const response = await page.request.post(`/api/token`, {
+            data: {
+                email,
+                password,
+            },
+        });
+        if (!(await response.ok())) {
+            throw "login failed";
+        }
+        const body = await response.json();
+
+        await context.addCookies([{ name: "token", value: body.token, url: page.url() }]);
+    })();
+
     return { context, username, email, password };
 }
 
