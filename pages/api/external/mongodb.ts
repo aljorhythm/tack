@@ -1,5 +1,5 @@
 import { MongoClient, Db } from "mongodb";
-import log from "../../../log";
+import log, { maskEveryFour } from "../../../log";
 
 const MONGODB_URI = process.env.MONGODB_URI || "";
 const MONGODB_DB = "tack";
@@ -18,7 +18,7 @@ export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db
     if (!MONGODB_URI) {
         throw new Error("Define the MONGODB_URI environmental variable");
     } else {
-        log("MONGODB_URI:", MONGODB_URI);
+        log("MONGODB_URI:", maskEveryFour(MONGODB_URI));
     }
 
     let client = new MongoClient(MONGODB_URI);
