@@ -10,6 +10,7 @@ export async function getTitle(url: string): Promise<string | null> {
         const response = await axios({
             method: "get",
             url: url,
+            timeout: 300,
             transitional: {
                 clarifyTimeoutError: true,
                 forcedJSONParsing: true,

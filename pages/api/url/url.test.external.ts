@@ -45,7 +45,7 @@ describe("getTitle()", () => {
         expect(actualTitle).toBeNull();
     });
 
-    it.only("should return null if url does not have title", async () => {
+    it("should return null if url does not have title", async () => {
         const actualTitle = await getTitle("www.java.com");
         expect(actualTitle).toBeNull();
     });
