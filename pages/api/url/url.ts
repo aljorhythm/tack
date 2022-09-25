@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { parse } from "node-html-parser";
-import axios from "axios";
-import { logError } from "../../../log";
+import axios, { AxiosError } from "axios";
+import { log } from "../../../log";
 
 export async function getTitle(url: string): Promise<string | null> {
     url = url.indexOf("://") === -1 ? "https://" + url : url;
@@ -14,7 +14,7 @@ export async function getTitle(url: string): Promise<string | null> {
         const title = html.querySelector("title");
         return title?.text || null;
     } catch (e) {
-        logError(e);
+        log((e as AxiosError).message);
         return null;
     }
 }
