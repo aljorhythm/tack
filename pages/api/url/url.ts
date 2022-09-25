@@ -10,7 +10,14 @@ export async function getTitle(url: string): Promise<string | null> {
         const response = await axios({
             method: "get",
             url: url,
+            transitional: {
+                clarifyTimeoutError: true,
+                forcedJSONParsing: true,
+                silentJSONParsing: true,
+            },
         });
+        log("#toremove", "getTitle 2", url);
+
         const html = parse(response.data);
         const title = html.querySelector("title");
         return title?.text || null;
