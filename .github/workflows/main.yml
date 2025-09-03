@@ -1,5 +1,9 @@
 name: CI
 
+env:
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 on:
     push:
         branches: ["main"]
@@ -21,15 +25,20 @@ jobs:
             - run: make setup
             - run: make test-nowatch
             - run: make build
-            - uses: vercel/action-deploy@v1
+            - name: Install Vercel CLI
+              run: npm install --global vercel@latest
+            - name: Pull Vercel Environment Information
+              run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+            - name: Build Project Artifacts
+              run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+            - name: Deploy Project Artifacts to Vercel
               id: deploy
-              with:
-                  vercel-token: ${{ secrets.VERCEL_TOKEN }}
-                  vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-                  vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-                  working-directory: ./
-            - name: run e2e-test against ${{ steps.deploy.outputs.preview-url }}
-              run: make HOST=${{ steps.deploy.outputs.preview-url }} test-e2e
+              run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
+            - name: Extract deployment URL
+              id: url
+              run: echo "preview-url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT
+            - name: run e2e-test against ${{ steps.url.outputs.preview-url }}
+              run: make HOST=${{ steps.url.outputs.preview-url }} test-e2e
             - uses: actions/upload-artifact@v4
               if: always()
               continue-on-error: true
