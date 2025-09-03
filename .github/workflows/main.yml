@@ -21,16 +21,16 @@ jobs:
             - run: make setup
             - run: make test-nowatch
             - run: make build
-            - uses: vercel/gh-action@v2
+            - uses: vercel/action-deploy@v1
               id: deploy
               with:
                   vercel-token: ${{ secrets.VERCEL_TOKEN }}
-                  project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-                  team-id: ${{ secrets.VERCEL_ORG_ID }}
+                  vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+                  vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
                   working-directory: ./
             - name: run e2e-test against ${{ steps.deploy.outputs.preview-url }}
               run: make HOST=${{ steps.deploy.outputs.preview-url }} test-e2e
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               if: always()
               continue-on-error: true
               with:
