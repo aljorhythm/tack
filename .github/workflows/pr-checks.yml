@@ -1,0 +1,42 @@
+name: PR checks
+
+on:
+    pull_request:
+        paths-ignore: ["**.md", "docs/**"]
+    workflow_dispatch:
+
+jobs:
+    web:
+        name: web (jest)
+        runs-on: ubuntu-latest
+        timeout-minutes: 8
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: "npm"
+            # Only the web/root deps — keeps the mobile Expo deps out of this job.
+            - run: npm ci --workspaces=false --include-workspace-root
+            - run: npm run test:nowatch
+              env:
+                  AUTH_TOKEN_SECRET: test-secret
+
+    mobile:
+        name: mobile (typecheck + doctor)
+        runs-on: ubuntu-latest
+        timeout-minutes: 12
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: "npm"
+            # Full install so the app can resolve @tack/shared + Expo deps.
+            - run: npm ci
+            - name: Typecheck
+              run: npx tsc --noEmit
+              working-directory: mobile
+            - name: Expo doctor
+              run: npx expo-doctor
+              working-directory: mobile
