@@ -1,7 +1,8 @@
-# Local agent skills installed via `npx skills install` (not app code)
+# Local agent skills installed via `npx skills install` — the materialized
+# skill payload is regenerable from skills-lock.json, so ignore it but keep the
+# lockfile committed (it pins source + hash for a reproducible install).
 .agents/
 .claude/skills/
-skills-lock.json
 
 # Logs
 logs

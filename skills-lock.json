@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "pocketdiff": {
+      "source": "aljorhythm/pocketdiff",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/pocketdiff/SKILL.md",
+      "computedHash": "3c79097b01c5b804eb1f87e7319c23795687608461f104c0e9f7c9e0ac239479"
+    },
+    "test-pocketdiff": {
+      "source": "aljorhythm/pocketdiff",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/test-pocketdiff/SKILL.md",
+      "computedHash": "7ac54331ef78694ca99fdae8f3383a6e0fcb017804df342c36313176542548a0"
+    }
+  }
+}
