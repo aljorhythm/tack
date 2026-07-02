@@ -47,34 +47,6 @@ export async function login(email: string, password: string): Promise<string> {
     return data.token;
 }
 
-/** Decode a JWT's `exp` (seconds since epoch), or null if it can't be read. */
-function tokenExpiry(token: string): number | null {
-    try {
-        const payload = token.split(".")[1];
-        // base64url -> base64
-        const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
-        // `atob` is available in Hermes (RN 0.74+).
-        const json =
-            typeof atob === "function"
-                ? atob(base64)
-                : // eslint-disable-next-line @typescript-eslint/no-var-requires
-                  Buffer.from(base64, "base64").toString("utf8");
-        const { exp } = JSON.parse(json) as { exp?: number };
-        return typeof exp === "number" ? exp : null;
-    } catch {
-        return null;
-    }
-}
-
-function isExpired(token: string): boolean {
-    const exp = tokenExpiry(token);
-    if (exp === null) {
-        return false; // unknown — let the request attempt decide
-    }
-    // treat as expired 60s early to avoid racing the boundary
-    return Date.now() / 1000 >= exp - 60;
-}
-
 /** Re-login using stored credentials. Throws AuthError if none are stored. */
 async function reauthenticate(): Promise<string> {
     const creds = await getCredentials();
@@ -84,13 +56,10 @@ async function reauthenticate(): Promise<string> {
     return login(creds.email, creds.password);
 }
 
-/**
- * Return a token we believe is valid, refreshing pre-emptively if the current
- * one is missing or expired.
- */
+/** Return the stored token, logging in again if none is stored. */
 async function getValidToken(): Promise<string> {
     const token = await getToken();
-    if (!token || isExpired(token)) {
+    if (!token) {
         return reauthenticate();
     }
     return token;
