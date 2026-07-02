@@ -1,0 +1,38 @@
+{
+    "expo": {
+        "name": "Tack",
+        "slug": "tack",
+        "scheme": "tack",
+        "version": "0.1.0",
+        "orientation": "portrait",
+        "userInterfaceStyle": "automatic",
+        "ios": {
+            "bundleIdentifier": "com.tack.app",
+            "supportsTablet": true
+        },
+        "android": {
+            "package": "com.tack.app"
+        },
+        "plugins": [
+            "expo-router",
+            "expo-secure-store",
+            [
+                "expo-share-intent",
+                {
+                    "iosActivationRules": {
+                        "NSExtensionActivationSupportsWebURLWithMaxCount": 1,
+                        "NSExtensionActivationSupportsWebPageWithMaxCount": 1,
+                        "NSExtensionActivationSupportsText": true
+                    },
+                    "androidIntentFilters": ["text/*"]
+                }
+            ]
+        ],
+        "experiments": {
+            "typedRoutes": true
+        },
+        "extra": {
+            "apiBaseUrl": "https://tack.vercel.app"
+        }
+    }
+}

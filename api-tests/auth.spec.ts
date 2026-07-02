@@ -69,6 +69,12 @@ test.describe.serial("sign up, login and token issuance", async () => {
         const body = await response.json();
         expect(body.token).toBeDefined();
         token = body.token;
+
+        // token must no longer be permanent — it should carry an expiry claim
+        const payload = JSON.parse(
+            Buffer.from(token.split(".")[1], "base64").toString("utf8"),
+        );
+        expect(payload.exp).toBeDefined();
     });
 
     test("should get user details with token", async ({ request }) => {
